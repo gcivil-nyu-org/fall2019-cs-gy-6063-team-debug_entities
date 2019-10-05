@@ -2,7 +2,7 @@
 
 from django.core.management.base import BaseCommand
 from django.utils.timezone import make_aware
-import json, requests # for accessing the API and parsing its output
+import json, requests, logging # for accessing the API and parsing its output and writing to a log
 from showup.models import Concert
 from datetime import datetime
 
@@ -16,6 +16,8 @@ class Command(BaseCommand):
             'SI': '&lat=40.573586&lon=-74.158318&range=5.8mi',
             'MN': '&lat=40.779527&lon=-73.966263&range=6mi'
         } # it's important that Manhattan is last because it's very badly represented by a circle. So we do the other boroughs first so that the inevitable overlap from MN's circle won't misassign concerts to MN.
+        log_file = log_file = 'showup/management/commands/logs/pull_seatgeek_data.log'
+        logging.basicConfig(filename=log_file, level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s') # setting up the logger to write to a file name pull_seatgeek_data.log
 
         for borough_abbrev in borough_urls: # get data from the API for concerts in each borough
             response = requests.get(base_url + borough_urls[borough_abbrev])
@@ -23,7 +25,7 @@ class Command(BaseCommand):
 
             for concert in concert_list: # for each event in concert_list, check if it's already in the database by its id. if it's not there, parse it and add it.
                 if Concert.objects.filter(id = concert["id"]).exists():
-                    print("I already have a concert with an id of " + str(concert["id"]))
+                    logging.debug("I already have a concert with an id of " + str(concert["id"]))
                 else:
                     perf_name_list = [p["name"] for p in concert["performers"]] # each concert has a list of performers so we add the name of each performer to this list
 
@@ -39,4 +41,4 @@ class Command(BaseCommand):
                             performer_names = ', '.join(perf_name_list), genres = ', '.join(genres_set), event_url = concert["url"], performer_image_url = concert["performers"][0]["image"])
                             # parse all necessary information from the concert data and put it into an object in our database
                     curr_concert.save()
-                    print("I just saved event " + str(concert["id"]) + " to the database")
+                    logging.debug("I just saved event " + str(concert["id"]) + " to the database")
