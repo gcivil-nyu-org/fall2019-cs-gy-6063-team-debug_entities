@@ -1,5 +1,5 @@
 from django.apps import AppConfig
 
 
-class showupconfig(AppConfig):
+class ShowUpConfig(AppConfig):
     name = 'showup'
