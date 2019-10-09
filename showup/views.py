@@ -5,5 +5,5 @@ from .models import Concert
 # Create your views here.
 
 def events(request):
-    events = Concert.objects.all()[:8]
+    events = Concert.objects.all()
     return render(request,'events.html',{'events' : events})
