@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from .forms import UserSignUpForm
-from .models import UserSignup
+from .models import Users
 from .models import LoginUser
 
 
@@ -17,19 +17,7 @@ from .token_generator import account_activation_token
 from django.contrib.auth.models import User
 from django.core.mail import EmailMessage
 
-
-# Create your views here.
 from django.http import HttpResponse
-
-# def signup(request):
-# 	if(request.method == 'POST'):
-# 		form = UserSignUpForm(request.POST)
-# 		if form.is_valid():
-# 			form.save()
-# 	else:
-# 		form = UserSignUpForm()
-# 	return render(request, 'signup.html',{'form' : form})
-
 
 def signup(request):
     if request.method == 'POST':
@@ -43,7 +31,6 @@ def signup(request):
             message = render_to_string('activate_account.html', {
                 'user': user,
                 'domain': current_site.domain,
-                # For python versions below 3.6, decode throws error.
                 'uid': urlsafe_base64_encode(force_bytes(user.pk)),#.decode(),
                 'token': account_activation_token.make_token(user),
             })
@@ -55,17 +42,15 @@ def signup(request):
         form = UserSignUpForm()
     return render(request, 'signup.html', {'form': form})
 
-# This is not working!!!!
-# The link is saying activation link is invalid
 
 def activate_account(request, uidb64, token):
     try:
         uid = force_bytes(urlsafe_base64_decode(uidb64))
-        user = User.objects.get(pk=uid)
+        user = Users.objects.get(pk=uid)
     except(TypeError, ValueError, OverflowError, User.DoesNotExist):
         user = None
     if user is not None and account_activation_token.check_token(user, token):
-        user.is_active = True
+        user.is_verified = True
         user.save()
         login(request, user)
         return HttpResponse('Your account has been activate successfully')
