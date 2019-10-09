@@ -47,7 +47,8 @@ def login(request):
     if request.method == 'POST':
         form = LoginForm(request.POST)
         if form.is_valid():
-            user = form.save(commit=False)
+            u_email = request.POST.get("email", "")
+            user = Users.objects.get(email=u_email)
             user.logged_in = True
             user.save()
             return HttpResponse('You are now logged in.')
