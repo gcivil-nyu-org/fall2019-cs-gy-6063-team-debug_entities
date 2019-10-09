@@ -52,7 +52,7 @@ def login(request):
             user.save()
             return HttpResponse('You are now logged in.')
     else:
-        form = RegisterForm()
+        form = LoginForm()
     return render(request, 'login.html', {'form': form})
 
 def activate_account(request, uidb64, token):
