@@ -31,7 +31,6 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-    'usersignup.apps.UsersignupConfig',
     'showup.apps.ShowUpConfig',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -120,3 +119,10 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
 
 STATIC_URL = '/static/'
+
+# Adding Show Up email information. Emails to users will be sent from this account. 
+EMAIL_USE_TLS = True
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST_USER = 'team.debug.entities@gmail.com'
+EMAIL_HOST_PASSWORD = 'tempKey123'
+EMAIL_PORT = 587
