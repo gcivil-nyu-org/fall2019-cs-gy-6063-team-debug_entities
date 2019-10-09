@@ -44,7 +44,16 @@ def register(request):
     return render(request, 'register.html', {'form': form})
 
 def login(request):
-    pass
+    if request.method == 'POST':
+        form = LoginForm(request.POST)
+        if form.is_valid():
+            user = form.save(commit=False)
+            user.logged_in = True
+            user.save()
+            return HttpResponse('You are now logged in.')
+    else:
+        form = RegisterForm()
+    return render(request, 'login.html', {'form': form})
 
 def activate_account(request, uidb64, token):
     try:
