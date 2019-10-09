@@ -30,11 +30,7 @@ class Users(models.Model):
     email = models.EmailField()
     password = models.CharField(max_length=30)
     is_verified = False
+    logged_in = False
 
     def __str__(self):
         return self.email
-
-class LoginUser(models.Model):
-    username = models.CharField(max_length=20)
-    password = models.CharField(max_length=30)
-    isValidated = models.BooleanField()

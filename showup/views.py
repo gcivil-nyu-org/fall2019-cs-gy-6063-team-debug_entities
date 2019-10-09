@@ -1,14 +1,12 @@
 from django.shortcuts import render
-from .forms import UserSignUpForm
+from .forms import *
 from .models import Users
-from .models import LoginUser
 
 
 # Adding my modules
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.contrib.auth import login, authenticate
-from .forms import UserSignUpForm
 from django.contrib.sites.shortcuts import get_current_site
 from django.utils.encoding import force_bytes, force_text
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
@@ -19,9 +17,12 @@ from django.core.mail import EmailMessage
 
 from django.http import HttpResponse
 
-def signup(request):
+def home():
+    pass
+
+def register(request):
     if request.method == 'POST':
-        form = UserSignUpForm(request.POST)
+        form = RegisterForm(request.POST)
         if form.is_valid():
             user = form.save(commit=False)
             user.is_active = False
@@ -39,9 +40,11 @@ def signup(request):
             email.send()
             return HttpResponse('We have sent you an email, please confirm your email address to complete registration')
     else:
-        form = UserSignUpForm()
-    return render(request, 'signup.html', {'form': form})
+        form = RegisterForm()
+    return render(request, 'register.html', {'form': form})
 
+def login(request):
+    pass
 
 def activate_account(request, uidb64, token):
     try:
