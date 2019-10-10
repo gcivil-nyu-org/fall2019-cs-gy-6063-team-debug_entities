@@ -1,9 +1,7 @@
 from django.shortcuts import render
 from .forms import *
 from .models import Users
-
-
-# Adding my modules
+from .models import Concert
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.contrib.auth import login, authenticate
@@ -14,7 +12,6 @@ from django.template.loader import render_to_string
 from .token_generator import account_activation_token
 from django.contrib.auth.models import User
 from django.core.mail import EmailMessage
-
 from django.http import HttpResponse
 
 def home(request):
@@ -68,3 +65,7 @@ def activate_account(request, uidb64, token):
         return HttpResponse('Your account has been activated successfully!')
     else:
         return HttpResponse('Activation link is invalid!')
+
+def events(request):
+    events = Concert.objects.all()
+    return render(request,'events.html',{'events' : events})
