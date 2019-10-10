@@ -13,8 +13,8 @@ class Concert(models.Model):
     datetime = models.DateTimeField()
     venue_name = models.CharField(max_length = 100)
     borough = models.CharField(max_length = 2, choices = BOROUGH_CHOICES)
-    performer_names = models.CharField(max_length = 200)
-    genres = models.CharField(max_length = 200)
+    performer_names = models.TextField()
+    genres = models.TextField()
     event_url = models.URLField()
     performer_image_url = models.URLField(null = True)
 
