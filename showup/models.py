@@ -15,8 +15,8 @@ class Concert(models.Model):
     borough = models.TextField(choices = BOROUGH_CHOICES)
     performer_names = models.TextField()
     genres = models.TextField()
-    event_url = models.URLField()
-    performer_image_url = models.URLField(null = True)
+    event_url = models.URLField(max_length=100000)
+    performer_image_url = models.URLField(max_length=100000, null = True)
 
     def __str__(self):
         return self.performer_names + " at " + self.venue_name + " on " + str(self.datetime) + " in " + self.borough
