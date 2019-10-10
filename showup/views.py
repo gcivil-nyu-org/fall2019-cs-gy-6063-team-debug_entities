@@ -65,6 +65,6 @@ def activate_account(request, uidb64, token):
     if user is not None and account_activation_token.check_token(user, token):
         user.is_verified = True
         user.save()
-        return HttpResponse('Your account has been activate successfully')
+        return HttpResponse('Your account has been activated successfully!')
     else:
         return HttpResponse('Activation link is invalid!')
