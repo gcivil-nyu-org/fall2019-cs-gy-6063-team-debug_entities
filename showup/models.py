@@ -11,8 +11,8 @@ class Concert(models.Model):
 
     id = models.IntegerField(primary_key = True)
     datetime = models.DateTimeField()
-    venue_name = models.CharField(max_length = 100)
-    borough = models.CharField(max_length = 2, choices = BOROUGH_CHOICES)
+    venue_name = models.TextField()
+    borough = models.TextField(choices = BOROUGH_CHOICES)
     performer_names = models.TextField()
     genres = models.TextField()
     event_url = models.URLField()
@@ -23,12 +23,12 @@ class Concert(models.Model):
 
 
 class Users(models.Model):
-    firstName = models.CharField(max_length=30)
-    lastName = models.CharField(max_length=30)
+    firstName = models.TextField()
+    lastName = models.TextField()
     dateOfBirth = models.DateField()
-    gender = models.CharField(max_length=10)
+    gender = models.TextField()
     email = models.EmailField()
-    password = models.CharField(max_length=30)
+    password = models.TextField()
     is_verified = False
     logged_in = False
 
