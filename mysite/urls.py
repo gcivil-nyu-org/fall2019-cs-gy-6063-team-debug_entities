@@ -16,10 +16,8 @@ Including another URLconf
 from django.conf.urls import url
 from django.contrib import admin
 from django.urls import include, path
-from django.views.generic import RedirectView
 
 urlpatterns = [
-    url(r'^admin/', admin.site.urls),
-    path('', RedirectView.as_view(url = 'showup/')),
-    path('showup/', include('showup.urls')),
+	url(r'^admin/', admin.site.urls),
+	path('', include('showup.urls')),
 ]

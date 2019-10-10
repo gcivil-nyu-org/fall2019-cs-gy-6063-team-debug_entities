@@ -20,3 +20,17 @@ class Concert(models.Model):
 
     def __str__(self):
         return self.performer_names + " at " + self.venue_name + " on " + str(self.datetime) + " in " + self.borough
+
+
+class Users(models.Model):
+    firstName = models.CharField(max_length=30)
+    lastName = models.CharField(max_length=30)
+    dateOfBirth = models.DateField()
+    gender = models.CharField(max_length=10)
+    email = models.EmailField()
+    password = models.CharField(max_length=30)
+    is_verified = False
+    logged_in = False
+
+    def __str__(self):
+        return self.email
