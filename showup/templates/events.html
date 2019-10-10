@@ -12,7 +12,7 @@
 {% for event in events %}
 <div class="card" style="background-image: url({{event.performer_image_url}})">
 <h1>{{event.venue_name}}</h1>
-<h2>{{event.performer_name}}</h2>
+<h2>{{event.performer_names}}</h2>
 <h3>{{event.datetime}} {{borough}}</h3>
 </div>
 {% endfor %}
