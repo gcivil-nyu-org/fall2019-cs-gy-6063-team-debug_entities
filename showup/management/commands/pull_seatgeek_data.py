@@ -40,5 +40,6 @@ class Command(BaseCommand):
                     curr_concert = Concert(id = concert["id"], datetime = aware_date, venue_name = concert["venue"]["name_v2"], borough = borough_abbrev,
                             performer_names = ', '.join(perf_name_list), genres = ', '.join(genres_set), event_url = concert["url"], performer_image_url = concert["performers"][0]["image"])
                             # parse all necessary information from the concert data and put it into an object in our database
+                    logging.debug("I'm about to try to save this concert: Venue - " + concert["venue"]["name_v2"] + ", Performers - " + ', '.join(perf_name_list))
                     curr_concert.save()
                     logging.debug("I just saved event " + str(concert["id"]) + " to the database")
