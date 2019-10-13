@@ -23,12 +23,12 @@ class Concert(models.Model):
 
 
 class Users(models.Model):
-    firstName = models.TextField()
-    lastName = models.TextField()
+    firstName = models.CharField(max_length=50)
+    lastName = models.CharField(max_length=50)
     dateOfBirth = models.DateField()
-    gender = models.TextField()
+    gender = models.CharField(max_length=10)
     email = models.EmailField()
-    password = models.TextField()
+    password = models.CharField(max_length=100)
     is_verified = False
     logged_in = False
 
