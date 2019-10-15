@@ -5,5 +5,8 @@ def home(request):
     return render(request, 'home.html')
 
 def events(request):
-    events = Concert.objects.all()
-    return render(request,'events.html',{'events' : events})
+    if request.user.is_authenticated:
+        events = Concert.objects.all()
+        return render(request,'events.html',{'events' : events})
+    else:
+        return render(request,'home.html')
