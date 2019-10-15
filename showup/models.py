@@ -28,6 +28,9 @@ class Concert(models.Model):
 class CustomUser(AbstractUser):
     date_of_birth = models.DateField(null=True, blank=True)
     gender = models.CharField(max_length=255, null=True, blank=True)
+    interested_in = models.ManyToManyField(Concert,
+                                           related_name='interested_in')
+    attending = models.ManyToManyField(Concert, related_name='attending')
 
     def __str__(self):
         return self.email
