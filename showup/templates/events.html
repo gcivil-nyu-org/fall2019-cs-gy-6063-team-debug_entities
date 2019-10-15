@@ -21,8 +21,10 @@
                 <p>{{event.venue_name}}</p>
                 <p>{{event.datetime}}</p>
                 <br>
-                <a class="btn-small waves-effect waves-light teal lighten-2">Interested</a>
-                <a class="btn-small waves-effect waves-light teal lighten-2">Going</a>
+                <form action="#" method="get">
+                    <button class="btn-small waves-effect waves-light teal lighten-2" type="submit" name="interested" value={{event.id}}>Interested</button>
+                    <button class="btn-small waves-effect waves-light teal lighten-2" type="submit" name="going" value={{event.id}}>Going</button>
+                </form>
             </div>
         </div>
     </div>
