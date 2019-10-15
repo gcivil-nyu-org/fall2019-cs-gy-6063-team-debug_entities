@@ -49,6 +49,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'django_session_timeout.middleware.SessionTimeoutMiddleware',    
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -155,6 +156,7 @@ ACCOUNT_AUTHENTICATION_METHOD = 'email'
 ACCOUNT_UNIQUE_EMAIL = True
 ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
 
+
 AUTH_USER_MODEL = 'showup.CustomUser'
 
 LOGIN_REDIRECT_URL = 'home'
@@ -163,3 +165,8 @@ ACCOUNT_LOGOUT_REDIRECT_URL = 'home'
 ACCOUNT_FORMS = {
     'signup': 'showup.forms.CustomSignupForm'
 }
+
+#Session Timeout settings
+SESSION_EXPIRE_SECONDS = 30
+SESSION_EXPIRE_AFTER_LAST_ACTIVITY = True
+
