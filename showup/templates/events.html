@@ -7,6 +7,15 @@
 <title><center>Events to View</center></title>
 </head>
 <body>
+
+<section>
+{% if user.is_authenticated %}
+    <div style='float: right; background-color:white'>
+        <p><a href="{% url 'account_logout' %}">Log Out</a></p>
+    </div>
+{% endif %}
+</section>
+
 <section class="events">
 <div class="cards">
 {% for event in events %}
