@@ -1,31 +1,28 @@
 <!DOCTYPE html>
+<style>
+.card {
+  align-content: center;
+}
+</style>
+{% extends 'header.html' %}
 
-<html>
-<head>
-<meta charset="utf-8" />
-<link rel="stylesheet" href="styles.css">
-<title><center>Events to View</center></title>
-</head>
-<body>
+{% block content %}
 
-<section>
-{% if user.is_authenticated %}
-    <div style='float: right; background-color:white'>
-        <p><a href="{% url 'account_logout' %}">Log Out</a></p>
-    </div>
-{% endif %}
-</section>
-
-<section class="events">
-<div class="cards">
-{% for event in events %}
-<div class="card" style="background-image: url({{event.performer_image_url}})">
-<h1>{{event.venue_name}}</h1>
-<h2>{{event.performer_names}}</h2>
-<h3>{{event.datetime}} {{borough}}</h3>
-</div>
-{% endfor %}
-</div>
-</section>
-</body>
-</html>
+    <br>
+    <div class="row">
+    {% for event in events %}
+    <div class="col s12 m6" style="width: 18rem;">
+      <div class="card">
+        <div class="card-image">
+          <img src={{event.performer_image_url}}>
+        <a class="btn-floating halfway-fab waves-effect waves-light teal lighten-2"><i class="material-icons">+</i></a> 
+        </div>
+        <div class="card-content" style="height: 12rem;">
+          <a href= {{event.performer_names}}>{{event.performer_names}}</a>
+              <p>{{event.venue_name}}</p>
+              <p>{{event.datetime}}</p>
+      </div>
+      </div>
+      </div>
+    {% endfor %}
+{% endblock %}
