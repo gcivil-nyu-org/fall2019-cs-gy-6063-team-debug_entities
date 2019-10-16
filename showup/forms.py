@@ -9,11 +9,9 @@ class CustomSignupForm(SignupForm):
     gender = forms.CharField(max_length=255)
     email = forms.EmailField()
 
-    def signup(self, request, user):
-        user.first_name = self.cleaned_data['first_name']
-        user.last_name = self.cleaned_data['last_name']
+    def save(self, request):
+        user = super(CustomSignupForm, self).save(request) # this saves the built-in fields (first name, last name, email, password)
         user.date_of_birth = self.cleaned_data['date_of_birth']
         user.gender = self.cleaned_data['gender']
-        user.email = self.cleaned_data['email']
         user.save()
         return user
