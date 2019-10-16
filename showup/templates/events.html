@@ -1,28 +1,32 @@
 <!DOCTYPE html>
+
 <style>
-.card {
-  align-content: center;
-}
+    .card {
+        align-content: center;
+    }
 </style>
-{% extends 'header.html' %}
 
-{% block content %}
+{% extends 'header.html' %} {% block content %}
 
-    <br>
-    <div class="row">
+<br>
+<div class="row">
     {% for event in events %}
     <div class="col s12 m6" style="width: 18rem;">
-      <div class="card">
-        <div class="card-image">
-          <img src={{event.performer_image_url}}>
-        <a class="btn-floating halfway-fab waves-effect waves-light teal lighten-2"><i class="material-icons">+</i></a> 
+        <div class="card">
+            <div class="card-image">
+                <img src={{event.performer_image_url}}>
+            </div>
+            <div class="card-content" style="height: 16rem;">
+                <p class="teal-text text-lighten-2">{{event.performer_names}}</p>
+                <p>{{event.venue_name}}</p>
+                <p>{{event.datetime}}</p>
+                <br>
+                <form action="#" method="get">
+                    <button class="btn-small waves-effect waves-light teal lighten-2" type="submit" name="interested" value={{event.id}}>Interested</button>
+                    <button class="btn-small waves-effect waves-light teal lighten-2" type="submit" name="going" value={{event.id}}>Going</button>
+                </form>
+            </div>
         </div>
-        <div class="card-content" style="height: 12rem;">
-          <a href= {{event.performer_names}}>{{event.performer_names}}</a>
-              <p>{{event.venue_name}}</p>
-              <p>{{event.datetime}}</p>
-      </div>
-      </div>
-      </div>
-    {% endfor %}
-{% endblock %}
+    </div>
+    {% endfor %} {% endblock %}
+</div>
