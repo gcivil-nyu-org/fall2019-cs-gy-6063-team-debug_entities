@@ -1,21 +1,33 @@
 <!doctype html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Show Up</title>
 </head>
+
 <body>
-{% if user.is_authenticated %}
-    Hi {{ user.email }}!
-    <p><a href="{% url 'events' %}">Events Page</a></p>
-    <p><a href="{% url 'account_logout' %}">Log Out</a></p>
-{% else %}
-    <p>You are not logged in</p>
-    <a href="{% url 'account_login' %}">Log In</a> |
-    <a href="{% url 'account_signup' %}">Sign Up</a>
-{% endif %}
+    {% if user.is_authenticated %}
+      <p>Hi {{ user.email }}!</p>
+      <p><a href="{% url 'events' %}">Events Page</a></p>
+      <p><a href="{% url 'account_logout' %}">Log Out</a></p>
+
+      <h1>Events you're interested in:</h1>
+      {% for interested in user.interested.all %}
+        <p>{{interested}}</p>
+      {% endfor %}
+
+      <h1>Events you're going to:</h1>
+      {% for going in user.going.all %}
+        <p>{{going}}</p>
+      {% endfor %}
+
+    {% else %}
+      <p>You are not logged in</p>
+      <a href="{% url 'account_login' %}">Log In</a> |
+      <a href="{% url 'account_signup' %}">Sign Up</a> {% endif %}
 </body>
+
 </html>
