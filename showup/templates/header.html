@@ -16,9 +16,11 @@
     <div class="nav-wrapper teal lighten-2">
       <a href="events" class="brand-logo">&nbsp;ShowUp</a>
       <ul id="nav-mobile" class="right hide-on-med-and-down">
+        {% if user.is_authenticated %}
         <li><a href="#">Profile</a></li>
         <li><a href="events">Home</a></li>
-        <li><a href="{% url 'account_logout' %}">Logout</a></li>        
+        <li><a href="{% url 'account_logout' %}">Logout</a></li>
+        {% endif %}
       </ul>
     </div>
   </nav>
