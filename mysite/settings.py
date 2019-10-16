@@ -38,12 +38,12 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'showup.apps.ShowUpConfig',
     # entries below are needed for django-allauth
     'django.contrib.sites',
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
-    'showup.apps.ShowUpConfig',
 ]
 
 MIDDLEWARE = [
@@ -169,4 +169,3 @@ ACCOUNT_FORMS = {
 #Session Timeout settings
 SESSION_EXPIRE_SECONDS = 30
 SESSION_EXPIRE_AFTER_LAST_ACTIVITY = True
-
