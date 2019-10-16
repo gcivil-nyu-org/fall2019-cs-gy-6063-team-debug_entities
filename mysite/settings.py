@@ -38,12 +38,12 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'showup.apps.ShowUpConfig',
     # entries below are needed for django-allauth
     'django.contrib.sites',
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
-    'showup.apps.ShowUpConfig',
 ]
 
 MIDDLEWARE = [
