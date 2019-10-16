@@ -1,29 +1,30 @@
 <head>
-    <meta charset="utf-8" />
-    {% load static %}
-    <!-- Prism CSS -->
-    <link href="{% static "tinymce/css/prism.css" %}" rel="stylesheet">
-    <!-- Compiled and minified CSS -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
-    <!-- Compiled and minified JavaScript -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+  <meta charset="utf-8" />
+  {% load static %}
+  <!-- Prism CSS -->
+  <link href="{% static "tinymce/css/prism.css" %}" rel="stylesheet">
+  <!-- Compiled and minified CSS -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+  <!-- Compiled and minified JavaScript -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
 </head>
 
-
 <body>
-    <div class="nav-wrapper">
+  <div class="nav-wrapper">
     <nav>
-    <div class="nav-wrapper teal lighten-2">
-      <a href="events" class="brand-logo">&nbsp;ShowUp</a>
-      <ul id="nav-mobile" class="right hide-on-med-and-down">
+      <div class="nav-wrapper teal lighten-2">
         {% if user.is_authenticated %}
-        <li><a href="#">Profile</a></li>
-        <li><a href="events">Home</a></li>
-        <li><a href="{% url 'account_logout' %}">Logout</a></li>
+        <a href="events" class="brand-logo">&nbsp;ShowUp</a>
+        <ul id="nav-mobile" class="right hide-on-med-and-down">
+          <li><a href="#">Profile</a></li>
+          <li><a href="events">Home</a></li>
+          <li><a href="{% url 'account_logout' %}">Logout</a></li>
+        </ul>
+        {% else %}
+        <div class="brand-logo">&nbsp;ShowUp</div>
         {% endif %}
-      </ul>
-    </div>
-  </nav>
-  {% block content %}
-  {% endblock %}
+      </div>
+    </nav>
+    {% block content %}
+    {% endblock %}
 </body>
