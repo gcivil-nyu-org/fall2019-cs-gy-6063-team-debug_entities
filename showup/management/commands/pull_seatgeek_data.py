@@ -1,22 +1,29 @@
-# This command pulls data from SeatGeek's API and adds concerts to our database if they're not already in there.
+# This command pulls data from SeatGeek's API and adds concerts to
+# our database if they're not already in there.
 
 from django.core.management.base import BaseCommand
 from django.utils.timezone import make_aware
-import json, requests, logging  # for accessing the API and parsing its output and writing to a log
+import json
+import requests
+import logging
 from showup.models import Concert
 from datetime import datetime
 
 
 class Command(BaseCommand):
     def handle(self, *args, **options):
-        base_url = "https://api.seatgeek.com/2/events?client_id=MTg3MzUxNzB8MTU3MDE1NTY1OS45MQ&per_page=5000&taxonomies.name=concert"
-        borough_urls = {  # the values in this dict represent the center and radius of the circle on the map of each borough
+        base_url = "https://api.seatgeek.com/2/events?client_id="
+        "MTg3MzUxNzB8MTU3MDE1NTY1OS45MQ&per_page=5000&taxonomies.name=concert"
+        borough_urls = {
             "BK": "&lat=40.643222&lon=-73.949258&range=5mi",
             "QN": "&lat=40.720977&lon=-73.810735&range=6.5mi",
             "BX": "&lat=40.859827&lon=-73.862867&range=4mi",
             "SI": "&lat=40.573586&lon=-74.158318&range=5.8mi",
             "MN": "&lat=40.779527&lon=-73.966263&range=6mi",
-        }  # it's important that Manhattan is last because it's very badly represented by a circle. So we do the other boroughs first so that the inevitable overlap from MN's circle won't misassign concerts to MN.
+        }
+        # it's important that Manhattan is last because it's very badly
+        # represented by a circle. So we do the other boroughs first so that the
+        # inevitable overlap from MN's circle won't misassign concerts to MN.
         log_file = log_file = "showup/management/commands/logs/pull_seatgeek_data.log"
         logging.basicConfig(
             filename=log_file,
@@ -36,7 +43,8 @@ class Command(BaseCommand):
                 concert
             ) in (
                 concert_list
-            ):  # for each event in concert_list, check if it's already in the database by its id. if it's not there, parse it and add it.
+            ):  # for each event in concert_list, check if it's already in
+                # the database by its id. if it's not there, parse it and add it.
                 if Concert.objects.filter(id=concert["id"]).exists():
                     logging.debug(
                         "I already have a concert with an id of " + str(concert["id"])
@@ -44,12 +52,18 @@ class Command(BaseCommand):
                 else:
                     perf_name_list = [
                         p["name"] for p in concert["performers"]
-                    ]  # each concert has a list of performers so we add the name of each performer to this list
+                    ]
+                    # each concert has a list of performers so we
+                    # add the name of each performer to this list
 
                     genres_set = set()
                     for perf in concert[
                         "performers"
-                    ]:  # each concert has a list of performers and each performer has a list of genres. So we add all genres from all performers to genres_set. We use a set because there's no reason to have duplicated genres.
+                    ]:
+                        # each concert has a list of performers and each performer has
+                        # a list of genres. So we add all genres from all performers to
+                        # genres_set. We use a set because there's
+                        # no reason to have duplicated genres.
                         if "genres" in perf:
                             for g in perf["genres"]:
                                 genres_set.add(g["name"])
@@ -58,7 +72,9 @@ class Command(BaseCommand):
                         datetime.strptime(
                             concert["datetime_local"], "%Y-%m-%dT%H:%M:%S"
                         )
-                    )  # We need to make the time given by the API into a timezone-aware time, because Django will complain otherwise
+                    )
+                    # We need to make the time given by the API into a timezone-aware
+                    # time, because Django will complain otherwise
 
                     curr_concert = Concert(
                         id=concert["id"],
@@ -70,7 +86,8 @@ class Command(BaseCommand):
                         event_url=concert["url"],
                         performer_image_url=concert["performers"][0]["image"],
                     )
-                    # parse all necessary information from the concert data and put it into an object in our database
+                    # parse all necessary information from the concert data and put
+                    # it into an object in our database
                     logging.debug(
                         "I'm about to try to save this concert: Venue - "
                         + concert["venue"]["name_v2"]
