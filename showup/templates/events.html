@@ -14,7 +14,7 @@
     <div class="col s12 m6" style="width: 18rem;">
         <div class="card">
             <div class="card-image">
-                {% if event.performer_image_url %} <!-- the API doesn't give an image for all events-->
+                {% if not event.performer_image_url %} <!-- the API doesn't give an image for all events-->
                     {% load static %}
                     <img src={% static "default-performer-image.jpg" %}>
                 {% else %}
