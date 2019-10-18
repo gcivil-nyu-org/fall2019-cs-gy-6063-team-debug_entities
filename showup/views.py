@@ -23,3 +23,10 @@ def events(request):
         return render(request, 'events.html', {'events': events})
     else:
         return render(request, 'home.html')
+
+
+def user(request, id):
+    if request.user.is_authenticated:
+        return render(request, 'user.html')
+    else:
+        return render(request, 'home.html')

@@ -1,0 +1,29 @@
+<!doctype html>
+
+{% extends 'header.html' %}
+
+{% block content %}
+
+{% if user.is_authenticated %}
+  <h1>{{ user.first_name }}</h1>
+
+  <h3>Events I'm interested in:</h3>
+  {% for interested in user.interested.all %}
+    <p>{{interested}}</p>
+  {% endfor %}
+
+  <h3>Events I'm going to:</h3>
+  {% for going in user.going.all %}
+    <p>{{going}}</p>
+  {% endfor %}
+
+{% else %}
+  <p>You are not logged in</p>
+  <a href="{% url 'account_login' %}">Log In</a> |
+  <a href="{% url 'account_signup' %}">Sign Up</a>
+
+{% endif %}
+
+{% endblock %}
+
+</html>
