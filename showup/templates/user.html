@@ -5,14 +5,14 @@
 {% block content %}
 
 {% if user.is_authenticated %}
-  <h1>{{ user.first_name }}</h1>
+  <h4>{{ user.first_name }}</h4>
 
-  <h3>Events I'm interested in:</h3>
+  <h5>Events I'm interested in:</h5>
   {% for interested in user.interested.all %}
     <p>{{interested}}</p>
   {% endfor %}
 
-  <h3>Events I'm going to:</h3>
+  <h5>Events I'm going to:</h5>
   {% for going in user.going.all %}
     <p>{{going}}</p>
   {% endfor %}
