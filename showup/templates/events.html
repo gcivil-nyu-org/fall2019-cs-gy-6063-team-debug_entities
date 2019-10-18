@@ -14,7 +14,12 @@
     <div class="col s12 m6" style="width: 18rem;">
         <div class="card">
             <div class="card-image">
-                <img src={{event.performer_image_url}}>
+                {% if event.performer_image_url %} <!-- the API doesn't give an image for all events-->
+                    {% load static %}
+                    <img src={% static "default-performer-image.jpg" %}>
+                {% else %}
+                    <img src={{event.performer_image_url}}>
+                {% endif %}
             </div>
             <div class="card-content" style="height: 16rem;">
                 <p class="teal-text text-lighten-2">{{event.performer_names}}</p>
