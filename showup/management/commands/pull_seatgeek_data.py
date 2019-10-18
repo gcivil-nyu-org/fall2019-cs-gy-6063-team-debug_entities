@@ -50,16 +50,12 @@ class Command(BaseCommand):
                         "I already have a concert with an id of " + str(concert["id"])
                     )
                 else:
-                    perf_name_list = [
-                        p["name"] for p in concert["performers"]
-                    ]
+                    perf_name_list = [p["name"] for p in concert["performers"]]
                     # each concert has a list of performers so we
                     # add the name of each performer to this list
 
                     genres_set = set()
-                    for perf in concert[
-                        "performers"
-                    ]:
+                    for perf in concert["performers"]:
                         # each concert has a list of performers and each performer has
                         # a list of genres. So we add all genres from all performers to
                         # genres_set. We use a set because there's
