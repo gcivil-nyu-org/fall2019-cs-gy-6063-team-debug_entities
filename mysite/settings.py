@@ -49,7 +49,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-    'django_session_timeout.middleware.SessionTimeoutMiddleware',    
+    'django_session_timeout.middleware.SessionTimeoutMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -127,7 +127,7 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-# Adding Show Up email information. Emails to users will be sent from this account. 
+# Adding Show Up email information. Emails to users will be sent from this account.
 EMAIL_USE_TLS = True
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_HOST_USER = 'team.debug.entities@gmail.com'
@@ -167,5 +167,5 @@ ACCOUNT_FORMS = {
 }
 
 #Session Timeout settings
-SESSION_EXPIRE_SECONDS = 30
+SESSION_EXPIRE_SECONDS = 12 * 60 * 60
 SESSION_EXPIRE_AFTER_LAST_ACTIVITY = True
