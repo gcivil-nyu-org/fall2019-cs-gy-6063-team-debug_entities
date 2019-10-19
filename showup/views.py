@@ -4,7 +4,7 @@ from django.contrib.auth.decorators import login_required
 
 
 def home(request):
-    return render(request, 'home.html')
+    return render(request, "home.html")
 
 @login_required
 def events(request):
@@ -19,7 +19,7 @@ def events(request):
     if('going' in request.GET):
         event_id = request.GET.get('going')
         request.user.going.add(event_id)
-
+    
     return render(request, 'events.html', {'events': events})
 
 @login_required
