@@ -18,7 +18,8 @@ class CustomSignupForm(SignupForm):
         user.save()
         return user
 
+
 class CustomUserChangeForm(UserChangeForm):
     class Meta:
         model = CustomUser
-        fields = ('email','bio','password')
+        fields = ('bio',)
