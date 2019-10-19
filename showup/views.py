@@ -1,6 +1,5 @@
 from django.shortcuts import render, redirect
 from .models import Concert, CustomUser
-from django.contrib.auth.forms import UserChangeForm
 from .forms import CustomUserChangeForm
 
 
@@ -33,16 +32,16 @@ def user(request, id):
     else:
         return render(request, 'home.html')
 
+
 def edit_profile(request, id):
     if request.method == 'POST':
         form = CustomUserChangeForm(request.POST, instance=request.user)
 
         if form.is_valid():
             form.save()
-            return redirect('user')
+            return render(request, 'user.html')
 
     else: 
         form = CustomUserChangeForm(instance=request.user)
         args = {'form': form}
         return render(request, 'edit_profile.html',args)
-
