@@ -6,19 +6,6 @@
     }
 </style>
 
-{% for event in events %}
-    <img src={{event.performer_image_url}}>
-    <p>{{event.performer_names}}</p>
-    <p>{{event.venue_name}}</p>
-    <p>{{event.datetime}}</p>
-    <p>{{event.borough}}</p>
-    <br>
-    <form action="#" method="get">
-        <button type="submit" name="interested" value={{event.id}}>Interested</button>
-        <button type="submit" name="going" value={{event.id}}>Going</button>
-    </form>
-{% endfor %}
-
 <br>
 <br>
 {% for textoutput in outputtext %}
@@ -33,3 +20,19 @@
     </br>
     <button type="submit" name="filter">Filter</button>
 </form>
+
+<br>
+<br>
+
+{% for event in events %}
+    <img src={{event.performer_image_url}}>
+    <p>{{event.performer_names}}</p>
+    <p>{{event.venue_name}}</p>
+    <p>{{event.datetime}}</p>
+    <p>{{event.borough}}</p>
+    <br>
+    <form action="#" method="get">
+        <button type="submit" name="interested" value={{event.id}}>Interested</button>
+        <button type="submit" name="going" value={{event.id}}>Going</button>
+    </form>
+{% endfor %}
