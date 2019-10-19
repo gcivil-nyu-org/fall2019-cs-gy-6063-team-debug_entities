@@ -7,6 +7,22 @@ from showup.models import Concert
 from datetime import datetime
 
 class Command(BaseCommand):
+    def OpenGenre():
+        genres_fromfile=set()
+        file = "showup/static/Genres.txt"
+        with open(file,"r") as existing_genre:
+            lines = existing_genre.read().splitlines()
+            for line in lines:
+                genres_fromfile.add(line)
+        return (genres_fromfile)
+
+    def WriteGenre(genre_set):
+        file = "showup/static/Genres.txt"
+        with open(file,"w+") as genre_file:
+            for genre in genre_set:
+                genre_file.write(genre+ "\n")
+
+
     def handle(self, *args, **options):
         base_url = 'https://api.seatgeek.com/2/events?client_id=MTg3MzUxNzB8MTU3MDE1NTY1OS45MQ&per_page=5000&taxonomies.name=concert'
         borough_urls = { # the values in this dict represent the center and radius of the circle on the map of each borough
@@ -18,6 +34,7 @@ class Command(BaseCommand):
         } # it's important that Manhattan is last because it's very badly represented by a circle. So we do the other boroughs first so that the inevitable overlap from MN's circle won't misassign concerts to MN.
         log_file = log_file = 'showup/management/commands/logs/pull_seatgeek_data.log'
         logging.basicConfig(filename=log_file, level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s') # setting up the logger to write to a file name pull_seatgeek_data.log
+        existing_genres = Command.OpenGenre()
 
         for borough_abbrev in borough_urls: # get data from the API for concerts in each borough
             response = requests.get(base_url + borough_urls[borough_abbrev])
@@ -33,8 +50,10 @@ class Command(BaseCommand):
                     for perf in concert["performers"]: # each concert has a list of performers and each performer has a list of genres. So we add all genres from all performers to genres_set. We use a set because there's no reason to have duplicated genres.
                         if "genres" in perf:
                             for g in perf["genres"]:
-                                genres_set.add(g["name"])
-                    
+                                genres_set.add(g["name"])  # Adding genres to current concert
+                                existing_genres.add(g["name"])  # Adding genres to Genres.txt
+
+
                     aware_date = make_aware(datetime.strptime(concert["datetime_local"], '%Y-%m-%dT%H:%M:%S')) # We need to make the time given by the API into a timezone-aware time, because Django will complain otherwise
 
                     curr_concert = Concert(id = concert["id"], datetime = aware_date, venue_name = concert["venue"]["name_v2"], borough = borough_abbrev,
@@ -43,3 +62,5 @@ class Command(BaseCommand):
                     logging.debug("I'm about to try to save this concert: Venue - " + concert["venue"]["name_v2"] + ", Performers - " + ', '.join(perf_name_list))
                     curr_concert.save()
                     logging.debug("I just saved event " + str(concert["id"]) + " to the database")
+
+        Command.WriteGenre(existing_genres)
