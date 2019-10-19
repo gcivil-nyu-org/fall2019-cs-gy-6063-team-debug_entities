@@ -7,6 +7,9 @@
 {% if user.is_authenticated %}
   <h4>{{ user.first_name }}</h4>
 
+  <h5>Bio</h5>
+  <p>{{ user.bio }}</p>
+
   <h5>Events I'm interested in:</h5>
   {% for interested in user.interested.all %}
     <p>{{interested}}</p>

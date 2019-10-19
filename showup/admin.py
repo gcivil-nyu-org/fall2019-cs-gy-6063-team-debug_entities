@@ -6,7 +6,7 @@ class CustomUserAdmin(UserAdmin):
     list_display = ['email', 'username', 'date_of_birth', 'gender']
     readonly_fields = ('id',)
     fieldsets = (
-        (None, {'fields': ('id', 'first_name', 'last_name', 'date_of_birth', 'gender', 'email', 'password')}),
+        (None, {'fields': ('id', 'first_name', 'last_name', 'date_of_birth', 'gender', 'email', 'password', 'bio')}),
     )
     add_fieldsets = fieldsets
 
