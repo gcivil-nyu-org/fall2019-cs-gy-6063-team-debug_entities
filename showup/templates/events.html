@@ -12,6 +12,11 @@
         <option value = "{{borough.0}}">{{borough.1}}</option>
     {% endfor %}
     </select>
+    <select name = "performers" multiple>
+    {% for performer_name in performer_names_choices %}
+        <option value = "{{performer_name}}">{{performer_name}}</option>
+    {% endfor %}
+    </select>
     <br>
     <br>
     <button type="submit" name="filter">Filter</button>
