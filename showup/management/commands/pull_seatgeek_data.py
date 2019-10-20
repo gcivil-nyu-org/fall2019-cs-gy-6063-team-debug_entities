@@ -57,12 +57,7 @@ class Command(BaseCommand):
                 "events"
             ]  # each item in concert_list is a dict that represents an event.
 
-            for (
-                concert
-            ) in (
-                concert_list
-            ):  # for each event in concert_list, check if it's already in
-                # the database by its id. if it's not there, parse it and add it.
+            for concert in concert_list:
                 if Concert.objects.filter(id=concert["id"]).exists():
                     logging.debug(
                         "I already have a concert with an id of " + str(concert["id"])
