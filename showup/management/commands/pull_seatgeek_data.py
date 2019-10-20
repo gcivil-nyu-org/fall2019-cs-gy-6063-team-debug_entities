@@ -12,20 +12,19 @@ from datetime import datetime
 
 class Command(BaseCommand):
     def OpenGenre():
-        genres_fromfile=set()
+        genres_fromfile = set()
         file = "showup/static/Genres.txt"
-        with open(file,"r") as existing_genre:
+        with open(file, "r") as existing_genre:
             lines = existing_genre.read().splitlines()
             for line in lines:
                 genres_fromfile.add(line)
-        return (genres_fromfile)
+        return genres_fromfile
 
     def WriteGenre(genre_set):
         file = "showup/static/Genres.txt"
-        with open(file,"w+") as genre_file:
+        with open(file, "w+") as genre_file:
             for genre in genre_set:
-                genre_file.write(genre+ "\n")
-
+                genre_file.write(genre + "\n")
 
     def handle(self, *args, **options):
         base_url = (
@@ -75,8 +74,8 @@ class Command(BaseCommand):
                         # no reason to have duplicated genres.
                         if "genres" in perf:
                             for g in perf["genres"]:
-                                genres_set.add(g["name"])  # Adding genres to current concert
-                                existing_genres.add(g["name"])  # Adding genres to Genres.txt
+                                genres_set.add(g["name"])
+                                existing_genres.add(g["name"])
 
                     aware_date = make_aware(
                         datetime.strptime(
@@ -108,5 +107,5 @@ class Command(BaseCommand):
                     logging.debug(
                         "I just saved event " + str(concert["id"]) + " to the database"
                     )
-  
+
         Command.WriteGenre(existing_genres)
