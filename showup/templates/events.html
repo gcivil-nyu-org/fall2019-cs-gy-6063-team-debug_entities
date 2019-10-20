@@ -6,45 +6,29 @@
     }
 </style>
 
-{% extends 'header.html' %} {% block content %}
-<br>
-
-<br>
-<br>
-{% for textoutput in outputtext %}
-    <p>{{textoutput}}</p>
-{% endfor %}
 <form action="#" method="GET">
-    <select name = "borough" multiple = 'borough_all'>
+    <select name = "boroughs" multiple>
     {% for borough in borough_choices %}
         <option value = "{{borough.0}}">{{borough.1}}</option>
     {% endfor %}
     </select>
-    </br>
+    <br>
+    <br>
     <button type="submit" name="filter">Filter</button>
 </form>
 
 <br>
 <br>
 
-<div class="row">
-    {% for event in events %}
-    <div class="col s12 m6" style="width: 18rem;">
-        <div class="card">
-            <div class="card-image">
-                <img src={{event.performer_image_url}}>
-            </div>
-            <div class="card-content" style="height: 16rem;">
-                <p class="teal-text text-lighten-2">{{event.performer_names}}</p>
-                <p>{{event.venue_name}}</p>
-                <p>{{event.datetime}}</p>
-                <br>
-                <form action="#" method="get">
-                    <button class="btn-small waves-effect waves-light teal lighten-2" type="submit" name="interested" value={{event.id}}>Interested</button>
-                    <button class="btn-small waves-effect waves-light teal lighten-2" type="submit" name="going" value={{event.id}}>Going</button>
-                </form>
-            </div>
-        </div>
-    </div>
-    {% endfor %} {% endblock %}
-</div>
+{% for event in events %}
+    <img src={{event.performer_image_url}}>
+    <p>{{event.performer_names}}</p>
+    <p>{{event.venue_name}}</p>
+    <p>{{event.datetime}}</p>
+    <p>{{event.borough}}</p>
+    <br>
+    <form action="#" method="get">
+        <button type="submit" name="interested" value={{event.id}}>Interested</button>
+        <button type="submit" name="going" value={{event.id}}>Going</button>
+    </form>
+{% endfor %}
