@@ -49,6 +49,8 @@ class Command(BaseCommand):
             format="%(asctime)s - %(levelname)s - %(message)s",
         )  # setting up the logger to write to a file name pull_seatgeek_data.log
 
+        existing_genres = Command.OpenGenre()
+
         for borough_abbrev in borough_urls:
             response = requests.get(base_url + borough_urls[borough_abbrev])
             concert_list = json.loads(response.content)[
