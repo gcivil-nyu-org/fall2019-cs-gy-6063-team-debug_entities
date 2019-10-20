@@ -22,6 +22,11 @@
         <option value = "{{venue}}">{{venue}}</option>
     {% endfor %}
     </select>
+    <select name = "genres" multiple>
+    {% for genre in genre_choices %}
+        <option value = "{{genre}}">{{genre}}</option>
+    {% endfor %}
+    </select>
     <br>
     <br>
     <button type="submit" name="filter">Filter</button>
