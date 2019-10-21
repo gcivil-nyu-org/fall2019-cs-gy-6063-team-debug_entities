@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, reverse
 from .models import Concert, CustomUser
 from .forms import CustomUserChangeForm
 
@@ -39,9 +39,9 @@ def edit_profile(request, id):
 
         if form.is_valid():
             form.save()
-            return render(request, 'user.html')
+            return redirect(reverse('user', kwargs={'id': id}))
 
     else: 
         form = CustomUserChangeForm(instance=request.user)
         args = {'form': form}
-        return render(request, 'edit_profile.html',args)
+        return render(request, 'edit_profile.html', args)
