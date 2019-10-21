@@ -21,10 +21,9 @@ class Concert(models.Model):
     performer_image_url = models.URLField(max_length=100000, null=True)
 
     def __str__(self):
-        return "{} at {} on {} in{}".format(self.performer_names,
-                                            self.venue_name,
-                                            str(self.datetime),
-                                            self.borough)
+        return "{} at {} on {} in{}".format(
+            self.performer_names, self.venue_name, str(self.datetime), self.borough
+        )
 
 
 class CustomUser(AbstractUser):

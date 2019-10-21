@@ -28,18 +28,18 @@ def events(request):
 @login_required
 def user(request, id):
     if request.user.is_authenticated:
-        return render(request, 'user.html')
+        return render(request, "user.html")
     else:
-        return render(request, 'home.html')
+        return render(request, "home.html")
 
 
 def edit_profile(request, id):
-    if request.method == 'POST':
+    if request.method == "POST":
         form = CustomUserChangeForm(request.POST, instance=request.user)
         if form.is_valid():
             form.save()
-            return redirect(reverse('user', kwargs={'id': id}))
+            return redirect(reverse("user", kwargs={"id": id}))
     else:
         form = CustomUserChangeForm(instance=request.user)
-        args = {'form': form}
-        return render(request, 'edit_profile.html', args)
+        args = {"form": form}
+        return render(request, "edit_profile.html", args)

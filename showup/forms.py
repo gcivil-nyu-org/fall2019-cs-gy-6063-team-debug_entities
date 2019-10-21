@@ -24,4 +24,4 @@ class CustomSignupForm(SignupForm):
 class CustomUserChangeForm(UserChangeForm):
     class Meta:
         model = CustomUser
-        fields = ('bio',)
+        fields = ("bio",)
