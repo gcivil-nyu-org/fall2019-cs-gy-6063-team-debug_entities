@@ -159,5 +159,5 @@ ACCOUNT_LOGOUT_REDIRECT_URL = "home"
 ACCOUNT_FORMS = {"signup": "showup.forms.CustomSignupForm"}
 
 # Session Timeout settings
-SESSION_EXPIRE_SECONDS = 30
+SESSION_EXPIRE_SECONDS = 60 * 60 * 12
 SESSION_EXPIRE_AFTER_LAST_ACTIVITY = True
