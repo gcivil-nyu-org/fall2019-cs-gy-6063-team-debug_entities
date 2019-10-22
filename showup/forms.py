@@ -20,6 +20,7 @@ class CustomSignupForm(SignupForm):
 
 
 class CustomUserChangeForm(UserChangeForm):
+    password = None
     class Meta:
         model = CustomUser
         fields = ("bio",)
