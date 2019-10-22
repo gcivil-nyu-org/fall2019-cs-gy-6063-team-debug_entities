@@ -1,13 +1,11 @@
-# This command pulls data from SeatGeek's API and adds concerts to
-# our database if they're not already in there.
+import json
+import logging
+import requests
 
+from datetime import datetime
 from django.core.management.base import BaseCommand
 from django.utils.timezone import make_aware
-import json
-import requests
-import logging
 from showup.models import Concert, Genre
-from datetime import datetime
 
 
 class Command(BaseCommand):
