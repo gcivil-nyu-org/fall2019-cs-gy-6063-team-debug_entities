@@ -8,11 +8,11 @@
 
 {% extends 'header.html' %} {% block content %}
 
-
+<!-- Filtering -->
 <br>
 <div class="row">
     <form action="#" method="GET">
-        
+
         <div class = "input-field col s3">
             <select class = validate name = "boroughs" multiple>
                 {% for borough in borough_choices %}
@@ -58,8 +58,11 @@
             <input type="datetime-local" name="end_date"></input>
         </div>
         <button class="btn-small waves-effect waves-light teal lighten-2" type="submit" name="filter">Filter</button>
+        <button class="btn-small waves-effect waves-light teal lighten-2" type="submit" onclick="submit()">Clear Filter</button>
     </form>
+<br>
 
+<!-- Cards with event pictures and event details -->
     {% for event in events %}
     <div class="col s12 m6" style="width: 18rem;">
         <div class="card">
@@ -85,3 +88,11 @@
     </div>
     {% endfor %} {% endblock %}
 </div>
+
+<!-- Java scipt for form reset -->
+<script>
+    function submitForm () {
+    frm.submit(); // Submit
+    $('form :input').attr('value', '');
+}
+</script>
