@@ -33,6 +33,7 @@ def user(request, id):
         return render(request, "home.html")
 
 
+@login_required
 def edit_profile(request, id):
     if request.method == "POST":
         form = CustomUserChangeForm(request.POST, instance=request.user)
