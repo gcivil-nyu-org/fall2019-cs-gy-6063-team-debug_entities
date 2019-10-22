@@ -1,6 +1,8 @@
+import datetime
 from django.shortcuts import render
 from .models import Concert
-from datetime import datetime
+from django.utils.timezone import make_aware
+
 
 def home(request):
     return render(request, 'home.html')
@@ -41,13 +43,13 @@ def events(request):
         performer_names_choices = get_performers()
         venue_name_choices = get_venues()
         genre_choices = get_genres()
-        start_date = end_date = datetime.today()
-        
+        start_date = make_aware(datetime.datetime.today())
+        end_date = make_aware(datetime.datetime(datetime.MAXYEAR, 12, 31,23,59))
         
         #User clicks "Filter"
-        if('filter' in request.GET):
+        if("filter" in request.GET):
             #filter boroughs
-            if('boroughs' in request.GET):
+            if("boroughs" in request.GET):
                 events = events.filter(borough__in=request.GET.getlist("boroughs"))
                 
             #filter performers. only 1 performer at the moment
@@ -61,6 +63,11 @@ def events(request):
             #filter genres. only 1 genre at the moment
             if("genres" in request.GET):
                 events = events.filter(genres__contains=request.GET["genres"])
+               
+            #filter start-date
+            if(request.GET["start_date"] is not ''):
+                start_date = make_aware(datetime.datetime.strptime(request.GET["start_date"], "%Y-%m-%dT%H:%M"))
+                events = events.filter(datetime__gte=start_date, datetime__lte=end_date)
             
         # User clicked "Interested" button.
         if('interested' in request.GET):
