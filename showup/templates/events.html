@@ -15,6 +15,7 @@
 
         <div class = "input-field col s3">
             <select class = validate name = "boroughs" multiple>
+                <option value="" disabled selected></option>
                 {% for borough in borough_choices %}
                     <option value = "{{borough.0}}">{{borough.1}}</option>
                 {% endfor %}
@@ -33,6 +34,7 @@
         
         <div class = "input-field col s3">
             <select name = "venues" multiple>
+                <option value="" disabled selected></option>
                 {% for venue in venue_choices %}
                     <option value = "{{venue}}">{{venue}}</option>
                 {% endfor %}
