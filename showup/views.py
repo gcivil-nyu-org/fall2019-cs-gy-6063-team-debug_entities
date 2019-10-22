@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from .models import Concert
-
+from datetime import datetime
 
 def home(request):
     return render(request, 'home.html')
@@ -41,6 +41,8 @@ def events(request):
         performer_names_choices = get_performers()
         venue_name_choices = get_venues()
         genre_choices = get_genres()
+        start_date = end_date = datetime.today()
+        
         
         #User clicks "Filter"
         if('filter' in request.GET):
@@ -72,6 +74,7 @@ def events(request):
 
         return render(request, 'events.html', {'events': events,
             'borough_choices': borough_choices, 'performer_names_choices': performer_names_choices,
-            'venue_choices': venue_name_choices, 'genre_choices': genre_choices})
+            'venue_choices': venue_name_choices, 'genre_choices': genre_choices, 'start_date': start_date,
+            'end_date': end_date})
     else:
         return render(request, 'home.html')
