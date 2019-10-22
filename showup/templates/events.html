@@ -17,9 +17,8 @@
                 {% for borough in borough_choices %}
                     <option value = "{{borough.0}}">{{borough.1}}</option>
                 {% endfor %}
-            
-                <label>Boroughs</label>
             </select>
+            <label>Boroughs</label>
         </div>
         
         <div class = "input-field col s3">
@@ -27,8 +26,8 @@
                 {% for performer_name in performer_names_choices %}
                     <option value = "{{performer_name}}">{{performer_name}}</option>
                 {% endfor %}
-                <label>Performers</label>
             </select>
+            <label>Performers</label>
         </div>
         
         <div class = "input-field col s3">
@@ -36,8 +35,9 @@
                 {% for venue in venue_choices %}
                     <option value = "{{venue}}">{{venue}}</option>
                 {% endfor %}
-                <label>Venues</label>
             </select>
+            <label>Venues</label>
+            
         </div>
         
         <div class = "input-field col s3">
@@ -45,8 +45,8 @@
                 {% for genre in genre_choices %}
                     <option value = "{{genre}}">{{genre}}</option>
                 {% endfor %}
-                <label>Genres</label>
             </select>
+            <label>Genres</label>
         </div>
         
         <div class = "input-field col s5">
