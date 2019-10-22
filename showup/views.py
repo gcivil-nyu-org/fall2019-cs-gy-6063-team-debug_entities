@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 import datetime
 from django.shortcuts import render
 from .forms import CustomUserChangeForm
@@ -6,7 +5,6 @@ from .models import Concert
 from django.utils.timezone import make_aware
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect, render, reverse
->>>>>>> origin/develop
 
 
 def home(request):
