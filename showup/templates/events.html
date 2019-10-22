@@ -11,52 +11,52 @@
 <br>
 <div class="row">
     <form action="#" method="GET">
-        <div class = "input-field col s12">
+        
+        <div class = "input-field col s3">
             <select class = validate name = "boroughs" multiple>
-            {% for borough in borough_choices %}
-                <option value = "{{borough.0}}">{{borough.1}}</option>
-            {% endfor %}
+                {% for borough in borough_choices %}
+                    <option value = "{{borough.0}}">{{borough.1}}</option>
+                {% endfor %}
+            
+                <label>Boroughs</label>
             </select>
-            <label>Boroughs</label>
         </div>
         
-        <div class = "input-field col s12">
-            <select name = "performers" multiple>
-            {% for performer_name in performer_names_choices %}
-                <option value = "{{performer_name}}">{{performer_name}}</option>
-            {% endfor %}
+        <div class = "input-field col s3">
+            <select name = "performers">
+                {% for performer_name in performer_names_choices %}
+                    <option value = "{{performer_name}}">{{performer_name}}</option>
+                {% endfor %}
                 <label>Performers</label>
             </select>
         </div>
         
-        <div class = "input-field col s12">
+        <div class = "input-field col s3">
             <select name = "venues" multiple>
-            {% for venue in venue_choices %}
-                <option value = "{{venue}}">{{venue}}</option>
-            {% endfor %}
+                {% for venue in venue_choices %}
+                    <option value = "{{venue}}">{{venue}}</option>
+                {% endfor %}
                 <label>Venues</label>
             </select>
         </div>
         
-        <div class = "input-field col s12">
-            <select name = "genres" multiple>
-            {% for genre in genre_choices %}
-                <option value = "{{genre}}">{{genre}}</option>
-            {% endfor %}
+        <div class = "input-field col s3">
+            <select name = "genres">
+                {% for genre in genre_choices %}
+                    <option value = "{{genre}}">{{genre}}</option>
+                {% endfor %}
                 <label>Genres</label>
             </select>
         </div>
         
-        <div class = "input-field col s12">
-            <input type="datetime-local" name="start_date">
-                <label>From</label>
-            </input>
+        <div class = "input-field col s5">
+            <label>From</label>
+            <input type="datetime-local" name="start_date" value = "">
         </div>
         
-        <div class = "input-field col s12">
-            <input type="datetime-local" name="end_date">
-                <label>To</label>
-            </input>
+        <div class = "input-field col s5">
+            <label>To</label>
+            <input type="datetime-local" name="end_date" value = "">
         </div>
         <button class="btn-small waves-effect waves-light teal lighten-2" type="submit" name="filter">Filter</button>
     </form>
