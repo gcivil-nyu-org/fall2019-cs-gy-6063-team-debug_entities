@@ -10,7 +10,6 @@ from django.shortcuts import redirect, render, reverse
 def home(request):
     return render(request, "home.html")
 
-<<<<<<< HEAD
 def get_performers():
     performer_names_choices = []
     for performer in Concert.objects.all().values("performer_names"):
