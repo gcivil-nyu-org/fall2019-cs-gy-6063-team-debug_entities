@@ -6,7 +6,7 @@ from django.utils.timezone import make_aware
 import json
 import requests
 import logging
-from showup.models import Concert
+from showup.models import Concert, Genre
 from datetime import datetime
 
 
@@ -108,4 +108,7 @@ class Command(BaseCommand):
                         "I just saved event " + str(concert["id"]) + " to the database"
                     )
 
+        existing_genres = sorted(existing_genres)
+        curr_genre = Genre(genre = ",".join(existing_genres))
+        curr_genre.save()
         Command.WriteGenre(existing_genres)

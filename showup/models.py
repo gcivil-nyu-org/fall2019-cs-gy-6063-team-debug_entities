@@ -35,6 +35,9 @@ class Concert(models.Model):
 class Genre(models.Model):
     genre = models.TextField()
 
+    def __str__(self):
+        return self.genre
+
 
 class CustomUser(AbstractUser):
     date_of_birth = models.DateField(null=True, blank=True)
