@@ -4,6 +4,12 @@ Your high-level description of what changes you've made go here.
 
 ### Testing Directions
 
+```
+python manage.py makemigrations
+python manage.py migrate
+python manage.py pull_seatgeek_data
+```
+
 1.  Step 1
 1.  Step 2
 1.  Step 3
@@ -12,3 +18,9 @@ Your high-level description of what changes you've made go here.
 
 *   Use backticks to write `code`.
 *   Whatever else you feel like saying can go here.
+
+### Checklist
+
+- [ ] I ran `git merge develop` before submitting this PR.
+- [ ] I understand that I may have to run `git merge develop` again after submitting this PR since new changes may have been pulled into `develop`.
+- [ ] I understand that it is MY responsibiilty to make sure that this PR does not have any conflicts.
