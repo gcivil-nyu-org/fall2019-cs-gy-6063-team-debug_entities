@@ -68,6 +68,11 @@ def events(request):
             if(request.GET["start_date"] is not ''):
                 start_date = make_aware(datetime.datetime.strptime(request.GET["start_date"], "%Y-%m-%dT%H:%M"))
                 events = events.filter(datetime__gte=start_date, datetime__lte=end_date)
+                
+            #filter end-date
+            if(request.GET["start_date"] is not ''):
+                end_date = make_aware(datetime.datetime.strptime(request.GET["end_date"], "%Y-%m-%dT%H:%M"))
+                events = events.filter(datetime__gte=start_date, datetime__lte=end_date)
             
         # User clicked "Interested" button.
         if('interested' in request.GET):
