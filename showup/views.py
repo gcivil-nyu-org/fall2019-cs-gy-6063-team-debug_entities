@@ -1,5 +1,4 @@
 import datetime
-from django.shortcuts import render
 from .forms import CustomUserChangeForm
 from .models import Concert
 from django.utils.timezone import make_aware
@@ -44,7 +43,7 @@ def get_genres():
     return genre_choices
 
 
-@login_required 
+@login_required
 def events(request):
     events = Concert.objects.all()
     start_date = make_aware(datetime.datetime.today())
