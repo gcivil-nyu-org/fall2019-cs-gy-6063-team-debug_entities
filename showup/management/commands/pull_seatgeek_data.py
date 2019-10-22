@@ -13,7 +13,7 @@ from datetime import datetime
 class Command(BaseCommand):
     def OpenGenre():
         genres_fromfile = set()
-        file = "showup/static/Genres.txt"
+        file = "showup/static/genres.txt"
         with open(file, "w+") as existing_genre:
             lines = existing_genre.read().splitlines()
             for line in lines:
@@ -21,7 +21,7 @@ class Command(BaseCommand):
         return genres_fromfile
 
     def WriteGenre(genre_set):
-        file = "showup/static/Genres.txt"
+        file = "showup/static/genres.txt"
         with open(file, "w+") as genre_file:
             for genre in genre_set:
                 genre_file.write(genre + "\n")
