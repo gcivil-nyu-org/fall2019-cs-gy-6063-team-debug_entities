@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
-from .models import CustomUser
+from .models import CustomUser, Genre
 
 
 class CustomUserAdmin(UserAdmin):
@@ -28,4 +28,12 @@ class CustomUserAdmin(UserAdmin):
         model = CustomUser
 
 
+class GenreAdmin(admin.ModelAdmin):
+    list_display = ["genre"]
+
+    class Meta:
+        model = Genre
+
+
 admin.site.register(CustomUser, CustomUserAdmin)
+admin.site.register(Genre, GenreAdmin)
