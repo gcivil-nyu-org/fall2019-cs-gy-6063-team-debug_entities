@@ -18,7 +18,7 @@ class Concert(models.Model):
     performer_names = models.TextField()
     genres = models.TextField()
     event_url = models.URLField(max_length=100000)
-    performer_image_url = models.URLField(max_length=100000, null=True)
+    performer_image_url = models.URLField(max_length=100000)
 
     def __str__(self):
         return (
@@ -41,7 +41,7 @@ class Genre(models.Model):
 
 class CustomUser(AbstractUser):
     date_of_birth = models.DateField(null=True, blank=True)
-    gender = models.CharField(max_length=255, null=True, blank=True)
+    gender = models.CharField(max_length=255, blank=True)
     interested = models.ManyToManyField(Concert, related_name="interested")
     going = models.ManyToManyField(Concert, related_name="going")
 

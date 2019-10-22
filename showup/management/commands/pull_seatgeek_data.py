@@ -109,6 +109,6 @@ class Command(BaseCommand):
                     )
 
         existing_genres = sorted(existing_genres)
-        curr_genre = Genre(genre = ",".join(existing_genres))
+        curr_genre = Genre(genre=",".join(existing_genres))
         curr_genre.save()
         Command.WriteGenre(existing_genres)
