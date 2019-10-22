@@ -3,3 +3,7 @@ django-heroku
 requests
 django-allauth
 django-session-timeout
+black
+coverage
+coveralls
+flake8
