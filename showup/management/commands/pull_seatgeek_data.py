@@ -108,7 +108,12 @@ class Command(BaseCommand):
                         "I just saved event " + str(concert["id"]) + " to the database"
                     )
 
-        existing_genres = sorted(existing_genres)
-        curr_genre = Genre(genre=",".join(existing_genres))
-        curr_genre.save()
-        Command.WriteGenre(existing_genres)
+        # Sort genres alphabetically.
+        genres = sorted(existing_genres)
+
+        # Add genres to Genre model.
+        for genre in reversed(genres):
+            Genre(genre=genre).save()
+
+        # Add genres to genres.txt.
+        Command.WriteGenre(genres)
