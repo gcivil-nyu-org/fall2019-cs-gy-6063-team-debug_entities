@@ -45,7 +45,8 @@ def events(request):
         genre_choices = get_genres()
         start_date = make_aware(datetime.datetime.today())
         end_date = make_aware(datetime.datetime(datetime.MAXYEAR, 12, 31,23,59))
-        
+        events = events.filter(datetime__gte=start_date, datetime__lte=end_date).order_by("datetime")
+
         #User clicks "Filter"
         if("filter" in request.GET):
             #filter boroughs
