@@ -52,29 +52,29 @@ def events(request):
             #filter boroughs
             if("boroughs" in request.GET):
                 events = events.filter(borough__in=request.GET.getlist("boroughs"))
-                
+
             #filter performers. only 1 performer at the moment
             if("performers" in request.GET):
                 events = events.filter(performer_names__contains=request.GET["performers"])
-                
+
             #filter venues
             if("venues" in request.GET):
                 events = events.filter(venue_name__in=request.GET.getlist("venues"))
-            
+
             #filter genres. only 1 genre at the moment
             if("genres" in request.GET):
                 events = events.filter(genres__contains=request.GET["genres"])
-               
+
             #filter start-date
             if(request.GET["start_date"] is not ''):
                 start_date = make_aware(datetime.datetime.strptime(request.GET["start_date"], "%Y-%m-%dT%H:%M"))
                 events = events.filter(datetime__gte=start_date, datetime__lte=end_date)
-                
+
             #filter end-date
             if(request.GET["start_date"] is not ''):
                 end_date = make_aware(datetime.datetime.strptime(request.GET["end_date"], "%Y-%m-%dT%H:%M"))
                 events = events.filter(datetime__gte=start_date, datetime__lte=end_date)
-            
+
         # User clicked "Interested" button.
         if('interested' in request.GET):
             event_id = request.GET.get('interested')

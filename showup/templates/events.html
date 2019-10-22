@@ -5,49 +5,85 @@
         align-content: center;
     }
 </style>
+{% extends 'header.html' %} {% block content %}
 
-<form action="#" method="GET">
-    <select name = "boroughs" multiple>
-    {% for borough in borough_choices %}
-        <option value = "{{borough.0}}">{{borough.1}}</option>
-    {% endfor %}
-    </select>
-    <select name = "performers" multiple>
-    {% for performer_name in performer_names_choices %}
-        <option value = "{{performer_name}}">{{performer_name}}</option>
-    {% endfor %}
-    </select>
-    <select name = "venues" multiple>
-    {% for venue in venue_choices %}
-        <option value = "{{venue}}">{{venue}}</option>
-    {% endfor %}
-    </select>
-    <select name = "genres" multiple>
-    {% for genre in genre_choices %}
-        <option value = "{{genre}}">{{genre}}</option>
-    {% endfor %}
-    </select>
-    From:
-    <input type="datetime-local" name="start_date">
-    To:
-    <input type="datetime-local" name="end_date">
-    <br>
-    <br>
-    <button type="submit" name="filter">Filter</button>
-</form>
 
 <br>
-<br>
-
-{% for event in events %}
-    <img src={{event.performer_image_url}}>
-    <p>{{event.performer_names}}</p>
-    <p>{{event.venue_name}}</p>
-    <p>{{event.datetime}}</p>
-    <p>{{event.borough}}</p>
-    <br>
-    <form action="#" method="get">
-        <button type="submit" name="interested" value={{event.id}}>Interested</button>
-        <button type="submit" name="going" value={{event.id}}>Going</button>
+<div class="row">
+    <form action="#" method="GET">
+        <div class = "input-field col s12">
+            <select class = validate name = "boroughs" multiple>
+            {% for borough in borough_choices %}
+                <option value = "{{borough.0}}">{{borough.1}}</option>
+            {% endfor %}
+            </select>
+            <label>Boroughs</label>
+        </div>
+        
+        <div class = "input-field col s12">
+            <select name = "performers" multiple>
+            {% for performer_name in performer_names_choices %}
+                <option value = "{{performer_name}}">{{performer_name}}</option>
+            {% endfor %}
+                <label>Performers</label>
+            </select>
+        </div>
+        
+        <div class = "input-field col s12">
+            <select name = "venues" multiple>
+            {% for venue in venue_choices %}
+                <option value = "{{venue}}">{{venue}}</option>
+            {% endfor %}
+                <label>Venues</label>
+            </select>
+        </div>
+        
+        <div class = "input-field col s12">
+            <select name = "genres" multiple>
+            {% for genre in genre_choices %}
+                <option value = "{{genre}}">{{genre}}</option>
+            {% endfor %}
+                <label>Genres</label>
+            </select>
+        </div>
+        
+        <div class = "input-field col s12">
+            <input type="datetime-local" name="start_date">
+                <label>From</label>
+            </input>
+        </div>
+        
+        <div class = "input-field col s12">
+            <input type="datetime-local" name="end_date">
+                <label>To</label>
+            </input>
+        </div>
+        <button class="btn-small waves-effect waves-light teal lighten-2" type="submit" name="filter">Filter</button>
     </form>
-{% endfor %}
+
+    {% for event in events %}
+    <div class="col s12 m6" style="width: 18rem;">
+        <div class="card">
+            <div class="card-image">
+                {% if not event.performer_image_url %} <!-- the API doesn't give an image for all events-->
+                    {% load static %}
+                    <img src={% static "default-performer-image.jpg" %}>
+                {% else %}
+                    <img src={{ event.performer_image_url }}>
+                {% endif %}
+            </div>
+            <div class="card-content" style="height: 16rem;">
+                <p class="teal-text text-lighten-2">{{event.performer_names}}</p>
+                <p>{{event.venue_name}}</p>
+                <p>{{event.datetime}}</p>
+                <br>
+                <form action="#" method="get">
+                    <button class="btn-small waves-effect waves-light teal lighten-2" type="submit" name="interested" value={{event.id}}>Interested</button>
+                    <button class="btn-small waves-effect waves-light teal lighten-2" type="submit" name="going" value={{event.id}}>Going</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    {% endfor %} {% endblock %}
+</div>
+
