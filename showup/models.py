@@ -18,7 +18,7 @@ class Concert(models.Model):
     performer_names = models.TextField()
     genres = models.TextField()
     event_url = models.URLField(max_length=100000)
-    performer_image_url = models.URLField(max_length=100000)
+    performer_image_url = models.URLField(max_length=100000, null=True)
 
     def __str__(self):
         return (
