@@ -21,14 +21,8 @@ class Concert(models.Model):
     performer_image_url = models.URLField(max_length=100000, null=True)
 
     def __str__(self):
-        return (
-            self.performer_names
-            + " at "
-            + self.venue_name
-            + " on "
-            + str(self.datetime)
-            + " in "
-            + self.borough
+        return "{} at {} on {} in {}".format(
+            self.performer_names, self.venue_name, str(self.datetime), self.borough
         )
 
 
@@ -37,6 +31,7 @@ class CustomUser(AbstractUser):
     gender = models.CharField(max_length=255, null=True, blank=True)
     interested = models.ManyToManyField(Concert, related_name="interested")
     going = models.ManyToManyField(Concert, related_name="going")
+    bio = models.TextField(max_length=500, default="")
 
     def __str__(self):
         return self.email

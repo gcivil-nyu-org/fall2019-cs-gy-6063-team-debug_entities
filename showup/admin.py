@@ -18,6 +18,7 @@ class CustomUserAdmin(UserAdmin):
                     "gender",
                     "email",
                     "password",
+                    "bio",
                 )
             },
         ),

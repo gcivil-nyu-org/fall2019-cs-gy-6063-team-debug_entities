@@ -1,6 +1,7 @@
+from .forms import CustomUserChangeForm
 from .models import Concert
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render
+from django.shortcuts import redirect, render, reverse
 
 
 def home(request):
@@ -26,4 +27,20 @@ def events(request):
 
 @login_required
 def user(request, id):
-    return render(request, "user.html")
+    if request.user.is_authenticated:
+        return render(request, "user.html")
+    else:
+        return render(request, "home.html")
+
+
+@login_required
+def edit_profile(request, id):
+    if request.method == "POST":
+        form = CustomUserChangeForm(request.POST, instance=request.user)
+        if form.is_valid():
+            form.save()
+            return redirect(reverse("user", kwargs={"id": id}))
+    else:
+        form = CustomUserChangeForm(instance=request.user)
+        args = {"form": form}
+        return render(request, "edit_profile.html", args)

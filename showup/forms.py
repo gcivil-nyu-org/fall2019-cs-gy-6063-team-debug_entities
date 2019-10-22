@@ -1,5 +1,7 @@
-from django import forms
+from .models import CustomUser
 from allauth.account.forms import SignupForm
+from django import forms
+from django.contrib.auth.forms import UserChangeForm
 
 
 class CustomSignupForm(SignupForm):
@@ -10,10 +12,16 @@ class CustomSignupForm(SignupForm):
     email = forms.EmailField()
 
     def save(self, request):
-        user = super(CustomSignupForm, self).save(
-            request
-        )  # this saves the built-in fields (first name, last name, email, password)
+        user = super(CustomSignupForm, self).save(request)
         user.date_of_birth = self.cleaned_data["date_of_birth"]
         user.gender = self.cleaned_data["gender"]
         user.save()
         return user
+
+
+class CustomUserChangeForm(UserChangeForm):
+    password = None
+
+    class Meta:
+        model = CustomUser
+        fields = ("bio",)

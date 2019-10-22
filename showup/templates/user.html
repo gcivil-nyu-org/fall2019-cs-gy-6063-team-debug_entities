@@ -7,6 +7,13 @@
 {% if user.is_authenticated %}
   <h4>{{ user.first_name }}</h4>
 
+  <h5>Bio</h5>
+  <p>{{ user.bio }}</p>
+
+  <br>
+  <a class="btn btn-primary" href="{{ user.id }}/edit">Edit Profile</a>
+  <br><br>
+
   <h5>Events I'm interested in:</h5>
   {% for interested in user.interested.all %}
     <p>{{interested}}</p>
@@ -16,8 +23,8 @@
   {% for going in user.going.all %}
     <p>{{going}}</p>
   {% endfor %}
-
-{% else %}
+  
+  {% else %}
   <p>You are not logged in</p>
   <a href="{% url 'account_login' %}">Log In</a> |
   <a href="{% url 'account_signup' %}">Sign Up</a>
