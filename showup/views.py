@@ -21,7 +21,7 @@ def get_performers():
     performer_names_choices.sort()
     return performer_names_choices
 
-    
+
 def get_venues():
     venue_name_choices = []
     for venue in Concert.objects.all().values("venue_name"):
@@ -32,11 +32,11 @@ def get_venues():
     venue_name_choices.sort()
     return venue_name_choices
 
-    
+
 def get_genres():
     genre_choices = []
     for genre in Concert.objects.all().values("genres"):
-        genre_choices.extend(genre["genres"].split(", "))      
+        genre_choices.extend(genre["genres"].split(", "))
 
     genre_choices = [name.strip(" ") for name in genre_choices]
     genre_choices = list(set(genre_choices))
@@ -44,7 +44,7 @@ def get_genres():
     return genre_choices
 
 
-@login_required    
+@login_required 
 def events(request):
     events = Concert.objects.all()
     start_date = make_aware(datetime.datetime.today())
