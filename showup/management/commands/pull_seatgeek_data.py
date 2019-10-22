@@ -14,7 +14,7 @@ class Command(BaseCommand):
     def OpenGenre():
         genres_fromfile = set()
         file = "showup/static/Genres.txt"
-        with open(file, "r") as existing_genre:
+        with open(file, "w+") as existing_genre:
             lines = existing_genre.read().splitlines()
             for line in lines:
                 genres_fromfile.add(line)
