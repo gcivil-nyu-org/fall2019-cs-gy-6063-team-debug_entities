@@ -10,8 +10,7 @@ def home(request):
 def get_performers():
     performer_names_choices = []
     for performer in Concert.objects.all().values("performer_names"):
-            performer_names_choices.extend(performer["performer_names"].split(','))
-            
+        performer_names_choices.extend(performer["performer_names"].split(','))
     performer_names_choices = [name.strip(' ') for name in performer_names_choices]
     performer_names_choices = list(set(performer_names_choices))
     performer_names_choices.sort()
@@ -20,7 +19,7 @@ def get_performers():
 def get_venues():
     venue_name_choices = []
     for venue in Concert.objects.all().values("venue_name"):
-            venue_name_choices.extend([venue["venue_name"]])
+        venue_name_choices.extend([venue["venue_name"]])
     venue_name_choices = [name.strip(' ') for name in venue_name_choices]
     venue_name_choices = list(set(venue_name_choices))
     venue_name_choices.sort()
@@ -29,8 +28,7 @@ def get_venues():
 def get_genres():
     genre_choices = []
     for genre in Concert.objects.all().values("genres"):
-            genre_choices.extend(genre["genres"].split(', '))
-            
+        genre_choices.extend(genre["genres"].split(', '))      
     genre_choices = [name.strip(' ') for name in genre_choices]
     genre_choices = list(set(genre_choices))
     genre_choices.sort()

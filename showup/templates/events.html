@@ -27,7 +27,7 @@
                     <option value = "{{performer_name}}">{{performer_name}}</option>
                 {% endfor %}
             </select>
-            <label>Performers</label>
+            <label>Performer</label>
         </div>
         
         <div class = "input-field col s3">
@@ -46,17 +46,15 @@
                     <option value = "{{genre}}">{{genre}}</option>
                 {% endfor %}
             </select>
-            <label>Genres</label>
+            <label>Genre</label>
         </div>
         
-        <div class = "input-field col s5">
-            <label>From</label>
-            <input type="datetime-local" name="start_date" value = "">
+        <div class = "input-field col s6">
+            <input type="datetime-local" name="start_date" min="2019-10-22T00:01"></input>
         </div>
         
-        <div class = "input-field col s5">
-            <label>To</label>
-            <input type="datetime-local" name="end_date" value = "">
+        <div class = "input-field col s6">
+            <input type="datetime-local" name="end_date"></input>
         </div>
         <button class="btn-small waves-effect waves-light teal lighten-2" type="submit" name="filter">Filter</button>
     </form>
