@@ -75,14 +75,14 @@ def events(request):
             events = events.filter(genres__contains=request.GET["genres"])
 
         # filter start-date
-        if request.GET["start_date"] is not "":
+        if request.GET["start_date"] != "":
             start_date = make_aware(
                 datetime.datetime.strptime(request.GET["start_date"], "%Y-%m-%dT%H:%M")
             )
             events = events.filter(datetime__gte=start_date, datetime__lte=end_date)
 
         # filter end-date
-        if request.GET["start_date"] is not "":
+        if request.GET["start_date"] != "":
             end_date = make_aware(
                 datetime.datetime.strptime(request.GET["end_date"], "%Y-%m-%dT%H:%M")
             )
