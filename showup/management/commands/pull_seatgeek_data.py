@@ -1,16 +1,29 @@
-# This command pulls data from SeatGeek's API and adds concerts to
-# our database if they're not already in there.
+import json
+import logging
+import requests
 
+from datetime import datetime
 from django.core.management.base import BaseCommand
 from django.utils.timezone import make_aware
-import json
-import requests
-import logging
-from showup.models import Concert
-from datetime import datetime
+from showup.models import Concert, Genre
 
 
 class Command(BaseCommand):
+    def OpenGenre():
+        genres_fromfile = set()
+        file = "showup/static/genres.txt"
+        with open(file, "w+") as existing_genre:
+            lines = existing_genre.read().splitlines()
+            for line in lines:
+                genres_fromfile.add(line)
+        return genres_fromfile
+
+    def WriteGenre(genre_set):
+        file = "showup/static/genres.txt"
+        with open(file, "w+") as genre_file:
+            for genre in genre_set:
+                genre_file.write(genre + "\n")
+
     def handle(self, *args, **options):
         base_url = (
             "https://api.seatgeek.com/2/events?client_id="
@@ -33,20 +46,15 @@ class Command(BaseCommand):
             format="%(asctime)s - %(levelname)s - %(message)s",
         )  # setting up the logger to write to a file name pull_seatgeek_data.log
 
-        for (
-            borough_abbrev
-        ) in borough_urls:  # get data from the API for concerts in each borough
+        existing_genres = Command.OpenGenre()
+
+        for borough_abbrev in borough_urls:
             response = requests.get(base_url + borough_urls[borough_abbrev])
             concert_list = json.loads(response.content)[
                 "events"
             ]  # each item in concert_list is a dict that represents an event.
 
-            for (
-                concert
-            ) in (
-                concert_list
-            ):  # for each event in concert_list, check if it's already in
-                # the database by its id. if it's not there, parse it and add it.
+            for concert in concert_list:
                 if Concert.objects.filter(id=concert["id"]).exists():
                     logging.debug(
                         "I already have a concert with an id of " + str(concert["id"])
@@ -65,6 +73,7 @@ class Command(BaseCommand):
                         if "genres" in perf:
                             for g in perf["genres"]:
                                 genres_set.add(g["name"])
+                                existing_genres.add(g["name"])
 
                     aware_date = make_aware(
                         datetime.strptime(
@@ -96,3 +105,15 @@ class Command(BaseCommand):
                     logging.debug(
                         "I just saved event " + str(concert["id"]) + " to the database"
                     )
+
+        Genre.objects.all().delete()
+        # Sort genres alphabetically.
+        genres = sorted(existing_genres)
+
+        # Add genres to Genre model.
+
+        for genre in reversed(genres):
+            Genre(genre=genre).save()
+
+        # Add genres to genres.txt.
+        Command.WriteGenre(genres)
