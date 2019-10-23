@@ -120,6 +120,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
 
 STATIC_URL = "/static/"
+STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
 
 # Adding Show Up email information. Emails to users will be sent from this account.
 EMAIL_USE_TLS = True
@@ -129,7 +130,8 @@ EMAIL_HOST_PASSWORD = "tempKey123"
 EMAIL_PORT = 587
 
 # Activate Django-Heroku.
-django_heroku.settings(locals())
+if "HOME" in os.environ and "/app" in os.environ["HOME"]:
+    django_heroku.settings(locals())
 
 # Below this are settings for django-allauth. Link to tutorial:
 # https://wsvincent.com/django-login-with-email-not-username/
