@@ -106,10 +106,12 @@ class Command(BaseCommand):
                         "I just saved event " + str(concert["id"]) + " to the database"
                     )
 
+        Genre.objects.all().delete()
         # Sort genres alphabetically.
         genres = sorted(existing_genres)
 
         # Add genres to Genre model.
+
         for genre in reversed(genres):
             Genre(genre=genre).save()
 
