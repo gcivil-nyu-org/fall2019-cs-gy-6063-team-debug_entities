@@ -1,0 +1,20 @@
+Alternative
+Blues
+Classic Rock
+Classical
+Country
+Electronic
+Folk
+Hard Rock
+Hip-Hop
+Indie
+Jazz
+Latin
+Pop
+Punk
+Rap
+Reggae
+Rnb
+Rock
+Soul
+Techno

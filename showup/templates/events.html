@@ -8,13 +8,73 @@
 
 {% extends 'header.html' %} {% block content %}
 
+<!-- Filtering -->
 <br>
 <div class="row">
+    <form action="#" method="GET">
+
+        <div class = "input-field col s3">
+            <select class = validate name = "boroughs" multiple>
+                <option value="" disabled selected></option>
+                {% for borough in borough_choices %}
+                    <option value = "{{borough.0}}">{{borough.1}}</option>
+                {% endfor %}
+            </select>
+            <label>Boroughs</label>
+        </div>
+        
+        <div class = "input-field col s3">
+            <select name = "performers">
+                {% for performer_name in performer_names_choices %}
+                    <option value = "{{performer_name}}">{{performer_name}}</option>
+                {% endfor %}
+            </select>
+            <label>Performer</label>
+        </div>
+        
+        <div class = "input-field col s3">
+            <select name = "venues" multiple>
+                <option value="" disabled selected></option>
+                {% for venue in venue_choices %}
+                    <option value = "{{venue}}">{{venue}}</option>
+                {% endfor %}
+            </select>
+            <label>Venues</label>
+            
+        </div>
+        
+        <div class = "input-field col s3">
+            <select name = "genres">
+                {% for genre in genre_choices %}
+                    <option value = "{{genre}}">{{genre}}</option>
+                {% endfor %}
+            </select>
+            <label>Genre</label>
+        </div>
+        
+        <div class = "input-field col s6">
+            <input type="datetime-local" name="start_date" min="2019-10-22T00:01"></input>
+        </div>
+        
+        <div class = "input-field col s6">
+            <input type="datetime-local" name="end_date"></input>
+        </div>
+        <button class="btn-small waves-effect waves-light teal lighten-2" type="submit" name="filter">Filter</button>
+        <button class="btn-small waves-effect waves-light teal lighten-2" type="submit" onclick="submit()">Clear Filter</button>
+    </form>
+<br>
+
+<!-- Cards with event pictures and event details -->
     {% for event in events %}
     <div class="col s12 m6" style="width: 18rem;">
         <div class="card">
             <div class="card-image">
-                <img src={{event.performer_image_url}}>
+                {% if not event.performer_image_url %} <!-- the API doesn't give an image for all events-->
+                    {% load static %}
+                    <img src={% static "default-performer-image.jpg" %}>
+                {% else %}
+                    <img src={{ event.performer_image_url }}>
+                {% endif %}
             </div>
             <div class="card-content" style="height: 16rem;">
                 <p class="teal-text text-lighten-2">{{event.performer_names}}</p>
@@ -30,3 +90,11 @@
     </div>
     {% endfor %} {% endblock %}
 </div>
+
+<!-- Java scipt for form reset -->
+<script>
+    function submitForm () {
+    frm.submit(); // Submit
+    $('form :input').attr('value', '');
+}
+</script>
