@@ -39,6 +39,7 @@ class CustomUser(AbstractUser):
     interested = models.ManyToManyField(Concert, related_name="interested")
     going = models.ManyToManyField(Concert, related_name="going")
     bio = models.TextField(max_length=500, default="")
+    image = models.ImageField(upload_to='profile_image', blank=True)
 
     def __str__(self):
         return self.email

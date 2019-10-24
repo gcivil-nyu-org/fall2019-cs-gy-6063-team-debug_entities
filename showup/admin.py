@@ -19,6 +19,7 @@ class CustomUserAdmin(UserAdmin):
                     "email",
                     "password",
                     "bio",
+                    "image",
                 )
             },
         ),

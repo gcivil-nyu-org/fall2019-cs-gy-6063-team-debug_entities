@@ -5,7 +5,9 @@
 {% block content %}
 
 {% if user.is_authenticated %}
+
   <h4>{{ user.first_name }}</h4>
+  <img src="{{user.image.url}}" width="240">
 
   <h5>Bio</h5>
   <p>{{ user.bio }}</p>
