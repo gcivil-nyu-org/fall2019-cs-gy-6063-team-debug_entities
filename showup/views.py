@@ -5,7 +5,6 @@ from .models import Concert, CustomUser
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect, render, reverse
 from django.utils.timezone import make_aware
-# from django.http import HttpResponse
 from django.core.exceptions import PermissionDenied
 
 
@@ -122,7 +121,6 @@ def user(request, id):
         requested_user = CustomUser.objects.get(id=id)
     except CustomUser.DoesNotExist:
         raise PermissionDenied
-    # HttpResponse("No user exists with an id of " + str(id))
     return render(request, "user.html", context={"requested_user": requested_user})
 
 
@@ -141,7 +139,6 @@ def edit_profile(request, id):
             return render(request, "edit_profile.html", args)
     else:
         raise PermissionDenied
-        # return HttpResponse("You can't edit this profile because it's not yours.")
 
 
 def event_stack(request, eid):
