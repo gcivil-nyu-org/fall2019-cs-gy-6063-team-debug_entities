@@ -133,3 +133,7 @@ def edit_profile(request, id):
         form = CustomUserChangeForm(instance=request.user)
         args = {"form": form}
         return render(request, "edit_profile.html", args)
+
+
+def event_stack(request, eid):
+    pass
