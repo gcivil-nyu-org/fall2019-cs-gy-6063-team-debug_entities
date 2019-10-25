@@ -2,6 +2,7 @@ import datetime
 
 from .forms import CustomUserChangeForm
 from .models import Concert, CustomUser
+from allauth.account.admin import EmailAddress
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
 from django.shortcuts import redirect, render, reverse
@@ -119,6 +120,9 @@ def events(request):
 def user(request, id):
     try:
         requested_user = CustomUser.objects.get(id=id)
+        if not EmailAddress.objects.get(id=id).verified: 
+            raise PermissionDenied
+        # you can't view the profile of a non-verified user
     except CustomUser.DoesNotExist:
         raise PermissionDenied
     return render(request, "user.html", context={"requested_user": requested_user})
