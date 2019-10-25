@@ -3,9 +3,9 @@ import datetime
 from .forms import CustomUserChangeForm
 from .models import Concert, CustomUser
 from django.contrib.auth.decorators import login_required
+from django.core.exceptions import PermissionDenied
 from django.shortcuts import redirect, render, reverse
 from django.utils.timezone import make_aware
-from django.core.exceptions import PermissionDenied
 
 
 def home(request):
