@@ -1,8 +1,10 @@
 import datetime
 
 from .forms import CustomUserChangeForm
-from .models import Concert
+from .models import Concert, CustomUser
+from allauth.account.admin import EmailAddress
 from django.contrib.auth.decorators import login_required
+from django.core.exceptions import PermissionDenied
 from django.shortcuts import redirect, render, reverse
 from django.utils.timezone import make_aware
 
@@ -116,23 +118,32 @@ def events(request):
 
 @login_required
 def user(request, id):
-    if request.user.is_authenticated:
-        return render(request, "user.html")
-    else:
-        return render(request, "home.html")
+    try:  # check if given id exists
+        requested_user = CustomUser.objects.get(id=id)
+    except CustomUser.DoesNotExist:
+        raise PermissionDenied
+
+    if not EmailAddress.objects.get(id=id).verified:
+        raise PermissionDenied
+
+    return render(request, "user.html", context={"requested_user": requested_user})
 
 
 @login_required
 def edit_profile(request, id):
-    if request.method == "POST":
-        form = CustomUserChangeForm(request.POST, instance=request.user)
-        if form.is_valid():
-            form.save()
-            return redirect(reverse("user", kwargs={"id": id}))
+    if request.user.id == id:
+        # above, on the left is the user's id, on the right is the id in the URL
+        if request.method == "POST":
+            form = CustomUserChangeForm(request.POST, instance=request.user)
+            if form.is_valid():
+                form.save()
+                return redirect(reverse("user", kwargs={"id": id}))
+        else:
+            form = CustomUserChangeForm(instance=request.user)
+            args = {"form": form}
+            return render(request, "edit_profile.html", args)
     else:
-        form = CustomUserChangeForm(instance=request.user)
-        args = {"form": form}
-        return render(request, "edit_profile.html", args)
+        raise PermissionDenied
 
 
 def event_stack(request, eid):
