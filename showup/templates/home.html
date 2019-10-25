@@ -7,16 +7,6 @@
 {% if user.is_authenticated %}
     <p>Hi {{ user.email }}!</p>
 
-    <h5>Links to matching stacks for events I'm interested in:</h5>
-    {% for interested in user.interested.all %}
-      <p><a href="{% url 'event_stack' interested.id %}">{{ interested }}</a></p>
-    {% endfor %}
-
-    <h5>Links to matching stacks for events I'm going to:</h5>
-    {% for going in user.going.all %}
-      <p><a href="{% url 'event_stack' going.id %}">{{ going }}</a></p>
-    {% endfor %}
-
 {% else %}
     <p>You are not logged in</p>
     <a href="{% url 'account_login' %}">Log In</a> |
