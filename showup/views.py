@@ -118,13 +118,14 @@ def events(request):
 
 @login_required
 def user(request, id):
-    try:
+    try:  # check if given id exists
         requested_user = CustomUser.objects.get(id=id)
-        if not EmailAddress.objects.get(id=id).verified:
-            raise PermissionDenied
-        # you can't view the profile of a non-verified user
     except CustomUser.DoesNotExist:
         raise PermissionDenied
+
+    if not EmailAddress.objects.get(id=id).verified:
+        raise PermissionDenied
+
     return render(request, "user.html", context={"requested_user": requested_user})
 
 
