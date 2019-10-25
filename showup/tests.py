@@ -1,7 +1,8 @@
-from django.test import TestCase
 from .models import Concert, CustomUser
 import datetime
+from django.test import TestCase
 from django.urls import reverse
+from allauth.account.admin import EmailAddress
 
 
 class ConcertModelTests(TestCase):
@@ -29,13 +30,14 @@ class AuthenticatedViewTests(TestCase):
     def setUp(self):  # this logs in a test user for the subsequent test cases
         username = "testuser"
         password = "testpass"
-        CustomUser.objects.create_user(username=username, password=password)
+        testuser = CustomUser.objects.create_user(username=username, password=password)
+        EmailAddress.objects.get_or_create(id=1, user=testuser, verified=True)
         self.client.login(username=username, password=password)
 
     def test_authed_user_can_see_events(self):
         self.response = self.client.get(reverse("events"))
         self.assertEqual(self.response.status_code, 200)
-        # we want the status code to be 302 because that means
+        # we want the status code to be 200 because that means
         # the request was successful
 
     def test_authed_user_can_see_user_profile(self):
