@@ -3,6 +3,7 @@ import datetime
 from .forms import CustomUserChangeForm
 from .models import Concert, CustomUser, Matches
 from allauth.account.admin import EmailAddress
+from django.db.models import Q
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
 from django.shortcuts import redirect, render, reverse
@@ -203,5 +204,8 @@ def event_stack(request, eid):
                 # TODO: Vedanth's code goes here.
 
         row.save()
+    else:
+        # Get all users interested in/going to this event.
+        users = CustomUser.objects.filter(Q(interested__id=eid) | Q(going__id=eid))
 
     return render(request, "matches.html")
