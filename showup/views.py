@@ -1,7 +1,7 @@
 import datetime
 
 from .forms import CustomUserChangeForm
-from .models import Concert, CustomUser
+from .models import Concert, CustomUser, Matches
 from allauth.account.admin import EmailAddress
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
@@ -147,4 +147,61 @@ def edit_profile(request, id):
 
 
 def event_stack(request, eid):
-    pass
+    if request.method == "POST":
+        # Maintain the Matches model constraint.
+        if request.user.id < request.uid:
+            uid_1 = request.user.id
+            uid_2 = request.uid
+        else:
+            uid_1 = request.uid
+            uid_2 = request.user.id
+
+        # Get the row from Matches if it exists, otherwise create it.
+        try:
+            row = Matches.objects.get(uid_1=uid_1, uid_2=uid_2, eid=eid)
+        except Matches.MultipleObjectsReturned as e:
+            print(e)
+        except Matches.DoesNotExist:
+            row = Matches(uid_1=uid_1, uid_2=uid_2, eid=eid)
+
+        # Write decision to row.
+        if request.user.id < request.uid:
+            # User swiped right.
+            if "True" in request.GET:
+                decision_1 = True
+
+            # User swiped left.
+            if "False" in request.GET:
+                decision_1 = False
+
+            # Write to row.
+            row.decision_1 = decision_1
+        else:
+            # User swiped right.
+            if "True" in request.GET:
+                decision_2 = True
+
+            # User swiped left.
+            if "False" in request.GET:
+                decision_2 = False
+
+            # Write to row.
+            row.decision_2 = decision_2
+
+        # Figure out if there is a match.
+        if row.decision_1 is not None and row.decision_2 is not None:
+            if row.decision_1 and row.decision_2:  # TT
+                # uid_1 and uid_2 match.
+                row.decision = True
+
+                # TODO: Vedanth's code goes here.
+
+            else:
+                # uid_1 and uid_2 do not match.
+                row.decision = False
+
+                # TODO: Vedanth's code goes here.
+
+        row.save()
+
+    return render(request, "matches.html")

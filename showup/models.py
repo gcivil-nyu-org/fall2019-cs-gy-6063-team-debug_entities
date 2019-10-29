@@ -57,6 +57,6 @@ class Matches(models.Model):
     uid_1 = models.IntegerField()
     uid_2 = models.IntegerField()
     eid = models.IntegerField()
-    decision_1 = models.BooleanField()
-    decision_2 = models.BooleanField()
+    decision_1 = models.BooleanField()  # What uid_1 decided about uid_2.
+    decision_2 = models.BooleanField()  # What uid_2 decided about uid_1.
     decision = models.BooleanField()
