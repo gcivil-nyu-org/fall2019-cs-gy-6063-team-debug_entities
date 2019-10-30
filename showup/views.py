@@ -149,6 +149,7 @@ def edit_profile(request, id):
 
 @login_required
 def event_stack(request, eid):
+
     if request.method == "POST":
         # Maintain the Match model constraint.
         if request.user.id < request.uid:
@@ -212,5 +213,13 @@ def event_stack(request, eid):
         matches = Match.objects.filter(
             (Q(uid_1=uid) | Q(uid_2=uid)) & Q(eid=eid) & Q(decision=None)
         )
+        '''
+        Something like this for the intersection
 
-    return render(request, "match.html")
+        displayed_users = []
+        for user in user:
+            if user in matches && user != uid:
+                displayed_users.append(user)
+        '''
+        args = {"users": users}
+    return render(request, "match.html", args)
