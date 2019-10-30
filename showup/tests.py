@@ -2,6 +2,7 @@ from .models import Concert, CustomUser
 import datetime
 from django.test import TestCase
 from django.urls import reverse
+from django.utils.timezone import make_aware
 from allauth.account.admin import EmailAddress
 
 
@@ -33,6 +34,15 @@ class AuthenticatedViewTests(TestCase):
         testuser = CustomUser.objects.create_user(username=username, password=password)
         EmailAddress.objects.get_or_create(id=1, user=testuser, verified=True)
         self.client.login(username=username, password=password)
+        test_concert = Concert.objects.get_or_create(
+            id=1,
+            performer_names="Team Debug Entities",
+            venue_name="Rogers Hall",
+            datetime=make_aware(datetime.datetime.strptime(
+                            "2010-01-01T05:30", "%Y-%m-%dT%H:%M"
+                        )),
+            borough="BK",
+        )
 
     def test_authed_user_can_see_events(self):
         self.response = self.client.get(reverse("events"))
@@ -59,6 +69,10 @@ class AuthenticatedViewTests(TestCase):
     def test_user_cannot_access_nonexistent_profile(self):
         self.response = self.client.get(reverse("user", args=(9999,)))
         self.assertEqual(self.response.status_code, 403)
+
+    def test_authed_user_can_see_matching_stack(self):
+        self.response = self.client.get(reverse("event_stack", args=(1,)))
+        self.assertEqual(self.response.status_code, 200)
 
 
 class UnauthenticatedViewTests(TestCase):
