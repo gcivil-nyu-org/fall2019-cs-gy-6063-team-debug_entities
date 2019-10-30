@@ -18,8 +18,8 @@ class CustomSignupForm(SignupForm):
         user.save()
 
         # Get events and users.
-        events = Concert.objects.values_list('id', flat=True)
-        users = CustomUser.objects.values_list('id', flat=True)
+        events = Concert.objects.values_list("id", flat=True)
+        users = CustomUser.objects.values_list("id", flat=True)
 
         # Add any missing info to Match.
         for uid_1 in users:
@@ -27,8 +27,7 @@ class CustomSignupForm(SignupForm):
                 if uid_1 != uid_2 and uid_1 < uid_2:
                     for eid in events:
                         try:
-                            row = Match.objects.get(uid_1=uid_1, uid_2=uid_2,
-                                                    eid=eid)
+                            row = Match.objects.get(uid_1=uid_1, uid_2=uid_2, eid=eid)
                         except Match.DoesNotExist:
                             row = Match(uid_1=uid_1, uid_2=uid_2, eid=eid)
                             row.save()
