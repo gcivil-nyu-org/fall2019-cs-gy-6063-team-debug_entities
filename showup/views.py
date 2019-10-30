@@ -1,8 +1,11 @@
 import datetime
 
 from .forms import CustomUserChangeForm
-from .models import Concert
+from .models import Concert, CustomUser, Match
+from allauth.account.admin import EmailAddress
 from django.contrib.auth.decorators import login_required
+from django.core.exceptions import PermissionDenied
+from django.db.models import Q
 from django.shortcuts import redirect, render, reverse
 from django.utils.timezone import make_aware
 
@@ -116,20 +119,142 @@ def events(request):
 
 @login_required
 def user(request, id):
-    if request.user.is_authenticated:
-        return render(request, "user.html")
-    else:
-        return render(request, "home.html")
+    try:  # check if given id exists
+        requested_user = CustomUser.objects.get(id=id)
+    except CustomUser.DoesNotExist:
+        raise PermissionDenied
+
+    if not EmailAddress.objects.get(id=id).verified:
+        raise PermissionDenied
+
+    return render(request, "user.html", context={"requested_user": requested_user})
 
 
 @login_required
 def edit_profile(request, id):
-    if request.method == "POST":
-        form = CustomUserChangeForm(request.POST, instance=request.user)
-        if form.is_valid():
-            form.save()
-            return redirect(reverse("user", kwargs={"id": id}))
+    if request.user.id == id:
+        # above, on the left is the user's id, on the right is the id in the URL
+        if request.method == "POST":
+            form = CustomUserChangeForm(request.POST, instance=request.user)
+            if form.is_valid():
+                form.save()
+                return redirect(reverse("user", kwargs={"id": id}))
+        else:
+            form = CustomUserChangeForm(instance=request.user)
+            args = {"form": form}
+            return render(request, "edit_profile.html", args)
     else:
-        form = CustomUserChangeForm(instance=request.user)
-        args = {"form": form}
-        return render(request, "edit_profile.html", args)
+        raise PermissionDenied
+
+
+@login_required
+def event_stack(request, eid):
+    if request.method == "POST":
+        # Maintain the Match model constraint.
+        if request.user.id < int(request.POST["uid"]):
+            uid_1 = request.user.id
+            uid_2 = int(request.POST["uid"])
+        else:
+            uid_1 = int(request.POST["uid"])
+            uid_2 = request.user.id
+
+        # Get the row from Match if it exists, otherwise create it.
+        try:
+            row = Match.objects.get(uid_1=uid_1, uid_2=uid_2, eid=eid)
+        except Match.MultipleObjectsReturned as e:
+            print(e)
+        except Match.DoesNotExist:
+            row = Match(uid_1=uid_1, uid_2=uid_2, eid=eid)
+
+        # Write decision to row.
+        if request.user.id < int(request.POST["uid"]):
+            print(request.POST["match"])
+            # User swiped right.
+            if request.POST["match"] == "True":
+                decision_1 = True
+
+            # User swiped left.
+            if request.POST["match"] == "False":
+                decision_1 = False
+
+            # Write to row.
+            row.decision_1 = decision_1
+        else:
+            # User swiped right.
+            if request.POST["match"] == "True":
+                decision_2 = True
+
+            # User swiped left.
+            if request.POST["match"] == "False":
+                decision_2 = False
+
+            # Write to row.
+            row.decision_2 = decision_2
+
+        # Figure out if there is a match.
+        if row.decision_1 is not None and row.decision_2 is not None:
+            if row.decision_1 and row.decision_2:  # TT
+                # uid_1 and uid_2 match.
+                row.decision = True
+
+                # TODO: Vedanth's code goes here.
+
+            else:
+                # uid_1 and uid_2 do not match.
+                row.decision = False
+
+                # TODO: Vedanth's code goes here.
+
+        row.save()
+
+    # This user's id.
+    uid = request.user.id
+
+    # All relationships that exist between this user and all other users
+    # for this event where a decision has not yet been made.
+    matches = Match.objects.filter(
+        (Q(uid_1=uid) | Q(uid_2=uid)) & Q(eid=eid) & Q(decision=None)
+    )
+
+    matches_copy = matches
+    for match in matches_copy:
+        # Check to see if uid_1 and uid_2 are interested in/going to event.
+        uid_1 = CustomUser.objects.filter(
+            Q(id=match.uid_1), (Q(interested__id=eid) | Q(going__id=eid))
+        ).exists()
+        uid_2 = CustomUser.objects.filter(
+            Q(id=match.uid_2), (Q(interested__id=eid) | Q(going__id=eid))
+        ).exists()
+
+        # One of the users is not interested in/going to event, remove.
+        if not uid_1:
+            matches = matches.exclude(uid_1=match.uid_1)
+        if not uid_2:
+            matches = matches.exclude(uid_2=match.uid_2)
+
+        # Only show users you have not swiped on yet.
+        if uid == match.uid_1:
+            swiped = matches.filter(Q(uid_1=match.uid_1)).first().decision_1
+        elif uid == match.uid_2:
+            swiped = matches.filter(Q(uid_2=match.uid_2)).first().decision_2
+        else:
+            raise NotImplementedError
+
+        if swiped is not None:
+            matches = matches.exclude(uid_1=match.uid_1, uid_2=match.uid_2)
+
+    # Gather all the other users to return.
+    users = []
+    for match in matches:
+        # Get the CustomUser objects.
+        uid_1 = CustomUser.objects.get(id=match.uid_1)
+        uid_2 = CustomUser.objects.get(id=match.uid_2)
+
+        # Add the other user to users.
+        if uid == uid_1.id:
+            users.append(uid_2)
+        if uid == uid_2.id:
+            users.append(uid_1)
+
+    args = {"users": users}
+    return render(request, "match.html", args)

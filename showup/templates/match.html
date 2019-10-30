@@ -1,0 +1,44 @@
+{% extends 'header.html' %}
+
+<body>
+
+{% block content %}
+<p>Logged in as {{ user.first_name }}.</p>
+<br><br><br>
+
+
+<div class="carousel carousel-slider center">
+  {% for user in users %}
+  <div class="carousel-item red white-text" href="#one!">
+    <h2><a class="white-text" href="{% url 'user' user.id %}">{{ user.first_name }}</a></h2>
+    <p class="white-text">{{user.bio}}</p>
+    <br><br><br>
+    <form action="#" method="POST">
+      {% csrf_token %}
+      <input type="hidden" name="uid" value="{{ user.id }}">
+      <!-- Dislike Someone -->
+      <button class="btn waves-effect white grey-text darken-text-2" type="submit" name="match" value="False">
+        <i class="material-icons">thumb_down</i></button>
+      <!-- like Someone -->
+      <button class="btn waves-effect white grey-text darken-text-2" type="submit" name="match" value="True">
+        <i class="material-icons">thumb_up</i></button>
+    </form>
+    </div>
+  {% endfor %}
+
+</form>
+
+<!-- Add javascript and jquery per page that requires it -->
+<!-- Jquery Import -->
+<script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+<!-- Compiled and minified JavaScript -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js">
+</script>
+<!-- Using Carousel feature in materialize css -->
+<script>
+	$(document).ready(function() {
+		$('.carousel.carousel-slider').carousel({fullWidth: true, noWrap: true});
+	});
+</script>
+{% endblock %}
+</body>

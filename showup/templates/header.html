@@ -1,15 +1,12 @@
 <head>
-  <meta charset="utf-8" />
+  <meta charset="utf-8" />  
+  <!--Import Google Icon Font-->
+  <link href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   <!-- Compiled and minified CSS -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
-  <!-- Compiled and minified JavaScript -->
-  <script src="//code.jquery.com/jquery-2.1.2.min.js"></script>
-  <script src="//cdnjs.cloudflare.com/ajax/libs/materialize/0.97.5/js/materialize.min.js"></script>
-  <script>
-     $(document).ready(function() {
-        $('select').material_select();
-     });
-  </script>
+  <!--Let browser know website is optimized for mobile-->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+</head>
 
 <body>
   <div class="nav-wrapper">
@@ -29,5 +26,6 @@
       </div>
     </nav>
     {% block content %}
+    
     {% endblock %}
 </body>
