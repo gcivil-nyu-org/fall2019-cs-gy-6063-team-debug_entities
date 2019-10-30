@@ -213,6 +213,7 @@ def event_stack(request, eid):
         matches = Match.objects.filter(
             (Q(uid_1=uid) | Q(uid_2=uid)) & Q(eid=eid) & Q(decision=None)
         )
+        print(matches)
         '''
         Something like this for the intersection
 
