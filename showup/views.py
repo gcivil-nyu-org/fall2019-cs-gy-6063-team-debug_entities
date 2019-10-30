@@ -149,14 +149,13 @@ def edit_profile(request, id):
 
 @login_required
 def event_stack(request, eid):
-
     if request.method == "POST":
         # Maintain the Match model constraint.
-        if request.user.id < request.uid:
+        if request.user.id < int(request.POST["uid"]):
             uid_1 = request.user.id
-            uid_2 = request.uid
+            uid_2 = int(request.POST["uid"])
         else:
-            uid_1 = request.uid
+            uid_1 = int(request.POST["uid"])
             uid_2 = request.user.id
 
         # Get the row from Match if it exists, otherwise create it.
@@ -168,24 +167,25 @@ def event_stack(request, eid):
             row = Match(uid_1=uid_1, uid_2=uid_2, eid=eid)
 
         # Write decision to row.
-        if request.user.id < request.uid:
+        if request.user.id < int(request.POST["uid"]):
+            print(request.POST["match"])
             # User swiped right.
-            if "True" in request.GET:
+            if request.POST["match"] == "True":
                 decision_1 = True
 
             # User swiped left.
-            if "False" in request.GET:
+            if request.POST["match"] == "False":
                 decision_1 = False
 
             # Write to row.
             row.decision_1 = decision_1
         else:
             # User swiped right.
-            if "True" in request.GET:
+            if request.POST["match"] == "True":
                 decision_2 = True
 
             # User swiped left.
-            if "False" in request.GET:
+            if request.POST["match"] == "False":
                 decision_2 = False
 
             # Write to row.
@@ -206,43 +206,55 @@ def event_stack(request, eid):
                 # TODO: Vedanth's code goes here.
 
         row.save()
-        return render(request, "match.html")
-    else:
-        # This user's id.
-        uid = request.user.id
 
-        # All relationships that exist between this user and all other users
-        # for this event where a decision has not yet been made.
-        matches = Match.objects.filter(
-            (Q(uid_1=uid) | Q(uid_2=uid)) & Q(eid=eid) & Q(decision=None)
-        )
+    # This user's id.
+    uid = request.user.id
 
-        matches_copy = matches
-        for match in matches_copy:
-            # Check to see if uid_1 and uid_2 are interested in/going to event.
-            uid_1 = CustomUser.objects.filter(
-                Q(id=match.uid_1), (Q(interested__id=eid) | Q(going__id=eid))
-            ).exists()
-            uid_2 = CustomUser.objects.filter(
-                Q(id=match.uid_2), (Q(interested__id=eid) | Q(going__id=eid))
-            ).exists()
+    # All relationships that exist between this user and all other users
+    # for this event where a decision has not yet been made.
+    matches = Match.objects.filter(
+        (Q(uid_1=uid) | Q(uid_2=uid)) & Q(eid=eid) & Q(decision=None)
+    )
 
-            # One of the users is not interested in/going to event, remove.
-            if not uid_1 or not uid_2:
-                matches = matches.exclude(uid_1=match.uid_1, uid_2=match.uid_2)
+    matches_copy = matches
+    for match in matches_copy:
+        # Check to see if uid_1 and uid_2 are interested in/going to event.
+        uid_1 = CustomUser.objects.filter(
+            Q(id=match.uid_1), (Q(interested__id=eid) | Q(going__id=eid))
+        ).exists()
+        uid_2 = CustomUser.objects.filter(
+            Q(id=match.uid_2), (Q(interested__id=eid) | Q(going__id=eid))
+        ).exists()
 
-        # Gather all the other users to return.
-        users = []
-        for match in matches:
-            # Get the CustomUser objects.
-            uid_1 = CustomUser.objects.get(id=match.uid_1)
-            uid_2 = CustomUser.objects.get(id=match.uid_2)
+        # One of the users is not interested in/going to event, remove.
+        if not uid_1:
+            matches = matches.exclude(uid_1=match.uid_1)
+        if not uid_2:
+            matches = matches.exclude(uid_2=match.uid_2)
 
-            # Add the other user to users.
-            if uid == uid_1.id:
-                users.append(uid_2)
-            if uid == uid_2.id:
-                users.append(uid_1)
+        # Only show users you have not swiped on yet.
+        if uid == match.uid_1:
+            swiped = matches.filter(Q(uid_1=match.uid_1)).first().decision_1
+        elif uid == match.uid_2:
+            swiped = matches.filter(Q(uid_2=match.uid_2)).first().decision_2
+        else:
+            raise NotImplementedError
 
-        args = {"users": users}
-        return render(request, "match.html", args)
+        if swiped is not None:
+            matches = matches.exclude(uid_1=match.uid_1, uid_2=match.uid_2)
+
+    # Gather all the other users to return.
+    users = []
+    for match in matches:
+        # Get the CustomUser objects.
+        uid_1 = CustomUser.objects.get(id=match.uid_1)
+        uid_2 = CustomUser.objects.get(id=match.uid_2)
+
+        # Add the other user to users.
+        if uid == uid_1.id:
+            users.append(uid_2)
+        if uid == uid_2.id:
+            users.append(uid_1)
+
+    args = {"users": users}
+    return render(request, "match.html", args)

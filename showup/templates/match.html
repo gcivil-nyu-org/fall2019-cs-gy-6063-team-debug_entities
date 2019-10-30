@@ -13,12 +13,14 @@
     <h2>{{user.first_name}}</h2>
     <p class="white-text">{{user.bio}}</p>
     <br><br><br>
-    <form action="#" method="GET">
+    <form action="#" method="POST">
+      {% csrf_token %}
+      <input type="hidden" name="uid" value="{{ user.id }}">
       <!-- Dislike Someone -->
-      <button class="btn waves-effect white grey-text darken-text-2" type="submit" name="dislike" value="False">
+      <button class="btn waves-effect white grey-text darken-text-2" type="submit" name="match" value="False">
         <i class="material-icons">thumb_down</i></button>
       <!-- like Someone -->
-      <button class="btn waves-effect white grey-text darken-text-2" type="submit" name="like" value="True">
+      <button class="btn waves-effect white grey-text darken-text-2" type="submit" name="match" value="True">
         <i class="material-icons">thumb_up</i></button>
     </form>
     </div>

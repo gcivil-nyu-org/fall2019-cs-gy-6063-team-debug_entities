@@ -57,9 +57,9 @@ class Match(models.Model):
     uid_1 = models.IntegerField()
     uid_2 = models.IntegerField()
     eid = models.IntegerField()
-    decision_1 = models.BooleanField(null=True)  # uid_1 decision about uid_2.
-    decision_2 = models.BooleanField(null=True)  # uid_2 decision about uid_1.
-    decision = models.BooleanField(null=True)
+    decision_1 = models.NullBooleanField(default=None)  # uid_1 decision about uid_2.
+    decision_2 = models.NullBooleanField(default=None)  # uid_2 decision about uid_1.
+    decision = models.NullBooleanField(default=None)
 
     def __str__(self):
         return "{} {} {} {}".format(self.uid_1, self.uid_2, self.eid, self.decision)
