@@ -34,13 +34,13 @@ class AuthenticatedViewTests(TestCase):
         testuser = CustomUser.objects.create_user(username=username, password=password)
         EmailAddress.objects.get_or_create(id=1, user=testuser, verified=True)
         self.client.login(username=username, password=password)
-        test_concert = Concert.objects.get_or_create(
+        Concert.objects.get_or_create(
             id=1,
             performer_names="Team Debug Entities",
             venue_name="Rogers Hall",
-            datetime=make_aware(datetime.datetime.strptime(
-                            "2010-01-01T05:30", "%Y-%m-%dT%H:%M"
-                        )),
+            datetime=make_aware(
+                datetime.datetime.strptime("2010-01-01T05:30", "%Y-%m-%dT%H:%M")
+            ),
             borough="BK",
         )
 
