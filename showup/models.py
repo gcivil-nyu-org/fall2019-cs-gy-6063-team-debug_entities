@@ -44,12 +44,12 @@ class CustomUser(AbstractUser):
         return self.email
 
 
-class Matches(models.Model):
+class Match(models.Model):
     """
     In order to avoid duplicate rows (i.e. [uid_1, uid_2] and [uid_2, uid_1]),
-    the following constraint must hold:
+    the following constraints must hold:
 
-    uid_1 < uid_2
+    uid_1 != uid_2 && uid_1 < uid_2
 
     The default value of BooleanField is None when Field.default isn’t defined.
     """
@@ -57,6 +57,6 @@ class Matches(models.Model):
     uid_1 = models.IntegerField()
     uid_2 = models.IntegerField()
     eid = models.IntegerField()
-    decision_1 = models.BooleanField()  # What uid_1 decided about uid_2.
-    decision_2 = models.BooleanField()  # What uid_2 decided about uid_1.
-    decision = models.BooleanField()
+    decision_1 = models.BooleanField(null=True)  # uid_1 decision about uid_2.
+    decision_2 = models.BooleanField(null=True)  # uid_2 decision about uid_1.
+    decision = models.BooleanField(null=True)

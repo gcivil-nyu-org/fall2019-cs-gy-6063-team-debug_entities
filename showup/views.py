@@ -1,11 +1,11 @@
 import datetime
 
 from .forms import CustomUserChangeForm
-from .models import Concert, CustomUser, Matches
+from .models import Concert, CustomUser, Match
 from allauth.account.admin import EmailAddress
-from django.db.models import Q
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
+from django.db.models import Q
 from django.shortcuts import redirect, render, reverse
 from django.utils.timezone import make_aware
 
@@ -147,9 +147,10 @@ def edit_profile(request, id):
         raise PermissionDenied
 
 
+@login_required
 def event_stack(request, eid):
     if request.method == "POST":
-        # Maintain the Matches model constraint.
+        # Maintain the Match model constraint.
         if request.user.id < request.uid:
             uid_1 = request.user.id
             uid_2 = request.uid
@@ -157,13 +158,13 @@ def event_stack(request, eid):
             uid_1 = request.uid
             uid_2 = request.user.id
 
-        # Get the row from Matches if it exists, otherwise create it.
+        # Get the row from Match if it exists, otherwise create it.
         try:
-            row = Matches.objects.get(uid_1=uid_1, uid_2=uid_2, eid=eid)
-        except Matches.MultipleObjectsReturned as e:
+            row = Match.objects.get(uid_1=uid_1, uid_2=uid_2, eid=eid)
+        except Match.MultipleObjectsReturned as e:
             print(e)
-        except Matches.DoesNotExist:
-            row = Matches(uid_1=uid_1, uid_2=uid_2, eid=eid)
+        except Match.DoesNotExist:
+            row = Match(uid_1=uid_1, uid_2=uid_2, eid=eid)
 
         # Write decision to row.
         if request.user.id < request.uid:
@@ -207,5 +208,7 @@ def event_stack(request, eid):
     else:
         # Get all users interested in/going to this event.
         users = CustomUser.objects.filter(Q(interested__id=eid) | Q(going__id=eid))
+        users = users.objects.filter(match__decision=None)
+        print(users)
 
-    return render(request, "matches.html")
+    return render(request, "match.html")
