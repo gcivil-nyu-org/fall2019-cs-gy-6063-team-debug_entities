@@ -207,8 +207,10 @@ def event_stack(request, eid):
         row.save()
     else:
         # Get all users interested in/going to this event.
+        uid = request.user.id
         users = CustomUser.objects.filter(Q(interested__id=eid) | Q(going__id=eid))
-        users = users.objects.filter(match__decision=None)
-        print(users)
+        matches = Match.objects.filter(
+            (Q(uid_1=uid) | Q(uid_2=uid)) & Q(eid=eid) & Q(decision=None)
+        )
 
     return render(request, "match.html")
