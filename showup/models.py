@@ -42,3 +42,24 @@ class CustomUser(AbstractUser):
 
     def __str__(self):
         return self.email
+
+
+class Match(models.Model):
+    """
+    In order to avoid duplicate rows (i.e. [uid_1, uid_2] and [uid_2, uid_1]),
+    the following constraints must hold:
+
+    uid_1 != uid_2 && uid_1 < uid_2
+
+    The default value of BooleanField is None when Field.default isn’t defined.
+    """
+
+    uid_1 = models.IntegerField()
+    uid_2 = models.IntegerField()
+    eid = models.IntegerField()
+    decision_1 = models.NullBooleanField(default=None)  # uid_1 decision about uid_2.
+    decision_2 = models.NullBooleanField(default=None)  # uid_2 decision about uid_1.
+    decision = models.NullBooleanField(default=None)
+
+    def __str__(self):
+        return "{} {} {} {}".format(self.uid_1, self.uid_2, self.eid, self.decision)

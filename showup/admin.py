@@ -1,4 +1,4 @@
-from .models import CustomUser, Genre
+from .models import CustomUser, Genre, Match
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 
@@ -36,5 +36,13 @@ class GenreAdmin(admin.ModelAdmin):
         model = Genre
 
 
+class MatchAdmin(admin.ModelAdmin):
+    list_display = ["uid_1", "uid_2", "eid", "decision_1", "decision_2", "decision"]
+
+    class Meta:
+        model = Match
+
+
 admin.site.register(CustomUser, CustomUserAdmin)
 admin.site.register(Genre, GenreAdmin)
+admin.site.register(Match, MatchAdmin)
