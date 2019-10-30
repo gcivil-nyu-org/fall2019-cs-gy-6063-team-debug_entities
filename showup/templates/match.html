@@ -5,18 +5,25 @@
 {% block content %}
 <br><br><br>
 
-<div class="carousel carousel-slider center">
+<form action="#" method="GET">
+  {% csrf_token %}
+
+  <div class="carousel carousel-slider center">
     {% for user in users %}
     <div class="carousel-item red white-text" href="#one!">
       <h2>{{user.first_name}}</h2>
       <p class="white-text">{{user.bio}}</p>
-
-      <a class="btn waves-effect white grey-text darken-text-2">
+      <br><br><br>
+      <!-- Dislike Someone -->
+      <a class="btn waves-effect white grey-text darken-text-2" type="submit" name="dislike">
         <i class="material-icons">thumb_down</i></a>
-      <a class="btn waves-effect white grey-text darken-text-2">
+      <!-- like Someone -->
+      <a class="btn waves-effect white grey-text darken-text-2" type="submit" name="like">
         <i class="material-icons">thumb_up</i></a>
     </div>    
-    {% endfor %}
+  {% endfor %}
+
+</form>
 
 <!-- Add javascript and jquery per page that requires it -->
 <!-- Jquery Import -->
@@ -27,7 +34,7 @@
 <!-- Using Carousel feature in materialize css -->
 <script>
 	$(document).ready(function() {
-		$('.carousel.carousel-slider').carousel({fullWidth: true});
+		$('.carousel.carousel-slider').carousel({fullWidth: true, noWrap: true});
 	});
 </script>
 {% endblock %}
