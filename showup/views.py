@@ -206,21 +206,43 @@ def event_stack(request, eid):
                 # TODO: Vedanth's code goes here.
 
         row.save()
+        return render(request, "match.html")
     else:
-        # Get all users interested in/going to this event.
+        # This user's id.
         uid = request.user.id
-        users = CustomUser.objects.filter(Q(interested__id=eid) | Q(going__id=eid))
+
+        # All relationships that exist between this user and all other users
+        # for this event where a decision has not yet been made.
         matches = Match.objects.filter(
             (Q(uid_1=uid) | Q(uid_2=uid)) & Q(eid=eid) & Q(decision=None)
         )
-        print(matches)
-        '''
-        Something like this for the intersection
 
-        displayed_users = []
-        for user in user:
-            if user in matches && user != uid:
-                displayed_users.append(user)
-        '''
+        matches_copy = matches
+        for match in matches_copy:
+            # Check to see if uid_1 and uid_2 are interested in/going to event.
+            uid_1 = CustomUser.objects.filter(
+                Q(id=match.uid_1), (Q(interested__id=eid) | Q(going__id=eid))
+            ).exists()
+            uid_2 = CustomUser.objects.filter(
+                Q(id=match.uid_2), (Q(interested__id=eid) | Q(going__id=eid))
+            ).exists()
+
+            # One of the users is not interested in/going to event, remove.
+            if not uid_1 or not uid_2:
+                matches = matches.exclude(uid_1=match.uid_1, uid_2=match.uid_2)
+
+        # Gather all the other users to return.
+        users = []
+        for match in matches:
+            # Get the CustomUser objects.
+            uid_1 = CustomUser.objects.get(id=match.uid_1)
+            uid_2 = CustomUser.objects.get(id=match.uid_2)
+
+            # Add the other user to users.
+            if uid == uid_1.id:
+                users.append(uid_2)
+            if uid == uid_2.id:
+                users.append(uid_1)
+
         args = {"users": users}
-    return render(request, "match.html", args)
+        return render(request, "match.html", args)
