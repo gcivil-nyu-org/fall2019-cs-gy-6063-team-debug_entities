@@ -3,24 +3,25 @@
 <body>
 
 {% block content %}
+<p>Current user first name: {{user.first_name}}</p>
 <br><br><br>
 
-<form action="#" method="GET">
-  {% csrf_token %}
 
-  <div class="carousel carousel-slider center">
-    {% for user in users %}
-    <div class="carousel-item red white-text" href="#one!">
-      <h2>{{user.first_name}}</h2>
-      <p class="white-text">{{user.bio}}</p>
-      <br><br><br>
+<div class="carousel carousel-slider center">
+  {% for user in users %}
+  <div class="carousel-item red white-text" href="#one!">
+    <h2>{{user.first_name}}</h2>
+    <p class="white-text">{{user.bio}}</p>
+    <br><br><br>
+    <form action="#" method="GET">
       <!-- Dislike Someone -->
-      <a class="btn waves-effect white grey-text darken-text-2" type="submit" name="dislike">
-        <i class="material-icons">thumb_down</i></a>
+      <button class="btn waves-effect white grey-text darken-text-2" type="submit" name="dislike" value="False">
+        <i class="material-icons">thumb_down</i></button>
       <!-- like Someone -->
-      <a class="btn waves-effect white grey-text darken-text-2" type="submit" name="like">
-        <i class="material-icons">thumb_up</i></a>
-    </div>    
+      <button class="btn waves-effect white grey-text darken-text-2" type="submit" name="like" value="True">
+        <i class="material-icons">thumb_up</i></button>
+    </form>
+    </div>
   {% endfor %}
 
 </form>
