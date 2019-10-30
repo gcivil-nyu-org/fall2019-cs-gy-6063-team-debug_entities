@@ -60,3 +60,6 @@ class Match(models.Model):
     decision_1 = models.BooleanField(null=True)  # uid_1 decision about uid_2.
     decision_2 = models.BooleanField(null=True)  # uid_2 decision about uid_1.
     decision = models.BooleanField(null=True)
+
+    def __str__(self):
+        return "{} {} {} {}".format(self.uid_1, self.uid_2, self.eid, self.decision)
