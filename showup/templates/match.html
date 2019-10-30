@@ -3,14 +3,14 @@
 <body>
 
 {% block content %}
-<p>Current user first name: {{user.first_name}}</p>
+<p>Logged in as {{ user.first_name }}.</p>
 <br><br><br>
 
 
 <div class="carousel carousel-slider center">
   {% for user in users %}
   <div class="carousel-item red white-text" href="#one!">
-    <h2>{{user.first_name}}</h2>
+    <h2><a class="white-text" href="{% url 'user' user.id %}">{{ user.first_name }}</a></h2>
     <p class="white-text">{{user.bio}}</p>
     <br><br><br>
     <form action="#" method="POST">
