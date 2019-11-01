@@ -40,4 +40,7 @@ class CustomUserChangeForm(UserChangeForm):
 
     class Meta:
         model = CustomUser
-        fields = ("bio",)
+        fields = ("bio", "genres")
+        widgets = {
+            "genres": forms.CheckboxSelectMultiple,
+        }
