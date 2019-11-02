@@ -184,22 +184,22 @@ def event_stack(request, eid):
             direction=my_direction,
         )
 
-    """
-    Figure out if a match happened
-    Criteria:
-    1. The swipe that just happened was to the right
-    2. The swipee has previously swiped right on the swiper
-    """
-    try:
-        their_swipe_on_me = Swipe.objects.get(
-            swiper__id=swipee_id, swipee__id=my_id, event__id=eid
-        )
-    except Swipe.DoesNotExist:
-        their_swipe_on_me = None
+        """
+        Figure out if a match happened
+        Criteria:
+        1. The swipe that just happened was to the right
+        2. The swipee has previously swiped right on the swiper
+        """
+        try:
+            their_swipe_on_me = Swipe.objects.get(
+                swiper__id=swipee_id, swipee__id=my_id, event__id=eid
+            )
+        except Swipe.DoesNotExist:
+            their_swipe_on_me = None
 
-    # the line below checks criteria 1 and 2
-    if my_direction and their_swipe_on_me and their_swipe_on_me.direction:
-        print(f"Users {my_id} and {swipee_id} just matched")
-        # replace the line above with code for the match modal window
+        # the line below checks criteria 1 and 2
+        if my_direction and their_swipe_on_me and their_swipe_on_me.direction:
+            print(f"Users {my_id} and {swipee_id} just matched")
+            # replace the line above with code for the match modal window
 
     return render(request, "match.html", {"users": users})
