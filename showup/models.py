@@ -36,8 +36,8 @@ class Genre(models.Model):
 class CustomUser(AbstractUser):
     date_of_birth = models.DateField(null=True, blank=True)
     gender = models.CharField(max_length=255, blank=True)
-    interested = models.ManyToManyField(Concert, related_name="interested")
-    going = models.ManyToManyField(Concert, related_name="going")
+    interested = models.ManyToManyField(Concert, related_name="interested", blank=True)
+    going = models.ManyToManyField(Concert, related_name="going", blank=True)
     bio = models.TextField(max_length=500, default="", blank=True)
     swipes = models.ManyToManyField("self", through="Swipe", symmetrical=False)
 
@@ -67,5 +67,7 @@ class Swipe(models.Model):
         ]
 
     def __str__(self):
-        return f"Swiper: {self.swiper.email}, Swipee: {self.swipee.email},\
-                 Event: {self.event.id}, Direction: {self.direction}"
+        return (
+            f"Swiper: {self.swiper.email}, Swipee: {self.swipee.email}, "
+            f"Event: {self.event.id}, Direction: {self.direction}"
+        )
