@@ -46,6 +46,14 @@ def get_genres():
     genre_choices.sort()
     return genre_choices
 
+def insert_to_list_exclusively(event_id, add_list, remove_list):
+    if add_list.filter(id=event_id).count() > 0:
+        add_list.remove(event_id)
+    else:
+        add_list.add(event_id)
+        if remove_list.filter(id=event_id).count() > 0:
+            remove_list.remove(event_id)
+
 
 @login_required
 def events(request):
@@ -95,24 +103,20 @@ def events(request):
 
     # User clicked "Interested" button.
     if "interested" in request.GET:
-        event_id = request.GET.get("interested")
-        if request.user.interested.filter(id=event_id).count() > 0:
-            request.user.interested.remove(event_id)
-        else:
-            request.user.interested.add(event_id)
-            if request.user.going.filter(id=event_id).count() > 0:
-                request.user.going.remove(event_id)
+        insert_to_list_exclusively(
+            request.GET.get("interested"),
+            request.user.interested,
+            request.user.going
+        )
 
     # User clicked "Going" button.
     elif "going" in request.GET:
-        event_id = request.GET.get("going")
-        if request.user.going.filter(id=event_id).count() > 0:
-            request.user.going.remove(event_id)
-        else:
-            request.user.going.add(event_id)
-            if request.user.interested.filter(id=event_id).count() > 0:
-                request.user.interested.remove(event_id)
-        
+        insert_to_list_exclusively(
+            request.GET.get("going"),
+            request.user.going,
+            request.user.interested
+        )
+
     return render(
         request,
         "events.html",
