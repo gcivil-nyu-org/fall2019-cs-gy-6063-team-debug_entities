@@ -152,12 +152,14 @@ def event_stack(request, eid):
     """
     Gather all the eligible users to return.
     Criteria:
-    1. They're interested in the event
+    1. They're interested in or going to the event
     2. They haven't swiped left on me
     3. I haven't swiped on them in any direction
     4. They're not me
     """
-    users = CustomUser.objects.filter(interested__id=eid)  # criterion 1
+    users = CustomUser.objects.filter(interested__id=eid) | CustomUser.objects.filter(
+        going__id=eid
+    )  # criterion 1
     IDs_swiped_left_on_me = [
         i.swiper.id
         for i in Swipe.objects.filter(swipee__id=my_id, event__id=eid, direction=False)
