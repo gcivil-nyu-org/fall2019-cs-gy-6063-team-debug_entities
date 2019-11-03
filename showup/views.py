@@ -59,7 +59,8 @@ def events(request):
     performer_names_choices = get_performers()
     venue_name_choices = get_venues()
     genre_choices = get_genres()
-
+    
+    
     # User clicks "Filter"
     if "filter" in request.GET:
         # filter boroughs
@@ -95,13 +96,23 @@ def events(request):
     # User clicked "Interested" button.
     if "interested" in request.GET:
         event_id = request.GET.get("interested")
-        request.user.interested.add(event_id)
+        if request.user.interested.filter(id=event_id).count() > 0:
+            request.user.interested.remove(event_id)
+        else:
+            request.user.interested.add(event_id)
+            if request.user.going.filter(id=event_id).count() > 0:
+                request.user.going.remove(event_id)
 
     # User clicked "Going" button.
-    if "going" in request.GET:
+    elif "going" in request.GET:
         event_id = request.GET.get("going")
-        request.user.going.add(event_id)
-
+        if request.user.going.filter(id=event_id).count() > 0:
+            request.user.going.remove(event_id)
+        else:
+            request.user.going.add(event_id)
+            if request.user.interested.filter(id=event_id).count() > 0:
+                request.user.interested.remove(event_id)
+        
     return render(
         request,
         "events.html",
@@ -113,6 +124,8 @@ def events(request):
             "genre_choices": genre_choices,
             "start_date": start_date,
             "end_date": end_date,
+            "interested_list" : request.user.interested,
+            "going_list" : request.user.going,
         },
     )
 
