@@ -106,8 +106,16 @@
                 <p>{{event.datetime}}</p>
                 <br>
                 <form action="#" method="get">
+                {% if event.id in interested_list %}
+                    <button class="btn-small waves-effect waves-light red lighten-2" type="submit" name="interested" value={{event.id}}>Interested</button>
+                {% else %}
                     <button class="btn-small waves-effect waves-light teal lighten-2" type="submit" name="interested" value={{event.id}}>Interested</button>
-                    <button class="btn-small waves-effect waves-light teal lighten-2" type="submit" name="going" value={{event.id}}>Going</button>
+                {% endif %}
+                {% if event.id in going_list %}
+                    <button class="btn-small waves-effect waves-light red lighten-2" type="submit" name="going" value={{event.id}}>Going</button>
+                {% else %}
+                <button class="btn-small waves-effect waves-light teal lighten-2" type="submit" name="going" value={{event.id}}>Going</button>
+                {% endif %}
                 </form>
             </div>
         </div>
