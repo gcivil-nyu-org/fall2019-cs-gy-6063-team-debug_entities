@@ -117,6 +117,7 @@ def events(request):
             request.user.interested
         )
 
+
     return render(
         request,
         "events.html",
@@ -128,8 +129,8 @@ def events(request):
             "genre_choices": genre_choices,
             "start_date": start_date,
             "end_date": end_date,
-            "interested_list" : request.user.interested,
-            "going_list" : request.user.going,
+            "interested_list" : request.user.interested.values_list("id", flat=True),
+            "going_list" : request.user.going.values_list("id", flat=True),
         },
     )
 
