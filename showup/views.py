@@ -134,15 +134,11 @@ def user(request, id):
 def edit_profile(request, id):
     if request.user.id == id:
         # above, on the left is the user's id, on the right is the id in the URL
-        if request.method == "POST":
-            form = CustomUserChangeForm(request.POST, instance=request.user)
-            if form.is_valid():
-                form.save()
-                return redirect(reverse("user", kwargs={"id": id}))
-        else:
-            form = CustomUserChangeForm(instance=request.user)
-            args = {"form": form}
-            return render(request, "edit_profile.html", args)
+        form = CustomUserChangeForm(request.POST or None, instance=request.user)
+        if request.method == "POST" and form.is_valid():
+            form.save()
+            return redirect(reverse("user", kwargs={"id": id}))
+        return render(request, "edit_profile.html", {"form": form})
     else:
         raise PermissionDenied
 

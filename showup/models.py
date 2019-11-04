@@ -39,6 +39,7 @@ class CustomUser(AbstractUser):
     interested = models.ManyToManyField(Concert, related_name="interested")
     going = models.ManyToManyField(Concert, related_name="going")
     bio = models.TextField(max_length=500, default="", blank=True)
+    genres = models.ManyToManyField(Genre, related_name="genres")
 
     def __str__(self):
         return self.email
