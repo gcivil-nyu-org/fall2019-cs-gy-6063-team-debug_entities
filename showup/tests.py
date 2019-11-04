@@ -60,8 +60,9 @@ class AuthenticatedViewTests(TestCase):
 
     def test_authed_user_can_filter_events(self):
         get = (
-            "?performers=test&genres=test&start_date=2010-10-30T17:30"
-            "&end_date=2019-10-30T17:30&filter=#"
+            "?boroughs=BK&boroughs=MN&performers=test&venues=Rogers+Hall&"
+            "venues=Elsewhere&genres=test&start_date=2010-10-30T17:30&"
+            "end_date=2019-10-30T17:30&filter=#"
         )
         self.response = self.client.get(reverse("events") + get)
         self.assertEqual(self.response.status_code, 200)
