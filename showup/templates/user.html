@@ -1,9 +1,11 @@
 <!doctype html>
 
 {% extends 'header.html' %}
+{% load avatar_tags %}
 
 {% block content %}
 
+{% avatar user 200 %}
 <h4>{{ requested_user.first_name }}</h4>
 
 <h5>Bio</h5>
@@ -13,6 +15,7 @@
 <!-- on the left is the user's actual ID, on the right is the ID in the URL -->
 <br>
 <a class="btn btn-primary" href="{% url 'edit_profile' user.id %}">Edit Your Profile</a>
+<a href="{% url 'avatar_change' %}">Change your avatar</a>
 <br><br>
 {% endif %}
 

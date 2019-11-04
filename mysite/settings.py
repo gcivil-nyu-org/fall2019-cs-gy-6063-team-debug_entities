@@ -11,7 +11,7 @@ https://docs.djangoproject.com/en/1.11/ref/settings/
 """
 
 import os
-import django_heroku
+# import django_heroku
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -44,6 +44,8 @@ INSTALLED_APPS = [
     "allauth",
     "allauth.account",
     "allauth.socialaccount",
+    # Using package: django-avatar
+    "avatar",
 ]
 
 MIDDLEWARE = [
@@ -134,8 +136,8 @@ EMAIL_HOST_PASSWORD = "tempKey123"
 EMAIL_PORT = 587
 
 # Activate Django-Heroku.
-if "HOME" in os.environ and "/app" in os.environ["HOME"]:
-    django_heroku.settings(locals())
+# if "HOME" in os.environ and "/app" in os.environ["HOME"]:
+#     django_heroku.settings(locals())
 
 # Below this are settings for django-allauth. Link to tutorial:
 # https://wsvincent.com/django-login-with-email-not-username/
