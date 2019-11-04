@@ -25,9 +25,10 @@ class Command(BaseCommand):
                 genre_file.write(genre + "\n")
 
     def handle(self, *args, **options):
+        # Due to heroku limitations, setting event cap to 100
         base_url = (
             "https://api.seatgeek.com/2/events?client_id="
-            "MTg3MzUxNzB8MTU3MDE1NTY1OS45MQ&per_page=5000&taxonomies.name=concert"
+            "MTg3MzUxNzB8MTU3MDE1NTY1OS45MQ&per_page=100&taxonomies.name=concert"
         )
         borough_urls = {
             "BK": "&lat=40.643222&lon=-73.949258&range=5mi",

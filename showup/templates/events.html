@@ -1,12 +1,36 @@
 <!DOCTYPE html>
 
-<style>
-    .card {
-        align-content: center;
-    }
-</style>
+<!-- Events.html uses old materialize version. -->
+<head>
+  <meta charset="utf-8" />
+  <!-- Compiled and minified CSS -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+  <!-- Compiled and minified JavaScript -->
+  <script src="//code.jquery.com/jquery-2.1.2.min.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/materialize/0.97.5/js/materialize.min.js"></script>
+  <script>
+     $(document).ready(function() {
+        $('select').material_select();
+     });
+  </script>
 
-{% extends 'header.html' %} {% block content %}
+<body>
+  <div class="nav-wrapper">
+    <nav>
+      <div class="nav-wrapper teal lighten-2">
+        {% if user.is_authenticated %}
+        <a href="{% url 'home' %}" class="brand-logo">&nbsp;ShowUp</a>
+        <ul id="nav-mobile" class="right hide-on-med-and-down">
+          <li><a href="{% url 'home' %}">Home</a></li>
+          <li><a href="{% url 'user' user.id %}">Profile</a></li>
+          <li><a href="{% url 'events' %}">Events</a></li>
+          <li><a href="{% url 'account_logout' %}">Logout</a></li>
+        </ul>
+        {% else %}
+        <div class="brand-logo">&nbsp;ShowUp</div>
+        {% endif %}
+      </div>
+    </nav>
 
 <!-- Filtering -->
 <br>
@@ -88,8 +112,19 @@
             </div>
         </div>
     </div>
-    {% endfor %} {% endblock %}
+    {% endfor %}
 </div>
+
+<script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+<!-- Compiled and minified JavaScript -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js">
+</script>
+
+<script>
+    $(document).ready(function(){
+        $('select').formSelect();
+    });
+</script>
 
 <!-- Java scipt for form reset -->
 <script>

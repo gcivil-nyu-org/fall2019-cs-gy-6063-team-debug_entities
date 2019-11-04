@@ -4,34 +4,27 @@
 
 {% block content %}
 
-{% if user.is_authenticated %}
+<h4>{{ requested_user.first_name }}</h4>
 
-  <h4>{{ user.first_name }}</h4>
-  <img src="{{user.image.url}}" width="240">
+<h5>Bio</h5>
+<p>{{ requested_user.bio }}</p>
 
-  <h5>Bio</h5>
-  <p>{{ user.bio }}</p>
-
-  <br>
-  <a class="btn btn-primary" href="{{ user.id }}/edit">Edit Profile</a>
-  <br><br>
-
-  <h5>Events I'm interested in:</h5>
-  {% for interested in user.interested.all %}
-    <p>{{interested}}</p>
-  {% endfor %}
-
-  <h5>Events I'm going to:</h5>
-  {% for going in user.going.all %}
-    <p>{{going}}</p>
-  {% endfor %}
-  
-  {% else %}
-  <p>You are not logged in</p>
-  <a href="{% url 'account_login' %}">Log In</a> |
-  <a href="{% url 'account_signup' %}">Sign Up</a>
-
+{% if user.id == requested_user.id %}
+<!-- on the left is the user's actual ID, on the right is the ID in the URL -->
+<br>
+<a class="btn btn-primary" href="{% url 'edit_profile' user.id %}">Edit Your Profile</a>
+<br><br>
 {% endif %}
+
+<h5>Events this user interested in:</h5>
+{% for interested in requested_user.interested.all %}
+  <p>{{interested}}</p>
+{% endfor %}
+
+<h5>Events this user is going to:</h5>
+{% for going in requested_user.going.all %}
+  <p>{{going}}</p>
+{% endfor %}
 
 {% endblock %}
 
