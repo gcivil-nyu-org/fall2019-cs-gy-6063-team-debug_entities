@@ -75,12 +75,12 @@ class AuthenticatedViewTests(TestCase):
         self.assertEqual(self.response.status_code, 200)
 
     def test_authed_user_can_mark_interested_to_events(self):
-        get = ("?interested=1#")
+        get = "?interested=1#"
         self.response = self.client.get(reverse("events") + get)
         self.assertEqual(self.response.status_code, 200)
 
     def test_authed_user_can_mark_going_to_events(self):
-        get = ("?going=1#")
+        get = "?going=1#"
         self.response = self.client.get(reverse("events") + get)
         self.assertEqual(self.response.status_code, 200)
 
