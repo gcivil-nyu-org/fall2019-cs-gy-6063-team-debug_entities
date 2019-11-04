@@ -65,7 +65,7 @@ class AuthenticatedViewTests(TestCase):
         )
         self.response = self.client.get(reverse("events") + get)
         self.assertEqual(self.response.status_code, 200)
-        
+
     def test_user_cannot_access_nonexistent_profile(self):
         self.response = self.client.get(reverse("user", args=(9999,)))
         self.assertEqual(self.response.status_code, 403)
@@ -75,18 +75,15 @@ class AuthenticatedViewTests(TestCase):
         self.assertEqual(self.response.status_code, 200)
 
     def test_authed_user_can_mark_interested_to_events(self):
-        get = (
-            "?interested=1#"
-        )
+        get = ("?interested=1#")
         self.response = self.client.get(reverse("events") + get)
         self.assertEqual(self.response.status_code, 200)
 
     def test_authed_user_can_mark_going_to_events(self):
-        get = (
-            "?going=1#"
-        )
+        get = ("?going=1#")
         self.response = self.client.get(reverse("events") + get)
         self.assertEqual(self.response.status_code, 200)
+
 
 class UnauthenticatedViewTests(TestCase):
     def test_unauthed_user_cannot_see_events(self):
