@@ -8,6 +8,7 @@
 
 
 <div class="carousel carousel-slider center">
+  {% if users %}
   {% for user in users %}
   <div class="carousel-item red white-text" href="#one!">
     <h2><a class="white-text" href="{% url 'user' user.id %}">{{ user.first_name }}</a></h2>
@@ -15,7 +16,7 @@
     <br><br><br>
     <form action="#" method="POST">
       {% csrf_token %}
-      <input type="hidden" name="uid" value="{{ user.id }}">
+      <input type="hidden" name="swipee_id" value="{{ user.id }}">
       <!-- Dislike Someone -->
       <button class="btn waves-effect white grey-text darken-text-2" type="submit" name="match" value="False">
         <i class="material-icons">thumb_down</i></button>
@@ -25,7 +26,10 @@
     </form>
     </div>
   {% endfor %}
-
+  {% else %}
+    <p>There's no one in this stack. To be in this stack, people have to be interested in this event, they can't have swiped left on you, 
+    you can't have swiped on them in any direction, and they can't be you.</p>
+  {% endif %}
 </form>
 
 <!-- Add javascript and jquery per page that requires it -->

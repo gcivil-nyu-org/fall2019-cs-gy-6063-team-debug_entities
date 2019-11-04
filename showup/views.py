@@ -1,11 +1,10 @@
 import datetime
 
 from .forms import CustomUserChangeForm
-from .models import Concert, CustomUser, Match
+from .models import Concert, CustomUser, Swipe
 from allauth.account.admin import EmailAddress
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
-from django.db.models import Q
 from django.shortcuts import redirect, render, reverse
 from django.utils.timezone import make_aware
 
@@ -145,112 +144,60 @@ def edit_profile(request, id):
 
 @login_required
 def event_stack(request, eid):
-    if request.method == "POST":
-        # Maintain the Match model constraint.
-        if request.user.id < int(request.POST["uid"]):
-            uid_1 = request.user.id
-            uid_2 = int(request.POST["uid"])
-        else:
-            uid_1 = int(request.POST["uid"])
-            uid_2 = request.user.id
+    my_id = request.user.id
+    """
+    Gather all the eligible users to return.
+    Criteria:
+    1. They're interested in or going to the event
+    2. They haven't swiped left on me
+    3. I haven't swiped on them in any direction
+    4. They're not me
+    """
+    users = CustomUser.objects.filter(interested__id=eid) | CustomUser.objects.filter(
+        going__id=eid
+    )  # criterion 1
+    IDs_swiped_left_on_me = [
+        i.swiper.id
+        for i in Swipe.objects.filter(swipee__id=my_id, event__id=eid, direction=False)
+    ]  # criterion 2
+    IDs_I_swiped = [
+        i.swipee.id for i in Swipe.objects.filter(swiper__id=my_id, event__id=eid)
+    ]  # criterion 3
+    users = [
+        u
+        for u in users
+        if u.id not in IDs_swiped_left_on_me
+        and u.id not in IDs_I_swiped
+        and u.id != my_id
+    ]  # criterion 4
+    # our filtering is done, users is the list of users who should be shown for swiping
 
-        # Get the row from Match if it exists, otherwise create it.
+    if request.method == "POST":  # user is submitting a swipe
+        swipee_id = request.POST["swipee_id"]
+        my_direction = True if request.POST["match"] == "True" else False
+        Swipe.objects.get_or_create(  # write user's swipe to the database
+            swiper=CustomUser(id=my_id),
+            swipee=CustomUser(id=swipee_id),
+            event=Concert(id=eid),
+            direction=my_direction,
+        )
+
+        """
+        Figure out if a match happened
+        Criteria:
+        1. The swipe that just happened was to the right
+        2. The swipee has previously swiped right on the swiper
+        """
         try:
-            row = Match.objects.get(uid_1=uid_1, uid_2=uid_2, eid=eid)
-        except Match.MultipleObjectsReturned as e:
-            print(e)
-        except Match.DoesNotExist:
-            row = Match(uid_1=uid_1, uid_2=uid_2, eid=eid)
+            their_swipe_on_me = Swipe.objects.get(
+                swiper__id=swipee_id, swipee__id=my_id, event__id=eid
+            )
+        except Swipe.DoesNotExist:
+            their_swipe_on_me = None
 
-        # Write decision to row.
-        if request.user.id < int(request.POST["uid"]):
-            print(request.POST["match"])
-            # User swiped right.
-            if request.POST["match"] == "True":
-                decision_1 = True
+        # the line below checks criteria 1 and 2
+        if my_direction and their_swipe_on_me and their_swipe_on_me.direction:
+            print(f"Users {my_id} and {swipee_id} just matched")
+            # replace the line above with code for the match modal window
 
-            # User swiped left.
-            if request.POST["match"] == "False":
-                decision_1 = False
-
-            # Write to row.
-            row.decision_1 = decision_1
-        else:
-            # User swiped right.
-            if request.POST["match"] == "True":
-                decision_2 = True
-
-            # User swiped left.
-            if request.POST["match"] == "False":
-                decision_2 = False
-
-            # Write to row.
-            row.decision_2 = decision_2
-
-        # Figure out if there is a match.
-        if row.decision_1 is not None and row.decision_2 is not None:
-            if row.decision_1 and row.decision_2:  # TT
-                # uid_1 and uid_2 match.
-                row.decision = True
-
-                # TODO: Vedanth's code goes here.
-
-            else:
-                # uid_1 and uid_2 do not match.
-                row.decision = False
-
-                # TODO: Vedanth's code goes here.
-
-        row.save()
-
-    # This user's id.
-    uid = request.user.id
-
-    # All relationships that exist between this user and all other users
-    # for this event where a decision has not yet been made.
-    matches = Match.objects.filter(
-        (Q(uid_1=uid) | Q(uid_2=uid)) & Q(eid=eid) & Q(decision=None)
-    )
-
-    matches_copy = matches
-    for match in matches_copy:
-        # Check to see if uid_1 and uid_2 are interested in/going to event.
-        uid_1 = CustomUser.objects.filter(
-            Q(id=match.uid_1), (Q(interested__id=eid) | Q(going__id=eid))
-        ).exists()
-        uid_2 = CustomUser.objects.filter(
-            Q(id=match.uid_2), (Q(interested__id=eid) | Q(going__id=eid))
-        ).exists()
-
-        # One of the users is not interested in/going to event, remove.
-        if not uid_1:
-            matches = matches.exclude(uid_1=match.uid_1)
-        if not uid_2:
-            matches = matches.exclude(uid_2=match.uid_2)
-
-        # Only show users you have not swiped on yet.
-        if uid == match.uid_1:
-            swiped = matches.filter(Q(uid_1=match.uid_1)).first().decision_1
-        elif uid == match.uid_2:
-            swiped = matches.filter(Q(uid_2=match.uid_2)).first().decision_2
-        else:
-            raise NotImplementedError
-
-        if swiped is not None:
-            matches = matches.exclude(uid_1=match.uid_1, uid_2=match.uid_2)
-
-    # Gather all the other users to return.
-    users = []
-    for match in matches:
-        # Get the CustomUser objects.
-        uid_1 = CustomUser.objects.get(id=match.uid_1)
-        uid_2 = CustomUser.objects.get(id=match.uid_2)
-
-        # Add the other user to users.
-        if uid == uid_1.id:
-            users.append(uid_2)
-        if uid == uid_2.id:
-            users.append(uid_1)
-
-    args = {"users": users}
-    return render(request, "match.html", args)
+    return render(request, "match.html", {"users": users})
