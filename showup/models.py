@@ -40,6 +40,7 @@ class CustomUser(AbstractUser):
     going = models.ManyToManyField(Concert, related_name="going", blank=True)
     bio = models.TextField(max_length=500, default="", blank=True)
     swipes = models.ManyToManyField("self", through="Swipe", symmetrical=False)
+    genres = models.ManyToManyField(Genre, related_name="genres")
 
     def __str__(self):
         return self.email

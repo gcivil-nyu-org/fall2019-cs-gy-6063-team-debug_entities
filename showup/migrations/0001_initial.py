@@ -158,6 +158,12 @@ class Migration(migrations.Migration):
                         serialize=False,
                         verbose_name="ID",
                     ),
+                    "genres",
+                    models.ManyToManyField(related_name="genres", to="showup.Genre"),
+                ),
+                (
+                    "going",
+                    models.ManyToManyField(related_name="going", to="showup.Concert"),
                 ),
                 ("direction", models.BooleanField()),
                 (
