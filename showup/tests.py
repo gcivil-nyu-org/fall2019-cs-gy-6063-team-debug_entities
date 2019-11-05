@@ -1,6 +1,6 @@
 import datetime
 
-from .models import Concert, CustomUser
+from .models import Concert, CustomUser, Genre
 from django.test import Client, TestCase
 from django.urls import reverse
 from django.utils.timezone import make_aware
@@ -18,6 +18,14 @@ class ConcertModelTests(TestCase):
 
         desired_output = "Team Debug Entities at Rogers Hall on 2019-01-01 in BK"
         self.assertEqual(test_concert.__str__(), desired_output)
+
+
+class GenreModelTests(TestCase):
+
+    def test_genre_basic(self):
+        genre = Genre(genre="EDM")
+        genre.save()
+        self.assertEqual(genre.__str__(), "EDM")
 
 
 class CustomUserModelTests(TestCase):
