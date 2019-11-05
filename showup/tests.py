@@ -31,7 +31,7 @@ class CustomUserModelTests(TestCase):
             email="jspringer@example.com"
         )
         user.save()
-        self.assertEqual(user.gender, "Man")
+        self.assertEqual(user.__str__(), "jspringer@example.com")
 
     def test_customuser_form(self):
         # Create form data.
