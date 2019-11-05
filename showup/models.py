@@ -36,30 +36,39 @@ class Genre(models.Model):
 class CustomUser(AbstractUser):
     date_of_birth = models.DateField(null=True, blank=True)
     gender = models.CharField(max_length=255, blank=True)
-    interested = models.ManyToManyField(Concert, related_name="interested")
-    going = models.ManyToManyField(Concert, related_name="going")
+    interested = models.ManyToManyField(Concert, related_name="interested", blank=True)
+    going = models.ManyToManyField(Concert, related_name="going", blank=True)
     bio = models.TextField(max_length=500, default="", blank=True)
+    swipes = models.ManyToManyField("self", through="Swipe", symmetrical=False)
+    genres = models.ManyToManyField(Genre, related_name="genres")
 
     def __str__(self):
         return self.email
 
 
-class Match(models.Model):
-    """
-    In order to avoid duplicate rows (i.e. [uid_1, uid_2] and [uid_2, uid_1]),
-    the following constraints must hold:
+class Swipe(models.Model):
+    swiper = models.ForeignKey(
+        CustomUser, on_delete=models.CASCADE, related_name="swiper"
+    )
+    swipee = models.ForeignKey(
+        CustomUser, on_delete=models.CASCADE, related_name="swipee"
+    )
+    event = models.ForeignKey(Concert, on_delete=models.CASCADE, related_name="event")
+    direction = models.BooleanField()
 
-    uid_1 != uid_2 && uid_1 < uid_2
-
-    The default value of BooleanField is None when Field.default isn’t defined.
-    """
-
-    uid_1 = models.IntegerField()
-    uid_2 = models.IntegerField()
-    eid = models.IntegerField()
-    decision_1 = models.NullBooleanField(default=None)  # uid_1 decision about uid_2.
-    decision_2 = models.NullBooleanField(default=None)  # uid_2 decision about uid_1.
-    decision = models.NullBooleanField(default=None)
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=["swiper", "swipee", "event"],
+                name=(
+                    "You can only swipe on another particular person for a"
+                    "particular event once"
+                ),
+            )
+        ]
 
     def __str__(self):
-        return "{} {} {} {}".format(self.uid_1, self.uid_2, self.eid, self.decision)
+        return (
+            f"Swiper: {self.swiper.email}, Swipee: {self.swipee.email}, "
+            f"Event: {self.event.id}, Direction: {self.direction}"
+        )
