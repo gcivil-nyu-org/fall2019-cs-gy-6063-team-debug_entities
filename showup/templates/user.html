@@ -11,6 +11,11 @@
 <h5>Bio</h5>
 <p>{{ requested_user.bio }}</p>
 
+<h5>Favorite Genres</h5>
+{% for genre in requested_user.genres.all %}
+<li>{{ genre }}</li>
+{% endfor %}
+
 {% if user.id == requested_user.id %}
 <!-- on the left is the user's actual ID, on the right is the ID in the URL -->
 <br>

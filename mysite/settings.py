@@ -39,13 +39,14 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "showup.apps.ShowUpConfig",
-    # entries below are needed for django-allauth
+    # entries below are needed for django-allauth and materializecssform
     "django.contrib.sites",
     "allauth",
     "allauth.account",
     "allauth.socialaccount",
     # Using package: django-avatar
     "avatar",
+    "materializecssform",
 ]
 
 MIDDLEWARE = [

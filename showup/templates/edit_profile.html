@@ -1,13 +1,13 @@
 <body>
 
 {% extends 'header.html' %}
-
+{% load materializecss %}
 {% block content %}
-
 
 <form method='post'>
 {% csrf_token %}
-{{form.as_p}}
+{{ form.bio|materializecss:'icon=tag_faces' }}
+{{ form.genres|materializecss}}
 <button type="submit" name="button">Submit</button>
 </form>
 <br>
