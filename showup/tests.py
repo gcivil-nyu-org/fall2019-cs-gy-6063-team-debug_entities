@@ -21,7 +21,6 @@ class ConcertModelTests(TestCase):
 
 
 class GenreModelTests(TestCase):
-
     def test_genre_basic(self):
         genre = Genre(genre="EDM")
         genre.save()
@@ -29,14 +28,13 @@ class GenreModelTests(TestCase):
 
 
 class CustomUserModelTests(TestCase):
-
     def test_customuser_basic(self):
         user = CustomUser(
             first_name="Jerry",
             last_name="Springer",
             date_of_birth="1944-02-13",
             gender="Man",
-            email="jspringer@example.com"
+            email="jspringer@example.com",
         )
         user.save()
         self.assertEqual(user.__str__(), "jspringer@example.com")
@@ -50,12 +48,12 @@ class CustomUserModelTests(TestCase):
             "gender": "Man",
             "email": "jspringer@example.com",
             "password1": "heyhey123",
-            "password2": "heyhey123"
+            "password2": "heyhey123",
         }
 
         # Send a POST request containing the form data.
         c = Client()
-        c.post('/accounts/signup/', data)
+        c.post("/accounts/signup/", data)
 
         # Ensure the POST request was successful.
         user = CustomUser.objects.get(email="jspringer@example.com")
@@ -63,7 +61,6 @@ class CustomUserModelTests(TestCase):
 
 
 class SwipeModelTests(TestCase):
-
     def test_swipe_basic(self):
         # Create needed objects for Swipe model.
         swiper = CustomUser(username="1", email="swiper@example.com")
@@ -77,17 +74,19 @@ class SwipeModelTests(TestCase):
         event.save()
 
         # Create the Swipe object.
-        swipe = Swipe(swiper=swiper, swipee=swipee, event=event,
-                      direction=direction)
+        swipe = Swipe(swiper=swiper, swipee=swipee, event=event, direction=direction)
 
         # Save the Swipe object.
         swipe.save()
 
-        expected_output = (f"Swiper: {swiper.email}, "
-                           f"Swipee: {swipee.email}, "
-                           f"Event: {event.id}, "
-                           f"Direction: {direction}")
+        expected_output = (
+            f"Swiper: {swiper.email}, "
+            f"Swipee: {swipee.email}, "
+            f"Event: {event.id}, "
+            f"Direction: {direction}"
+        )
         self.assertEqual(swipe.__str__(), expected_output)
+
 
 class AuthenticatedViewTests(TestCase):
     def setUp(self):  # this logs in a test user for the subsequent test cases
