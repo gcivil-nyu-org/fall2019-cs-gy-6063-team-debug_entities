@@ -6,7 +6,8 @@ from django.test import Client, TestCase
 from django.urls import reverse
 from django.utils.timezone import make_aware, utc
 
-
+# models.py
+###############################################################################
 class ConcertModelTests(TestCase):
     def test_concert_string_contains_correct_info(self):
         test_concert = Concert(
@@ -88,6 +89,9 @@ class SwipeModelTests(TestCase):
         self.assertEqual(swipe.__str__(), expected_output)
 
 
+###############################################################################
+
+
 class AuthenticatedViewTests(TestCase):
     def setUp(self):  # this logs in a test user for the subsequent test cases
         username = "testuser"
@@ -151,7 +155,15 @@ class UnauthenticatedViewTests(TestCase):
         self.assertEqual(self.response.status_code, 302)
 
 
-class FilterViewTests(TestCase):
+# views.py
+###############################################################################
+class HomeViewTests(TestCase):
+    def test_home_basic(self):
+        response = self.client.get(reverse("home"))
+        self.assertEqual(response.status_code, 200)
+
+
+class EventViewTests(TestCase):
     def setUp(self):
         # Create and save user.
         username, password = "jspringer@example.com", "heyhey123"
@@ -176,3 +188,6 @@ class FilterViewTests(TestCase):
         )
         response = self.client.get(reverse("events") + get)
         self.assertEqual(response.status_code, 200)
+
+
+###############################################################################
