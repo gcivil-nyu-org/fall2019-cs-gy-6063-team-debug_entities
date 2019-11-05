@@ -173,3 +173,8 @@ class FilterViewTests(TestCase):
         get = "?boroughs=BK&performers=&genres=&start_date=&end_date=&filter=#"
         response = self.client.get(reverse("events") + get)
         self.assertEqual(response.status_code, 200)
+
+    def test_filter_venue(self):
+        get = "?performers=&venues=American+Cheez&genres=&start_date=&end_date=&filter=#"
+        response = self.client.get(reverse("events") + get)
+        self.assertEqual(response.status_code, 200)
