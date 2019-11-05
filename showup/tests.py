@@ -1,10 +1,10 @@
 import datetime
 
-from .models import Concert, CustomUser, Genre
+from .models import Concert, CustomUser, Genre, Swipe
+from allauth.account.admin import EmailAddress
 from django.test import Client, TestCase
 from django.urls import reverse
-from django.utils.timezone import make_aware
-from allauth.account.admin import EmailAddress
+from django.utils.timezone import make_aware, utc
 
 
 class ConcertModelTests(TestCase):
@@ -61,6 +61,33 @@ class CustomUserModelTests(TestCase):
         user = CustomUser.objects.get(email="jspringer@example.com")
         self.assertEqual(user.last_name, "Springer")
 
+
+class SwipeModelTests(TestCase):
+
+    def test_swipe_basic(self):
+        # Create needed objects for Swipe model.
+        swiper = CustomUser(username="1", email="swiper@example.com")
+        swipee = CustomUser(username="2", email="swipee@example.com")
+        event = Concert(id=1, datetime=datetime.datetime.now(tz=utc))
+        direction = True
+
+        # Save the objects.
+        swiper.save()
+        swipee.save()
+        event.save()
+
+        # Create the Swipe object.
+        swipe = Swipe(swiper=swiper, swipee=swipee, event=event,
+                      direction=direction)
+
+        # Save the Swipe object.
+        swipe.save()
+
+        expected_output = (f"Swiper: {swiper.email}, "
+                           f"Swipee: {swipee.email}, "
+                           f"Event: {event.id}, "
+                           f"Direction: {direction}")
+        self.assertEqual(swipe.__str__(), expected_output)
 
 class AuthenticatedViewTests(TestCase):
     def setUp(self):  # this logs in a test user for the subsequent test cases
