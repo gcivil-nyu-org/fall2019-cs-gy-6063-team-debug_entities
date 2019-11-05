@@ -7,7 +7,7 @@ from django.urls import reverse
 from django.utils.timezone import make_aware, utc
 
 # models.py
-###############################################################################
+
 class ConcertModelTests(TestCase):
     def test_concert_string_contains_correct_info(self):
         test_concert = Concert(
@@ -89,7 +89,47 @@ class SwipeModelTests(TestCase):
         self.assertEqual(swipe.__str__(), expected_output)
 
 
-###############################################################################
+class HomeViewTests(TestCase):
+    def test_home_basic(self):
+        response = self.client.get(reverse("home"))
+        self.assertEqual(response.status_code, 200)
+
+
+class EventViewTests(TestCase):
+    def setUp(self):
+        # Create and save user.
+        username, password = "jspringer@example.com", "heyhey123"
+        user = CustomUser.objects.create_user(username=username, password=password)
+        EmailAddress.objects.get_or_create(id=1, user=user, verified=True)
+
+        # Login user.
+        self.client.login(username=username, password=password)
+
+        # Create and save event.
+        event = Concert(id=1, datetime=datetime.datetime.now(tz=utc), borough="BK")
+        event.save()
+
+    def test_event_filter_borough(self):
+        get = "?boroughs=BK&performers=&genres=&start_date=&end_date=&filter=#"
+        response = self.client.get(reverse("events") + get)
+        self.assertEqual(response.status_code, 200)
+
+    def test_event_filter_venue(self):
+        get = (
+            "?performers=&venues=American+Cheez&genres=&start_date=&end_date=&filter=#"
+        )
+        response = self.client.get(reverse("events") + get)
+        self.assertEqual(response.status_code, 200)
+
+    def test_event_interested(self):
+        get = "?interested=1"
+        response = self.client.get(reverse("events") + get)
+        self.assertEqual(response.status_code, 200)
+
+    def test_event_going(self):
+        get = "?going=1"
+        response = self.client.get(reverse("events") + get)
+        self.assertEqual(response.status_code, 200)
 
 
 class AuthenticatedViewTests(TestCase):
@@ -153,41 +193,3 @@ class UnauthenticatedViewTests(TestCase):
     def test_unauthed_user_cannot_edit_profile(self):
         self.response = self.client.get(reverse("edit_profile", args=(1,)))
         self.assertEqual(self.response.status_code, 302)
-
-
-# views.py
-###############################################################################
-class HomeViewTests(TestCase):
-    def test_home_basic(self):
-        response = self.client.get(reverse("home"))
-        self.assertEqual(response.status_code, 200)
-
-
-class EventViewTests(TestCase):
-    def setUp(self):
-        # Create and save user.
-        username, password = "jspringer@example.com", "heyhey123"
-        user = CustomUser.objects.create_user(username=username, password=password)
-        EmailAddress.objects.get_or_create(id=1, user=user, verified=True)
-
-        # Login user.
-        self.client.login(username=username, password=password)
-
-        # Create and save event.
-        event = Concert(id=1, datetime=datetime.datetime.now(tz=utc), borough="BK")
-        event.save()
-
-    def test_filter_borough(self):
-        get = "?boroughs=BK&performers=&genres=&start_date=&end_date=&filter=#"
-        response = self.client.get(reverse("events") + get)
-        self.assertEqual(response.status_code, 200)
-
-    def test_filter_venue(self):
-        get = (
-            "?performers=&venues=American+Cheez&genres=&start_date=&end_date=&filter=#"
-        )
-        response = self.client.get(reverse("events") + get)
-        self.assertEqual(response.status_code, 200)
-
-
-###############################################################################
