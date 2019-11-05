@@ -1,6 +1,7 @@
-from .models import Concert, CustomUser
 import datetime
-from django.test import TestCase
+
+from .models import Concert, CustomUser
+from django.test import Client, TestCase
 from django.urls import reverse
 from django.utils.timezone import make_aware
 from allauth.account.admin import EmailAddress
@@ -29,26 +30,28 @@ class CustomUserModelTests(TestCase):
             gender="Man",
             email="jspringer@example.com"
         )
-        self.assertEqual(user.gender, "Man")
-
-    def test_customuser_save(self):
-        user = CustomUser(
-            first_name="Jerry",
-            last_name="Springer",
-            date_of_birth="1944-02-13",
-            gender="Man",
-            email="jspringer@example.com"
-        )
         user.save()
         self.assertEqual(user.gender, "Man")
 
-    def test_customuser_partial_info(self):
-        user = CustomUser(
-            first_name="Jerry",
-            last_name="Seinfeld",
-            email="jerry@seinfeld.com"
-        )
-        self.assertEqual(user.__str__(), "jerry@seinfeld.com")
+    def test_customuser_form(self):
+        # Create form data.
+        data = {
+            "first_name": "Jerry",
+            "last_name": "Springer",
+            "date_of_birth": "1944-02-13",
+            "gender": "Man",
+            "email": "jspringer@example.com",
+            "password1": "heyhey123",
+            "password2": "heyhey123"
+        }
+
+        # Send a POST request containing the form data.
+        c = Client()
+        c.post('/accounts/signup/', data)
+
+        # Ensure the POST request was successful.
+        user = CustomUser.objects.get(email="jspringer@example.com")
+        self.assertEqual(user.last_name, "Springer")
 
 
 class AuthenticatedViewTests(TestCase):
