@@ -149,3 +149,27 @@ class UnauthenticatedViewTests(TestCase):
     def test_unauthed_user_cannot_edit_profile(self):
         self.response = self.client.get(reverse("edit_profile", args=(1,)))
         self.assertEqual(self.response.status_code, 302)
+
+
+class FilterViewTests(TestCase):
+    def setUp(self):
+        # Create and save user.
+        username, password = "jspringer@example.com", "heyhey123"
+        user = CustomUser.objects.create_user(username=username, password=password)
+        EmailAddress.objects.get_or_create(id=1, user=user, verified=True)
+
+        # Login user.
+        self.client.login(username=username, password=password)
+
+        # Create and save event.
+        event = Concert(
+            id=1,
+            datetime=datetime.datetime.now(tz=utc),
+            borough="BK",
+        )
+        event.save()
+
+    def test_filter_borough(self):
+        get = "?boroughs=BK&performers=&genres=&start_date=&end_date=&filter=#"
+        response = self.client.get(reverse("events") + get)
+        self.assertEqual(response.status_code, 200)
