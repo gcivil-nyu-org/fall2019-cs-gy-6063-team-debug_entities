@@ -94,7 +94,7 @@ class HomeViewTests(TestCase):
         self.assertEqual(response.status_code, 200)
 
 
-class EventViewTests(TestCase):
+class EventsViewTests(TestCase):
     def setUp(self):
         # Create and save user.
         username, password = "jspringer@example.com", "heyhey123"
@@ -108,27 +108,63 @@ class EventViewTests(TestCase):
         event = Concert(id=1, datetime=datetime.datetime.now(tz=utc), borough="BK")
         event.save()
 
-    def test_event_filter_borough(self):
+    def test_events_filter_borough(self):
         get = "?boroughs=BK&performers=&genres=&start_date=&end_date=&filter=#"
         response = self.client.get(reverse("events") + get)
         self.assertEqual(response.status_code, 200)
 
-    def test_event_filter_venue(self):
+    def test_events_filter_venue(self):
         get = (
             "?performers=&venues=American+Cheez&genres=&start_date=&end_date=&filter=#"
         )
         response = self.client.get(reverse("events") + get)
         self.assertEqual(response.status_code, 200)
 
-    def test_event_interested(self):
+    def test_events_interested(self):
         get = "?interested=1"
         response = self.client.get(reverse("events") + get)
         self.assertEqual(response.status_code, 200)
 
-    def test_event_going(self):
+    def test_events_going(self):
         get = "?going=1"
         response = self.client.get(reverse("events") + get)
         self.assertEqual(response.status_code, 200)
+
+
+class UserViewTests(TestCase):
+    def setUp(self):
+        # Create and save user.
+        username, password = "jspringer@example.com", "heyhey123"
+        user = CustomUser.objects.create_user(username=username, password=password)
+        EmailAddress.objects.get_or_create(id=1, user=user, verified=True)
+
+        # Login user.
+        self.client.login(username=username, password=password)
+
+    def test_user_unverified(self):
+        # Create and save user.
+        user = CustomUser(
+            first_name="Jerry",
+            last_name="Seinfeld",
+            date_of_birth="1954-04-29",
+            gender="Man",
+            email="jseinfeld@example.com",
+        )
+        user.save()
+
+        # Create and save email.
+        email = EmailAddress(
+            email="jseinfeld@example.com",
+            user=user,
+            primary=False,
+            verified=False,
+        )
+        email.save()
+
+        # Try to view unverified user's profile.
+        get = "2"
+        response = self.client.get("/u/" + get)  # FIXME (use reverse())
+        self.assertEqual(response.status_code, 403)
 
 
 class AuthenticatedViewTests(TestCase):
