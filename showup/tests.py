@@ -6,7 +6,6 @@ from django.test import Client, TestCase
 from django.urls import reverse
 from django.utils.timezone import make_aware, utc
 
-# models.py
 
 class ConcertModelTests(TestCase):
     def test_concert_string_contains_correct_info(self):
