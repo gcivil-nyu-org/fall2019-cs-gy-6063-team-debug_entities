@@ -145,6 +145,7 @@ def edit_profile(request, id):
 @login_required
 def event_stack(request, eid):
     my_id = request.user.id
+    popup = 0
     """
     Gather all the eligible users to return.
     Criteria:
@@ -197,7 +198,13 @@ def event_stack(request, eid):
 
         # the line below checks criteria 1 and 2
         if my_direction and their_swipe_on_me and their_swipe_on_me.direction:
+            popup = 1
             print(f"Users {my_id} and {swipee_id} just matched")
             # replace the line above with code for the match modal window
 
-    return render(request, "match.html", {"users": users})
+    return render(request, "match.html",
+        {
+            "users": users,
+            "popup": popup
+        }
+    )
