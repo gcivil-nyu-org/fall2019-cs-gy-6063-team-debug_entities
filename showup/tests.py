@@ -162,11 +162,7 @@ class FilterViewTests(TestCase):
         self.client.login(username=username, password=password)
 
         # Create and save event.
-        event = Concert(
-            id=1,
-            datetime=datetime.datetime.now(tz=utc),
-            borough="BK",
-        )
+        event = Concert(id=1, datetime=datetime.datetime.now(tz=utc), borough="BK")
         event.save()
 
     def test_filter_borough(self):
@@ -175,6 +171,8 @@ class FilterViewTests(TestCase):
         self.assertEqual(response.status_code, 200)
 
     def test_filter_venue(self):
-        get = "?performers=&venues=American+Cheez&genres=&start_date=&end_date=&filter=#"
+        get = (
+            "?performers=&venues=American+Cheez&genres=&start_date=&end_date=&filter=#"
+        )
         response = self.client.get(reverse("events") + get)
         self.assertEqual(response.status_code, 200)
