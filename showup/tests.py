@@ -20,11 +20,35 @@ class ConcertModelTests(TestCase):
 
 
 class CustomUserModelTests(TestCase):
-    def test_customuser_string_contains_correct_info(self):
-        test_customuser = CustomUser(
-            first_name="Jerry", last_name="Seinfeld", email="jerry@seinfeld.com"
+
+    def test_customuser_basic(self):
+        user = CustomUser(
+            first_name="Jerry",
+            last_name="Springer",
+            date_of_birth="1944-02-13",
+            gender="Man",
+            email="jspringer@example.com"
         )
-        self.assertEqual(test_customuser.__str__(), "jerry@seinfeld.com")
+        self.assertEqual(user.gender, "Man")
+
+    def test_customuser_save(self):
+        user = CustomUser(
+            first_name="Jerry",
+            last_name="Springer",
+            date_of_birth="1944-02-13",
+            gender="Man",
+            email="jspringer@example.com"
+        )
+        user.save()
+        self.assertEqual(user.gender, "Man")
+
+    def test_customuser_partial_info(self):
+        user = CustomUser(
+            first_name="Jerry",
+            last_name="Seinfeld",
+            email="jerry@seinfeld.com"
+        )
+        self.assertEqual(user.__str__(), "jerry@seinfeld.com")
 
 
 class AuthenticatedViewTests(TestCase):
