@@ -138,6 +138,14 @@ class EventsViewTests(TestCase):
         response = self.client.get(reverse("events") + get)
         self.assertEqual(response.status_code, 200)
 
+    def test_events_going_not_going(self):
+        get = "?going=1"
+        response = self.client.get(reverse("events") + get)
+        self.assertEqual(response.status_code, 200)
+        get = "?going=1"
+        response = self.client.get(reverse("events") + get)
+        self.assertEqual(response.status_code, 200)
+
 
 class UserViewTests(TestCase):
     def setUp(self):
