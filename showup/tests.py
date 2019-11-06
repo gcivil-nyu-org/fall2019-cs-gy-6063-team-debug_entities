@@ -154,16 +154,40 @@ class UserViewTests(TestCase):
 
         # Create and save email.
         email = EmailAddress(
-            email="jseinfeld@example.com",
-            user=user,
-            primary=False,
-            verified=False,
+            email="jseinfeld@example.com", user=user, primary=False, verified=False
         )
         email.save()
 
         # Try to view unverified user's profile.
         get = "2"
         response = self.client.get("/u/" + get)  # FIXME (use reverse())
+        self.assertEqual(response.status_code, 403)
+
+
+class EditProfileViewTests(TestCase):
+    def setUp(self):
+        # Create and save user.
+        username, password = "jspringer@example.com", "heyhey123"
+        user = CustomUser.objects.create_user(username=username, password=password)
+        EmailAddress.objects.get_or_create(id=1, user=user, verified=True)
+
+        # Login user.
+        self.client.login(username=username, password=password)
+
+    def test_editprofile_different_user(self):
+        # Create and save user.
+        user = CustomUser(
+            first_name="Jerry",
+            last_name="Seinfeld",
+            date_of_birth="1954-04-29",
+            gender="Man",
+            email="jseinfeld@example.com",
+        )
+        user.save()
+
+        # Try to edit another user's profile.
+        get = "2"
+        response = self.client.get("/u/" + get + "/edit")  # FIXME (use reverse())
         self.assertEqual(response.status_code, 403)
 
 
