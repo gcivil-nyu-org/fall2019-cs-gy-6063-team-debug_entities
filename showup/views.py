@@ -39,11 +39,19 @@ def get_genres():
     genre_choices = []
     for genre in Concert.objects.all().values("genres"):
         genre_choices.extend(genre["genres"].split(", "))
-
     genre_choices = [name.strip(" ") for name in genre_choices]
     genre_choices = list(set(genre_choices))
     genre_choices.sort()
     return genre_choices
+
+
+def insert_to_list_exclusively(event_id, add_list, remove_list):
+    if add_list.filter(id=event_id).count() > 0:
+        add_list.remove(event_id)
+    else:
+        add_list.add(event_id)
+        if remove_list.filter(id=event_id).count() > 0:
+            remove_list.remove(event_id)
 
 
 @login_required
@@ -93,13 +101,15 @@ def events(request):
 
     # User clicked "Interested" button.
     if "interested" in request.GET:
-        event_id = request.GET.get("interested")
-        request.user.interested.add(event_id)
+        insert_to_list_exclusively(
+            request.GET.get("interested"), request.user.interested, request.user.going
+        )
 
     # User clicked "Going" button.
-    if "going" in request.GET:
-        event_id = request.GET.get("going")
-        request.user.going.add(event_id)
+    elif "going" in request.GET:
+        insert_to_list_exclusively(
+            request.GET.get("going"), request.user.going, request.user.interested
+        )
 
     return render(
         request,
@@ -112,6 +122,8 @@ def events(request):
             "genre_choices": genre_choices,
             "start_date": start_date,
             "end_date": end_date,
+            "interested_list": request.user.interested.values_list("id", flat=True),
+            "going_list": request.user.going.values_list("id", flat=True),
         },
     )
 
