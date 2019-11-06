@@ -25,6 +25,7 @@
         <i class="material-icons">thumb_up</i></button>
     </form>
     </div>
+    {% if swipee_id == user.id %}
     {% if popup == 1 %}
     <div id="modal1" class="modal">
       <div class="modal-title">
@@ -38,6 +39,7 @@
       </div>
       </div>
     </div>
+    {% endif %}
     {% endif %}
   {% endfor %}
   {% else %}
