@@ -205,9 +205,9 @@ def event_stack(request, eid):
             print(f"Users {my_id} and {swipee_id} just matched")
 
     return render(request, "match.html",
-        {
-            "users": users,
-            "popup": popup,
-            "id_to_send": id_to_send
-        }
-    )
+                  {
+                    "users": users,
+                    "popup": popup,
+                    "id_to_send": id_to_send
+                  }
+                  )
