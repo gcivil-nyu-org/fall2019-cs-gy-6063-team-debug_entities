@@ -1,6 +1,11 @@
-from .models import CustomUser, Genre, Match
+from .models import CustomUser, Genre, Swipe
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
+
+
+class SwipeInline(admin.TabularInline):
+    model = Swipe
+    fk_name = "swiper"
 
 
 class CustomUserAdmin(UserAdmin):
@@ -17,12 +22,15 @@ class CustomUserAdmin(UserAdmin):
                     "date_of_birth",
                     "gender",
                     "email",
-                    "password",
+                    "interested",
+                    "going",
                     "bio",
+                    "image",
                 )
             },
         ),
     )
+    inlines = (SwipeInline,)
     add_fieldsets = fieldsets
 
     class Meta:
@@ -36,13 +44,13 @@ class GenreAdmin(admin.ModelAdmin):
         model = Genre
 
 
-class MatchAdmin(admin.ModelAdmin):
-    list_display = ["uid_1", "uid_2", "eid", "decision_1", "decision_2", "decision"]
+class SwipeAdmin(admin.ModelAdmin):
+    list_display = ["swiper", "swipee", "event", "direction"]
 
     class Meta:
-        model = Match
+        model = Swipe
 
 
 admin.site.register(CustomUser, CustomUserAdmin)
 admin.site.register(Genre, GenreAdmin)
-admin.site.register(Match, MatchAdmin)
+admin.site.register(Swipe, SwipeAdmin)

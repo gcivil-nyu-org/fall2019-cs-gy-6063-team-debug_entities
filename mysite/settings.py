@@ -39,11 +39,14 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "showup.apps.ShowUpConfig",
-    # entries below are needed for django-allauth
+    # entries below are needed for django-allauth and materializecssform
     "django.contrib.sites",
     "allauth",
     "allauth.account",
     "allauth.socialaccount",
+    # Using package: django-avatar
+    "avatar",
+    "materializecssform",
 ]
 
 MIDDLEWARE = [
@@ -121,6 +124,10 @@ USE_TZ = True
 
 STATIC_URL = "/static/"
 STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
+
+# Media Files
+MEDIA_ROOT = os.path.join(BASE_DIR, "media")
+MEDIA_URL = "/media/"
 
 # Adding Show Up email information. Emails to users will be sent from this account.
 EMAIL_USE_TLS = True

@@ -1,9 +1,10 @@
-from .models import Concert, CustomUser
 import datetime
-from django.test import TestCase
-from django.urls import reverse
-from django.utils.timezone import make_aware
+
+from .models import Concert, CustomUser, Genre, Swipe
 from allauth.account.admin import EmailAddress
+from django.test import Client, TestCase
+from django.urls import reverse
+from django.utils.timezone import make_aware, utc
 
 
 class ConcertModelTests(TestCase):
@@ -19,12 +20,191 @@ class ConcertModelTests(TestCase):
         self.assertEqual(test_concert.__str__(), desired_output)
 
 
+class GenreModelTests(TestCase):
+    def test_genre_basic(self):
+        genre = Genre(genre="EDM")
+        genre.save()
+        self.assertEqual(genre.__str__(), "EDM")
+
+
 class CustomUserModelTests(TestCase):
-    def test_customuser_string_contains_correct_info(self):
-        test_customuser = CustomUser(
-            first_name="Jerry", last_name="Seinfeld", email="jerry@seinfeld.com"
+    def test_customuser_basic(self):
+        user = CustomUser(
+            first_name="Jerry",
+            last_name="Springer",
+            date_of_birth="1944-02-13",
+            gender="Man",
+            email="jspringer@example.com",
         )
-        self.assertEqual(test_customuser.__str__(), "jerry@seinfeld.com")
+        user.save()
+        self.assertEqual(user.__str__(), "jspringer@example.com")
+
+    def test_customuser_form(self):
+        # Create form data.
+        data = {
+            "first_name": "Jerry",
+            "last_name": "Springer",
+            "date_of_birth": "1944-02-13",
+            "gender": "Man",
+            "email": "jspringer@example.com",
+            "password1": "heyhey123",
+            "password2": "heyhey123",
+        }
+
+        # Send a POST request containing the form data.
+        c = Client()
+        c.post("/accounts/signup/", data)
+
+        # Ensure the POST request was successful.
+        user = CustomUser.objects.get(email="jspringer@example.com")
+        self.assertEqual(user.last_name, "Springer")
+
+
+class SwipeModelTests(TestCase):
+    def test_swipe_basic(self):
+        # Create needed objects for Swipe model.
+        swiper = CustomUser(username="1", email="swiper@example.com")
+        swipee = CustomUser(username="2", email="swipee@example.com")
+        event = Concert(id=1, datetime=datetime.datetime.now(tz=utc))
+        direction = True
+
+        # Save the objects.
+        swiper.save()
+        swipee.save()
+        event.save()
+
+        # Create the Swipe object.
+        swipe = Swipe(swiper=swiper, swipee=swipee, event=event, direction=direction)
+
+        # Save the Swipe object.
+        swipe.save()
+
+        expected_output = (
+            f"Swiper: {swiper.email}, "
+            f"Swipee: {swipee.email}, "
+            f"Event: {event.id}, "
+            f"Direction: {direction}"
+        )
+        self.assertEqual(swipe.__str__(), expected_output)
+
+
+class HomeViewTests(TestCase):
+    def test_home_basic(self):
+        response = self.client.get(reverse("home"))
+        self.assertEqual(response.status_code, 200)
+
+
+class EventsViewTests(TestCase):
+    def setUp(self):
+        # Create and save user.
+        username, password = "jspringer@example.com", "heyhey123"
+        user = CustomUser.objects.create_user(username=username, password=password)
+        EmailAddress.objects.get_or_create(id=1, user=user, verified=True)
+
+        # Login user.
+        self.client.login(username=username, password=password)
+
+        # Create and save event.
+        event = Concert(id=1, datetime=datetime.datetime.now(tz=utc), borough="BK")
+        event.save()
+
+    def test_events_filter_borough(self):
+        get = "?boroughs=BK&performers=&genres=&start_date=&end_date=&filter=#"
+        response = self.client.get(reverse("events") + get)
+        self.assertEqual(response.status_code, 200)
+
+    def test_events_filter_venue(self):
+        get = (
+            "?performers=&venues=American+Cheez&genres=&start_date=&end_date=&filter=#"
+        )
+        response = self.client.get(reverse("events") + get)
+        self.assertEqual(response.status_code, 200)
+
+    def test_events_interested(self):
+        get = "?interested=1"
+        response = self.client.get(reverse("events") + get)
+        self.assertEqual(response.status_code, 200)
+
+    def test_events_going(self):
+        get = "?going=1"
+        response = self.client.get(reverse("events") + get)
+        self.assertEqual(response.status_code, 200)
+
+    def test_events_interested_going(self):
+        get = "?going=1"
+        response = self.client.get(reverse("events") + get)
+        self.assertEqual(response.status_code, 200)
+        get = "?interested=1"
+        response = self.client.get(reverse("events") + get)
+        self.assertEqual(response.status_code, 200)
+
+    def test_events_going_not_going(self):
+        get = "?going=1"
+        response = self.client.get(reverse("events") + get)
+        self.assertEqual(response.status_code, 200)
+        get = "?going=1"
+        response = self.client.get(reverse("events") + get)
+        self.assertEqual(response.status_code, 200)
+
+
+class UserViewTests(TestCase):
+    def setUp(self):
+        # Create and save user.
+        username, password = "jspringer@example.com", "heyhey123"
+        user = CustomUser.objects.create_user(username=username, password=password)
+        EmailAddress.objects.get_or_create(id=1, user=user, verified=True)
+
+        # Login user.
+        self.client.login(username=username, password=password)
+
+    def test_user_unverified(self):
+        # Create and save user.
+        user = CustomUser(
+            first_name="Jerry",
+            last_name="Seinfeld",
+            date_of_birth="1954-04-29",
+            gender="Man",
+            email="jseinfeld@example.com",
+        )
+        user.save()
+
+        # Create and save email.
+        email = EmailAddress(
+            email="jseinfeld@example.com", user=user, primary=False, verified=False
+        )
+        email.save()
+
+        # Try to view unverified user's profile.
+        get = "2"
+        response = self.client.get("/u/" + get)  # FIXME (use reverse())
+        self.assertEqual(response.status_code, 403)
+
+
+class EditProfileViewTests(TestCase):
+    def setUp(self):
+        # Create and save user.
+        username, password = "jspringer@example.com", "heyhey123"
+        user = CustomUser.objects.create_user(username=username, password=password)
+        EmailAddress.objects.get_or_create(id=1, user=user, verified=True)
+
+        # Login user.
+        self.client.login(username=username, password=password)
+
+    def test_editprofile_different_user(self):
+        # Create and save user.
+        user = CustomUser(
+            first_name="Jerry",
+            last_name="Seinfeld",
+            date_of_birth="1954-04-29",
+            gender="Man",
+            email="jseinfeld@example.com",
+        )
+        user.save()
+
+        # Try to edit another user's profile.
+        get = "2"
+        response = self.client.get("/u/" + get + "/edit")  # FIXME (use reverse())
+        self.assertEqual(response.status_code, 403)
 
 
 class AuthenticatedViewTests(TestCase):
@@ -60,8 +240,9 @@ class AuthenticatedViewTests(TestCase):
 
     def test_authed_user_can_filter_events(self):
         get = (
-            "?performers=test&genres=test&start_date=2010-10-30T17:30"
-            "&end_date=2019-10-30T17:30&filter=#"
+            "?boroughs=BK&boroughs=MN&performers=test&venues=Rogers+Hall&"
+            "venues=Elsewhere&genres=test&start_date=2010-10-30T17:30&"
+            "end_date=2019-10-30T17:30&filter=#"
         )
         self.response = self.client.get(reverse("events") + get)
         self.assertEqual(self.response.status_code, 200)
@@ -72,6 +253,16 @@ class AuthenticatedViewTests(TestCase):
 
     def test_authed_user_can_see_matching_stack(self):
         self.response = self.client.get(reverse("event_stack", args=(1,)))
+        self.assertEqual(self.response.status_code, 200)
+
+    def test_authed_user_can_mark_interested_to_events(self):
+        get = "?interested=1#"
+        self.response = self.client.get(reverse("events") + get)
+        self.assertEqual(self.response.status_code, 200)
+
+    def test_authed_user_can_mark_going_to_events(self):
+        get = "?going=1#"
+        self.response = self.client.get(reverse("events") + get)
         self.assertEqual(self.response.status_code, 200)
 
 
