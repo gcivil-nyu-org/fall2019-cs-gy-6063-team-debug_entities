@@ -113,7 +113,7 @@ class Command(BaseCommand):
 
         # Add genres to Genre model.
 
-        for genre in reversed(genres):
+        for genre in genres:
             Genre(genre=genre).save()
 
         # Add genres to genres.txt.
