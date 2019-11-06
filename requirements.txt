@@ -8,3 +8,4 @@ black
 coverage
 coveralls
 flake8
+django-avatar
