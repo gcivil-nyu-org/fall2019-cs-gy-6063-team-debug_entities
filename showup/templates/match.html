@@ -12,7 +12,7 @@
   {% for user in users %}  
   <div class="carousel-item red white-text" href="#one!">
     <h2><a class="white-text" href="{% url 'user' user.id %}">{{ user.first_name }}</a></h2>
-    <p>{% avatar user 200 %}</p>
+    <p>{% avatar user %}</p>
     <p class="white-text">{{user.bio}}</p>
     <br><br>
     <form action="#" method="POST">
