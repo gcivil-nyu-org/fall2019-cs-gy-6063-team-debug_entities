@@ -1,4 +1,5 @@
 {% extends 'header.html' %}
+{% load avatar_tags %}
 
 <body>
 
@@ -6,14 +7,14 @@
 <p>Logged in as {{ user.first_name }}.</p>
 <br><br><br>
 
-
 <div class="carousel carousel-slider center">
   {% if users %}
-  {% for user in users %}
+  {% for user in users %}  
   <div class="carousel-item red white-text" href="#one!">
     <h2><a class="white-text" href="{% url 'user' user.id %}">{{ user.first_name }}</a></h2>
+    <p>{% avatar user %}</p>
     <p class="white-text">{{user.bio}}</p>
-    <br><br><br>
+    <br><br>
     <form action="#" method="POST">
       {% csrf_token %}
       <input type="hidden" name="swipee_id" value="{{ user.id }}">
@@ -25,12 +26,28 @@
         <i class="material-icons">thumb_up</i></button>
     </form>
     </div>
+    {% if popup == 1 %}
+    {% if id_to_send == user.id %}
+    <div id="modal1" class="modal">
+      <div class="modal-title">
+              <h4>CONGRATULATIONS!</h4>
+              <div class="modal-content">
+                <h5>You matched with {{user.first_name}}</h5>
+              </div>
+      <div class="modal-footer">
+        <a href="#!" class="modal-close btn orange">Message</a>
+        <a href="#!" class="modal-close btn orange">Keep Swiping</a>
+      </div>
+      </div>
+    </div>
+    {% endif %}
+    {% endif %}
   {% endfor %}
   {% else %}
-    <p>There's no one in this stack. To be in this stack, people have to be interested in this event, they can't have swiped left on you, 
+    <p>There's no one in this stack. To be in this stack, people have to be interested in this event, they can't have swiped left on you,
     you can't have swiped on them in any direction, and they can't be you.</p>
   {% endif %}
-</form>
+</div>
 
 <!-- Add javascript and jquery per page that requires it -->
 <!-- Jquery Import -->
@@ -41,7 +58,9 @@
 <!-- Using Carousel feature in materialize css -->
 <script>
 	$(document).ready(function() {
-		$('.carousel.carousel-slider').carousel({fullWidth: true, noWrap: true});
+		$('.carousel.carousel-slider').carousel({fullWidth: false, noWrap: true});
+        $('.modal').modal({dismissible: false,});
+        $('.modal').modal('open');
 	});
 </script>
 {% endblock %}

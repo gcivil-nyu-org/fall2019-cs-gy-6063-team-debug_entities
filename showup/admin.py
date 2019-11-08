@@ -25,6 +25,7 @@ class CustomUserAdmin(UserAdmin):
                     "interested",
                     "going",
                     "bio",
+                    "image",
                 )
             },
         ),
