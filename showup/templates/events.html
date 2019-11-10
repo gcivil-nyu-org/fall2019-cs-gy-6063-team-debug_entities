@@ -3,9 +3,9 @@
 {% load static %}
 
 {% block content %}
-<div class="container-fluid mt-5 mx-3">
-    <div class="row">
-        <div class="col-3">
+<div class="container-fluid d-flex flex-column flex-grow-1 vh-100">
+    <div class="row flex-grow-1 overflow-hidden">
+        <div class="col-3 mh-100 overflow-auto py-2">
             <div class="card shadow sticky-top">
                 <div class="card-body">
                     <h2 class="card-title text-center">Filters</h2>
@@ -13,20 +13,20 @@
                     <form action="" method="get">
                         {{ filter.form|crispy }}
                         <div class="col text-right">
-                            <input type="submit" class="btn btn-primary btn-sm" />
+                            <input type="submit" class="btn btn-primary btn-sm lift" />
                         </div>
                     </form>
                 </div>
             </div>
         </div>
-        <div class="col-9">
+        <div class="col-9 mh-100 overflow-auto py-2">
             <div class="card shadow">
                 <div class="card-body">
                     <h2 class="card-title text-center">Events</h2>
                     <hr>
                     <div class="row">
                         {% for event in filter.qs %}
-                        <div class="col-3 d-flex my-3">
+                        <div class="col-3 d-flex my-2">
                             <div class="card shadow lift">
                                 {% if not event.performer_image_url %} <!-- the API doesn't give an image for all events-->
                                     <img class="card-img-top"  src={% static "default-performer-image.jpg" %}>
@@ -36,10 +36,12 @@
                                 <div class="card-body">
                                     <h3 class="card-title text-center">{% if event.id in interested_list or event.id in going_list %}<a href="{% url 'event_stack' event.id %}">{% endif %}{{event.performer_names}}</a></h3>
                                     <p class="card-text">{{event.venue_name}} on {{event.datetime}}</p>
-                                    <form action="#" method="get">
-                                        <button class="btn btn-sm {% if event.id in interested_list %}btn-primary{% endif %}" type="submit" name="interested" value={{event.id}}>{% if event.id in interested_list %} Not {% endif %}Interested</button>
-                                        <button class="btn btn-sm {% if event.id in going_list %}btn-primary{% endif %}" type="submit" name="going" value={{event.id}}>{% if event.id in going_list %} Not {% endif %}Going</button>
-                                    </form>
+                                    <div class="text-center">
+                                        <form action="#" method="get">
+                                            <button class="btn btn-sm shadow {% if event.id in interested_list %}btn-primary{% endif %}" type="submit" name="interested" value={{event.id}}>{% if event.id in interested_list %} Not {% endif %}Interested</button>
+                                            <button class="btn btn-sm shadow {% if event.id in going_list %}btn-primary{% endif %}" type="submit" name="going" value={{event.id}}>{% if event.id in going_list %} Not {% endif %}Going</button>
+                                        </form>
+                                    </div>
                                 </div>
                             </div>
                         </div>
