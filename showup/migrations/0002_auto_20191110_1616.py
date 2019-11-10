@@ -5,14 +5,14 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('showup', '0001_initial'),
-    ]
+    dependencies = [("showup", "0001_initial")]
 
     operations = [
         migrations.AlterField(
-            model_name='customuser',
-            name='genres',
-            field=models.ManyToManyField(blank=True, related_name='genres', to='showup.Genre'),
-        ),
+            model_name="customuser",
+            name="genres",
+            field=models.ManyToManyField(
+                blank=True, related_name="genres", to="showup.Genre"
+            ),
+        )
     ]
