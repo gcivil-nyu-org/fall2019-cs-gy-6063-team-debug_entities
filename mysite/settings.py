@@ -39,14 +39,13 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "showup.apps.ShowUpConfig",
-    # entries below are needed for django-allauth and materializecssform
+    # entries below are needed for django-allauth
     "django.contrib.sites",
     "allauth",
     "allauth.account",
     "allauth.socialaccount",
     # Using package: django-avatar
     "avatar",
-    "materializecssform",
     "django_filters",
     "crispy_forms",
 ]
