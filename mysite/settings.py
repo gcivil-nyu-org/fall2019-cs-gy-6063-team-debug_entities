@@ -47,6 +47,8 @@ INSTALLED_APPS = [
     # Using package: django-avatar
     "avatar",
     "materializecssform",
+    "django_filters",
+    "crispy_forms",
 ]
 
 MIDDLEWARE = [
@@ -170,3 +172,6 @@ ACCOUNT_FORMS = {"signup": "showup.forms.CustomSignupForm"}
 # Session Timeout settings
 SESSION_EXPIRE_SECONDS = 60 * 60 * 12
 SESSION_EXPIRE_AFTER_LAST_ACTIVITY = True
+
+# Crispy forms settings
+CRISPY_TEMPLATE_PACK = "bootstrap4"
