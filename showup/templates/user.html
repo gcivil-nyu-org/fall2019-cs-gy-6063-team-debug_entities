@@ -54,7 +54,7 @@
                     <div class="d-flex align-items-center">
                       <div class="mr-auto">
                         <h2 class="font-weight-bold mb-0">
-                          These are the {{ requested_user.interested.count }} concerts {{ requested_user.first_name }} is interested in.
+                          {{ requested_user.first_name }} is interested in {{ requested_user.interested.count }} concerts.
                         </h2>
                       </div>
                     </div>
@@ -106,7 +106,7 @@
                       <div class="d-flex align-items-center">
                         <div class="mr-auto">
                           <h2 class="font-weight-bold mb-0">
-                            These are the {{ requested_user.going.count }} concerts {{ requested_user.first_name }} is going to.
+                            {{ requested_user.first_name }} is going to {{ requested_user.going.count }} concerts.
                           </h2>
                         </div>
                       </div>
