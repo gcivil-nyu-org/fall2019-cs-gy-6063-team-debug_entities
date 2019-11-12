@@ -1,33 +1,75 @@
-<head>
-  <meta charset="utf-8" />  
-  <!--Import Google Icon Font-->
-  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-  <!-- Compiled and minified CSS -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
-  <!-- Compiled and minified JavaScript -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
-  <!--Let browser know website is optimized for mobile-->
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-</head>
+{% load static %}
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!-- Favicon -->
+    <link rel="shortcut icon" type="image/png" href="{% static 'favicon.ico' %}"/>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <!-- JavaScript for Bootstrap -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    <!-- Theme CSS and JS -->
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'theme/theme.css' %}">
+    <script src="{% static 'theme/theme.min.js' %}"></script>
+    <!-- FontAwesome and Katibeh font -->
+    <script src="https://kit.fontawesome.com/b7cd3d18d2.js" crossorigin="anonymous"></script>
+    <link href="https://fonts.googleapis.com/css?family=Katibeh&display=swap" rel="stylesheet">
+  </head>
 
-<body>
-  <div class="nav-wrapper">
-    <nav>
-      <div class="nav-wrapper teal lighten-2">
+  <body>
+    <!-- NAVBAR -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-white">
+      <div class="container">
+
+        <!-- Brand -->
+        <a class="navbar-brand" href="{% url 'home' %}" font-family: 'Katibeh'>
+          ShowUp
+          <!-- <img src="{% static 'theme/drawing.svg' %}" class="navbar-brand-img"> -->
+        </a>
+
         {% if user.is_authenticated %}
-        <a href="{% url 'home' %}" class="brand-logo">&nbsp;ShowUp</a>
-        <ul id="nav-mobile" class="right hide-on-med-and-down">
-          <li><a href="{% url 'home' %}">Home</a></li>
-          <li><a href="{% url 'user' user.id %}">Profile</a></li>
-          <li><a href="{% url 'events' %}">Events</a></li>
-          <li><a href="{% url 'account_logout' %}">Logout</a></li>
-        </ul>
-        {% else %}
-        <div class="brand-logo">&nbsp;ShowUp</div>
+        <!-- Toggler -->
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+    
+        <!-- Collapse -->
+        <div class="collapse navbar-collapse" id="navbarCollapse">
+
+          <!-- Toggler -->
+          <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="fas fa-arrow-up"></span>
+          </button>
+
+          <!-- Navigation -->
+          <ul class="navbar-nav ml-auto">
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'home' %}">Home<span class="sr-only">(current)</span></a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'user' user.id %}">My Profile</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'events' %}">Events</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="">Matches</a>
+            </li>
+          </ul>
+
+          <!-- Log in button -->
+          <a class="navbar-btn btn btn-sm lift ml-auto" href="{% url 'account_logout' %}">Log out</a>
+        </div>
         {% endif %}
       </div>
     </nav>
+
     {% block content %}
-    
     {% endblock %}
-</body>
+  </body>
+</html>
