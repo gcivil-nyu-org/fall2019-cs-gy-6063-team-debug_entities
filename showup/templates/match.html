@@ -38,18 +38,18 @@
 </section>
       {% if popup == 1 %}
       {% if id_to_send == swipee.id %}
-      <div class="modal fade" id="myModal" role="dialog">
+      <div class="modal" id="myModal" data-toggle="modal" data-target="#myModal">
         <div class="modal-dialog modal-lg">
           <div class="modal-content">
             <div class="modal-header">
-              <h4 class="modal-title">CONGRATULATIONS</h4>
+              <h3 class="modal-title">CONGRATULATIONS!</h3>
             </div>
             <div class="modal-body">
-              <h5>You matched with {{swipee.first_name}}</h5>
+              <h4>You matched with {{swipee.first_name}}</h4>
             </div>
             <div class="modal-footer">
-              <button type="button" class="btn btn-default" data-dismiss="modal">Message</button>
-              <button type="button" class="btn btn-default" data-dismiss="modal">Keep Swiping</button>
+              <button type="button" class="btn btn-primary">Message</button>
+              <button type="button" class="btn btn-secondary">Keep Swiping</button>
             </div>
           </div>
         </div>
@@ -64,9 +64,8 @@
   {% endif %}
   <script>
       $(document).ready(function(){
-          $(".btn").click(function(){
-              $("#myModal").modal('show');
-          });
+            $('.modal').modal({dismissible: false,});
+            $('.modal').modal('open');
       });
   </script>
 {% endblock %}
