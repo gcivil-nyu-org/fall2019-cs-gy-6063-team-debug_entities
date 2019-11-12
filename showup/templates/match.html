@@ -38,16 +38,20 @@
 </section>
       {% if popup == 1 %}
       {% if id_to_send == swipee.id %}
-      <div id="modal1" class="modal">
-        <div class="modal-title">
-                <h4>CONGRATULATIONS!</h4>
-                <div class="modal-content">
-                  <h5>You matched with {{swipee.first_name}}</h5>
-                </div>
-        <div class="modal-footer">
-          <a href="#!" class="modal-close btn orange">Message</a>
-          <a href="#!" class="modal-close btn orange">Keep Swiping</a>
-        </div>
+      <div class="modal fade" id="myModal" role="dialog">
+        <div class="modal-dialog modal-lg">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h4 class="modal-title">CONGRATULATIONS</h4>
+            </div>
+            <div class="modal-body">
+              <h5>You matched with {{swipee.first_name}}</h5>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-default" data-dismiss="modal">Message</button>
+              <button type="button" class="btn btn-default" data-dismiss="modal">Keep Swiping</button>
+            </div>
+          </div>
         </div>
       </div>
       {% endif %}
@@ -58,5 +62,11 @@
     <img src="{% static 'lonely.jpg' %}">
   </div>
   {% endif %}
-
+  <script>
+      $(document).ready(function(){
+          $(".btn").click(function(){
+              $("#myModal").modal('show');
+          });
+      });
+  </script>
 {% endblock %}
