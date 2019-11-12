@@ -38,8 +38,8 @@
                   </ul>
 
                   {% if user.id == requested_user.id %}
+                  <a class="btn btn-primary" href="{% url 'avatar_change' %}">Update Avatar</a>
                   <a class="btn btn-primary" href="{% url 'edit_profile' user.id %}">Edit Your Profile</a>
-                  <a class="btn btn-primary" href="{% url 'avatar_change' %}">Change your avatar</a>
                   {% endif %}
   
                 </div>
