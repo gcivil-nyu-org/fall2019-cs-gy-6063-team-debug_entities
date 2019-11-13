@@ -13,10 +13,10 @@
               {% for match in matches %}
                 <div class="list-group-item">
                   <span class="mr-4">
-                    <p>{{ match.event.performer_names }}</p>
-                    <p>Date: {{ match.event.datetime }}</p>
-                    <p>Venue: {{ match.event.venue_name }}</p>
-                    <p>Borough: {{ match.event.get_borough_display }}</p>
+                    <p>{{ match.event.performer_names }}<br>
+                    Date: {{ match.event.datetime }}<br>
+                    Venue: {{ match.event.venue_name }}<br>
+                    Borough: {{ match.event.get_borough_display }}</p>
                     <p>{% avatar match.swipee %} {{ match.swipee.first_name }}</p>
                   </span>
                 </div>
