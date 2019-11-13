@@ -1,135 +1,56 @@
-<!DOCTYPE html>
+{% extends "header.html" %}
+{% load crispy_forms_tags %}
+{% load static %}
 
-<!-- Events.html uses old materialize version. -->
-<head>
-  <meta charset="utf-8" />
-  <!-- Compiled and minified CSS -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
-  <!-- Compiled and minified JavaScript -->
-  <script src="//code.jquery.com/jquery-2.1.2.min.js"></script>
-  <script src="//cdnjs.cloudflare.com/ajax/libs/materialize/0.97.5/js/materialize.min.js"></script>
-  <script>
-     $(document).ready(function() {
-        $('select').material_select();
-     });
-  </script>
-
-<body>
-  <div class="nav-wrapper">
-    <nav>
-      <div class="nav-wrapper teal lighten-2">
-        {% if user.is_authenticated %}
-        <a href="{% url 'home' %}" class="brand-logo">&nbsp;ShowUp</a>
-        <ul id="nav-mobile" class="right hide-on-med-and-down">
-          <li><a href="{% url 'home' %}">Home</a></li>
-          <li><a href="{% url 'user' user.id %}">Profile</a></li>
-          <li><a href="{% url 'events' %}">Events</a></li>
-          <li><a href="{% url 'account_logout' %}">Logout</a></li>
-        </ul>
-        {% else %}
-        <div class="brand-logo">&nbsp;ShowUp</div>
-        {% endif %}
-      </div>
-    </nav>
-
-<!-- Filtering -->
-<br>
-<div class="row">
-    <form action="#" method="GET">
-
-        <div class = "input-field col s3">
-            <select class = validate name = "boroughs" multiple>
-                <option value="" disabled selected></option>
-                {% for borough in borough_choices %}
-                    <option value = "{{borough.0}}">{{borough.1}}</option>
-                {% endfor %}
-            </select>
-            <label>Boroughs</label>
-        </div>
-        
-        <div class = "input-field col s3">
-            <select name = "performers">
-                {% for performer_name in performer_names_choices %}
-                    <option value = "{{performer_name}}">{{performer_name}}</option>
-                {% endfor %}
-            </select>
-            <label>Performer</label>
-        </div>
-        
-        <div class = "input-field col s3">
-            <select name = "venues" multiple>
-                <option value="" disabled selected></option>
-                {% for venue in venue_choices %}
-                    <option value = "{{venue}}">{{venue}}</option>
-                {% endfor %}
-            </select>
-            <label>Venues</label>
-            
-        </div>
-        
-        <div class = "input-field col s3">
-            <select name = "genres">
-                {% for genre in genre_choices %}
-                    <option value = "{{genre}}">{{genre}}</option>
-                {% endfor %}
-            </select>
-            <label>Genre</label>
-        </div>
-        
-        <div class = "input-field col s6">
-            <input type="datetime-local" name="start_date" min="2019-10-22T00:01"></input>
-        </div>
-        
-        <div class = "input-field col s6">
-            <input type="datetime-local" name="end_date"></input>
-        </div>
-        <button class="btn-small waves-effect waves-light teal lighten-2" type="submit" name="filter">Filter</button>
-        <button class="btn-small waves-effect waves-light teal lighten-2" type="submit" onclick="submit()">Clear Filter</button>
-    </form>
-<br>
-
-<!-- Cards with event pictures and event details -->
-    {% for event in events %}
-    <div class="col s12 m6" style="width: 20rem;">
-        <div class="card">
-            <div class="card-image">
-                {% if not event.performer_image_url %} <!-- the API doesn't give an image for all events-->
-                    {% load static %}
-                    <img src={% static "default-performer-image.jpg" %}>
-                {% else %}
-                    <img src={{ event.performer_image_url }}>
-                {% endif %}
-            </div>
-            <div class="card-content" style="height: 16rem;">
-                <p class="teal-text text-lighten-2">{{event.performer_names}}</p>
-                <p>{{event.venue_name}}</p>
-                <p>{{event.datetime}}</p>
-                <br>
-                <form action="#" method="get">
-                    <button class="btn-small waves-effect waves-light {% if event.id in interested_list %} red {% else %} teal {% endif %} lighten-2" type="submit" name="interested" value={{event.id}}>{% if event.id in interested_list %} Not {% endif %}Interested</button>
-                    <button class="btn-small waves-effect waves-light {% if event.id in going_list %} red {% else %} teal {% endif %} lighten-2" type="submit" name="going" value={{event.id}}>{% if event.id in going_list %} Not {% endif %}Going</button>
-                </form>
+{% block content %}
+<div class="container-fluid d-flex flex-column flex-grow-1 vh-100">
+    <div class="row flex-grow-1 overflow-hidden">
+        <div class="col-3 mh-100 overflow-auto py-2">
+            <div class="card shadow sticky-top">
+                <div class="card-body">
+                    <h2 class="card-title text-center">Filters</h2>
+                    <hr>
+                    <form action="" method="get">
+                        {{ filter.form|crispy }}
+                        <div class="col text-right">
+                            <input type="submit" class="btn btn-primary btn-sm lift" />
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
-    </div>
-    {% endfor %}
+        <div class="col-9 mh-100 overflow-auto py-2">
+            <div class="card shadow">
+                <div class="card-body">
+                    <h2 class="card-title text-center">Events</h2>
+                    <hr>
+                    <div class="row">
+                        {% for event in filter.qs %}
+                        <div class="col-3 d-flex my-2">
+                            <div class="card shadow lift">
+                                {% if not event.performer_image_url %} <!-- the API doesn't give an image for all events-->
+                                    <img class="card-img-top"  src={% static "default-performer-image.jpg" %}>
+                                {% else %}
+                                    <img class="card-img-top" src={{ event.performer_image_url }}>
+                                {% endif %}
+                                <div class="card-body">
+                                    <h3 class="card-title text-center">{% if event.id in interested_list or event.id in going_list %}<a href="{% url 'event_stack' event.id %}">{% endif %}{{event.performer_names}}</a></h3>
+                                    <p class="card-text">{{event.venue_name}} on {{event.datetime}}</p>
+                                    <div class="text-center">
+                                        <form action="#" method="get">
+                                            <button class="btn btn-sm shadow {% if event.id in interested_list %}btn-primary{% endif %}" type="submit" name="interested" value={{event.id}}>{% if event.id in interested_list %} Not {% endif %}Interested</button>
+                                            <button class="btn btn-sm shadow {% if event.id in going_list %}btn-primary{% endif %}" type="submit" name="going" value={{event.id}}>{% if event.id in going_list %} Not {% endif %}Going</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div> <!-- closes body of big card that holds all events -->
+            </div> <!-- closes big card that holds all events -->
+        </div> <!-- closes column that holds card with all events -->
+    </div> <!-- closes row that holds everything -->
 </div>
 
-<script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
-<!-- Compiled and minified JavaScript -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js">
-</script>
-
-<script>
-    $(document).ready(function(){
-        $('select').formSelect();
-    });
-</script>
-
-<!-- Java scipt for form reset -->
-<script>
-    function submitForm () {
-    frm.submit(); // Submit
-    $('form :input').attr('value', '');
-}
-</script>
+{% endblock %}

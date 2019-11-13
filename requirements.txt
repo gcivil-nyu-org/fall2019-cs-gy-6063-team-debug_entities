@@ -3,9 +3,10 @@ django-heroku
 requests
 django-allauth
 django-session-timeout
-django-materializecss-form
 black
 coverage
 coveralls
 flake8
 django-avatar
+django-crispy-forms
+django-filter
