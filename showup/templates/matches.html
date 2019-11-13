@@ -1,0 +1,27 @@
+{% extends 'header.html' %}
+{% load avatar_tags %}
+
+{% block content %}
+
+<section class="pt-6 pt-md-8 pb-8 mb-md-8">
+  <div class="container">
+    <div class="row">
+      <div class="col-12">
+        <div class="card shadow-light-lg accordion mb-5 mb-md-6" id="helpAccordionOne">
+          <div class="list-group">
+                  
+            {% for match in matches %}
+              <div class="list-group-item">
+                <p>{{ match.event }}</p>
+                <p>{{ match.swipee }}</p>
+              </div>
+            {% endfor %}
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% endblock %}
