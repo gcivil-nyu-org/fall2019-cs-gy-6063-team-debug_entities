@@ -72,23 +72,26 @@ def get_stack(request, eid):
     uid = request.user.id
 
     # Get the users interested in or going to the event.
-    users = (CustomUser.objects.filter(interested__id=eid) |
-             CustomUser.objects.filter(going__id=eid))
+    users = CustomUser.objects.filter(interested__id=eid) | CustomUser.objects.filter(
+        going__id=eid
+    )
 
     # These are the users that swiped left on me.
-    swiped_left = [x.swiper.id for x in Swipe.objects.filter(
-        event__id=eid, swipee__id=uid, direction=False)]
+    swiped_left = [
+        x.swiper.id
+        for x in Swipe.objects.filter(event__id=eid, swipee__id=uid, direction=False)
+    ]
 
     # These are the users that I swiped on.
-    swiped = [x.swipee.id for x in Swipe.objects.filter(
-        event__id=eid, swiper__id=uid)]
+    swiped = [x.swipee.id for x in Swipe.objects.filter(event__id=eid, swiper__id=uid)]
 
     # Exclude the users that swiped left on me, the users that I swiped on, and
     # myself.
-    users = [u for u in users if
-             u.id not in swiped_left and
-             u.id not in swiped and
-             u.id != uid]
+    users = [
+        u
+        for u in users
+        if u.id not in swiped_left and u.id not in swiped and u.id != uid
+    ]
 
     return users
 
