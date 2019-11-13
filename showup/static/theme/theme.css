@@ -11095,7 +11095,6 @@ code {
     position: absolute;
     width: 0;
     height: 0;
-    background-image: url(../img/masks/avatar-status.svg), url(../img/masks/avatar-group.svg), url(../img/masks/avatar-group-hover.svg), url(../img/masks/avatar-group-hover-last.svg); }
 
 .avatar-img {
   width: 100%;
@@ -11123,11 +11122,6 @@ code {
   border-radius: 50%; }
 
 .avatar-online .avatar-img,
-.avatar-offline .avatar-img {
-  -webkit-mask-image: url(../img/masks/avatar-status.svg);
-          mask-image: url(../img/masks/avatar-status.svg);
-  -webkit-mask-size: 100% 100%;
-          mask-size: 100% 100%; }
 
 .avatar-online::before {
   background-color: #42BA96; }
@@ -11197,23 +11191,10 @@ code {
     margin-left: -1rem; }
   .avatar-group .avatar-xxl + .avatar-xxl {
     margin-left: -1.25rem; }
-  .avatar-group .avatar:not(:last-child) {
-    -webkit-mask-image: url(../img/masks/avatar-group.svg);
-            mask-image: url(../img/masks/avatar-group.svg);
-    -webkit-mask-size: 100% 100%;
-            mask-size: 100% 100%; }
   .avatar-group .avatar:hover {
     -webkit-mask-image: none;
             mask-image: none;
     z-index: 1; }
-    .avatar-group .avatar:hover + .avatar {
-      -webkit-mask-image: url(../img/masks/avatar-group-hover.svg);
-              mask-image: url(../img/masks/avatar-group-hover.svg);
-      -webkit-mask-size: 100% 100%;
-              mask-size: 100% 100%; }
-      .avatar-group .avatar:hover + .avatar:last-child {
-        -webkit-mask-image: url(../img/masks/avatar-group-hover-last.svg);
-                mask-image: url(../img/masks/avatar-group-hover-last.svg); }
 
 .collapse-chevron {
   display: inline-block;
