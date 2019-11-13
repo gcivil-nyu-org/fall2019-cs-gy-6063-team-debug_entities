@@ -1,0 +1,32 @@
+{% extends 'header.html' %}
+{% load avatar_tags %}
+
+{% block content %}
+
+<section class="pt-6 pt-md-8 pb-8 mb-md-8">
+  <div class="container">
+    <div class="row">
+      <div class="col-12">
+        <div class="card shadow-light-lg accordion mb-5 mb-md-6" id="helpAccordionOne">
+          <div class="list-group">
+            <div class="list-group-item">
+              {% for match in matches %}
+                <div class="list-group-item">
+                  <span class="mr-4">
+                    <p>{{ match.event.performer_names }}<br>
+                    Date: {{ match.event.datetime }}<br>
+                    Venue: {{ match.event.venue_name }}<br>
+                    Borough: {{ match.event.get_borough_display }}</p>
+                    <p>{% avatar match.swipee %} {{ match.swipee.first_name }}</p>
+                  </span>
+                </div>
+              {% endfor %}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

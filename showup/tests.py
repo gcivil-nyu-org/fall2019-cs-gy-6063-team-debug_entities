@@ -207,6 +207,21 @@ class EditProfileViewTests(TestCase):
         self.assertEqual(response.status_code, 403)
 
 
+class MatchesViewTests(TestCase):
+    def setUp(self):
+        # Create and save user.
+        username, password = "jspringer@example.com", "heyhey123"
+        user = CustomUser.objects.create_user(username=username, password=password)
+        EmailAddress.objects.get_or_create(id=1, user=user, verified=True)
+
+        # Login user.
+        self.client.login(username=username, password=password)
+
+    def test_matches_basic(self):
+        response = self.client.get(reverse("matches"))
+        self.assertEqual(response.status_code, 200)
+
+
 class AuthenticatedViewTests(TestCase):
     def setUp(self):  # this logs in a test user for the subsequent test cases
         username = "testuser"
