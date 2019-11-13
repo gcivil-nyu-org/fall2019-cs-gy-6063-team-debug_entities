@@ -67,37 +67,41 @@ def edit_profile(request, id):
         raise PermissionDenied
 
 
+def get_stack(request, eid):
+    # My uid.
+    uid = request.user.id
+
+    # Get the users interested in or going to the event.
+    users = CustomUser.objects.filter(interested__id=eid) | CustomUser.objects.filter(
+        going__id=eid
+    )
+
+    # These are the users that swiped left on me.
+    swiped_left = [
+        x.swiper.id
+        for x in Swipe.objects.filter(event__id=eid, swipee__id=uid, direction=False)
+    ]
+
+    # These are the users that I swiped on.
+    swiped = [x.swipee.id for x in Swipe.objects.filter(event__id=eid, swiper__id=uid)]
+
+    # Exclude the users that swiped left on me, the users that I swiped on, and
+    # myself.
+    users = [
+        u
+        for u in users
+        if u.id not in swiped_left and u.id not in swiped and u.id != uid
+    ]
+
+    return users
+
+
 @login_required
 def event_stack(request, eid):
     my_id = request.user.id
     id_to_send = request.user.id
     popup = 0
-    """
-    Gather all the eligible users to return.
-    Criteria:
-    1. They're interested in or going to the event
-    2. They haven't swiped left on me
-    3. I haven't swiped on them in any direction
-    4. They're not me
-    """
-    users = CustomUser.objects.filter(interested__id=eid) | CustomUser.objects.filter(
-        going__id=eid
-    )  # criterion 1
-    IDs_swiped_left_on_me = [
-        i.swiper.id
-        for i in Swipe.objects.filter(swipee__id=my_id, event__id=eid, direction=False)
-    ]  # criterion 2
-    IDs_I_swiped = [
-        i.swipee.id for i in Swipe.objects.filter(swiper__id=my_id, event__id=eid)
-    ]  # criterion 3
-    users = [
-        u
-        for u in users
-        if u.id not in IDs_swiped_left_on_me
-        and u.id not in IDs_I_swiped
-        and u.id != my_id
-    ]  # criterion 4
-    # our filtering is done, users is the list of users who should be shown for swiping
+    users = get_stack(request, eid)
 
     if request.method == "POST":  # user is submitting a swipe
         swipee_id = request.POST["swipee_id"]
@@ -127,7 +131,9 @@ def event_stack(request, eid):
         if my_direction and their_swipe_on_me and their_swipe_on_me.direction:
             popup = 1
             id_to_send = their_swipe_on_me.swiper_id
-            print(f"Users {my_id} and {swipee_id} just matched")
+
+        # Update users.
+        users = get_stack(request, eid)
 
     return render(
         request,
