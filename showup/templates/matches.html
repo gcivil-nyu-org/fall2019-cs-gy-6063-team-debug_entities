@@ -9,14 +9,19 @@
       <div class="col-12">
         <div class="card shadow-light-lg accordion mb-5 mb-md-6" id="helpAccordionOne">
           <div class="list-group">
-                  
-            {% for match in matches %}
-              <div class="list-group-item">
-                <p>{{ match.event }}</p>
-                <p>{{ match.swipee }}</p>
-              </div>
-            {% endfor %}
-
+            <div class="list-group-item">
+              {% for match in matches %}
+                <div class="list-group-item">
+                  <span class="mr-4">
+                    <p>{{ match.event.performer_names }}</p>
+                    <p>Date: {{ match.event.datetime }}</p>
+                    <p>Venue: {{ match.event.venue_name }}</p>
+                    <p>Borough: {{ match.event.get_borough_display }}</p>
+                    <p>{% avatar match.swipee %} {{ match.swipee.first_name }}</p>
+                  </span>
+                </div>
+              {% endfor %}
+            </div>
           </div>
         </div>
       </div>

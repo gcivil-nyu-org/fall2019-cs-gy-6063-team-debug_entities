@@ -151,5 +151,6 @@ def matches(request):
 
     # The intersection of the above two.
     matches = [x for x in i_swiped_right if x.swipee in they_swiped_right]
+    matches.sort(key=lambda x: x.event.id)
 
     return render(request, "matches.html", {"matches": matches})
