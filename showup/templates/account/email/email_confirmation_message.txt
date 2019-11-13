@@ -1,0 +1,13 @@
+{% load i18n %}
+
+{% blocktrans with site_name=current_site.name site_domain=current_site.domain %}
+
+Hello from {{ site_name }}!
+
+Thanks for signing up! Please click the following link to verify your email address:
+
+{{ activate_url }}
+
+Thank you!
+
+{% endblocktrans %}
