@@ -25,3 +25,4 @@ python manage.py make_users
 - [ ] I ran `git merge develop` before submitting this PR.
 - [ ] I understand that I may have to run `git merge develop` again after submitting this PR since new changes may have been pulled into `develop`.
 - [ ] I understand that it is MY responsibility to make sure that this PR does not have any conflicts.
+- [ ] I have written tests and checked for test coverage for my PR before pushing the code for review
