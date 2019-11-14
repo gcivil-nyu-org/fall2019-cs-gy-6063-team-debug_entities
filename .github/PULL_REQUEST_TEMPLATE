@@ -22,6 +22,7 @@ python manage.py make_users
 
 ### Checklist
 
+- [ ] I have written tests which have maintained/increased test coverage.
 - [ ] I ran `git merge develop` before submitting this PR.
 - [ ] I understand that I may have to run `git merge develop` again after submitting this PR since new changes may have been pulled into `develop`.
 - [ ] I understand that it is MY responsibility to make sure that this PR does not have any conflicts.
