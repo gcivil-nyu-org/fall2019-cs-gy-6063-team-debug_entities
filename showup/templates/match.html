@@ -36,32 +36,33 @@
     </div> <!-- / .row -->
   </div> <!-- / .container -->
 </section>
-      {% if popup == 1 %}
-      {% if id_to_send == swipee.id %}
-      <div class="modal" id="myModal" data-toggle="modal" data-target="#myModal">
-        <div class="modal-dialog modal-lg">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h3 class="modal-title">Congratulations!</h3>
-            </div>
-            <div class="modal-body">
-              <h4>You matched with {{swipee.first_name}}.</h4>
-            </div>
-            <div class="modal-footer">
-              <button type="button" class="btn btn-primary">Message</button>
-              <button type="button" class="btn btn-secondary">Keep Swiping</button>
-            </div>
-          </div>
-        </div>
-      </div>
-      {% endif %}
-      {% endif %}
 {% endwith %}
   {% else %}
   <div class="col-12 mt-10 text-center">
     <img src="{% static 'lonely.jpg' %}">
   </div>
   {% endif %}
+
+<!-- Pop-up Logic -->
+{% if popup == 1 %}
+  <div class="modal" id="myModal" data-toggle="modal" data-target="#myModal">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3 class="modal-title">Congratulations!</h3>
+        </div>
+        <div class="modal-body">
+          <h4>You matched with {{match.first_name}}.</h4>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary">Message</button>
+          <button type="button" class="btn btn-secondary">Keep Swiping</button>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endif %}
+
   <script>
       $(document).ready(function(){
             $('.modal').modal({dismissible: false,});
