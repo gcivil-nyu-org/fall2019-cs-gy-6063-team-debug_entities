@@ -1,5 +1,5 @@
 from django.core.management.base import BaseCommand
-from showup.models import CustomUser
+from showup.models import CustomUser, Squad
 from allauth.account.admin import EmailAddress
 
 
@@ -9,8 +9,10 @@ class Command(BaseCommand):
         name = "Vik"
         email = "vm1564@nyu.edu"
 
+        squad = Squad.objects.create()
+        squad.save()
         new_superuser = CustomUser.objects.create_superuser(  # make superuser
-            username=name, email=email, password=password, first_name=name
+            username=name, email=email, password=password, first_name=name, squad=squad
         )
         print()
         EmailAddress.objects.get_or_create(  # verify superuser's email
@@ -21,8 +23,10 @@ class Command(BaseCommand):
         for i in range(1, 10):
             email = f"vm1564+{i}@nyu.edu"
             name = f"Vik{i}"
+            squad = Squad.objects.create()
+            squad.save()
             new_user = CustomUser.objects.create_user(  # make normal users
-                username=name, email=email, password=password, first_name=name
+                username=name, email=email, password=password, first_name=name, squad=squad
             )
             EmailAddress.objects.get_or_create(  # verify their emails
                 user=new_user, email=email, verified=True
