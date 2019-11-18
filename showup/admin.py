@@ -26,7 +26,7 @@ class CustomUserAdmin(UserAdmin):
                     "going",
                     "bio",
                     "genres",
-                    "squad"
+                    "squad",
                 )
             },
         ),

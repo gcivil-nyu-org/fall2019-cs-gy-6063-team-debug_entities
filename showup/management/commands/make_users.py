@@ -26,7 +26,11 @@ class Command(BaseCommand):
             squad = Squad.objects.create()
             squad.save()
             new_user = CustomUser.objects.create_user(  # make normal users
-                username=name, email=email, password=password, first_name=name, squad=squad
+                username=name,
+                email=email,
+                password=password,
+                first_name=name,
+                squad=squad,
             )
             EmailAddress.objects.get_or_create(  # verify their emails
                 user=new_user, email=email, verified=True

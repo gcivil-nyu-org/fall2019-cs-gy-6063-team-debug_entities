@@ -46,7 +46,9 @@ class CustomUser(AbstractUser):
     bio = models.TextField(max_length=500, default="", blank=True)
     swipes = models.ManyToManyField("self", through="Swipe", symmetrical=False)
     genres = models.ManyToManyField(Genre, related_name="genres", blank=True)
-    squad = models.ForeignKey(Squad, null=True, on_delete=models.CASCADE, related_name="squad")
+    squad = models.ForeignKey(
+        Squad, null=True, on_delete=models.CASCADE, related_name="squad"
+    )
 
     def __str__(self):
         return self.email

@@ -6,20 +6,31 @@ import django.db.models.deletion
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('showup', '0002_auto_20191110_1616'),
-    ]
+    dependencies = [("showup", "0002_auto_20191110_1616")]
 
     operations = [
         migrations.CreateModel(
-            name='Squad',
+            name="Squad",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                )
             ],
         ),
         migrations.AddField(
-            model_name='customuser',
-            name='squad',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, related_name='squad', to='showup.Squad'),
+            model_name="customuser",
+            name="squad",
+            field=models.ForeignKey(
+                null=True,
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="squad",
+                to="showup.Squad",
+            ),
         ),
     ]
