@@ -1,39 +1,154 @@
-<!doctype html>
-
 {% extends 'header.html' %}
 {% load avatar_tags %}
-
 {% block content %}
+    <section class="pt-6 pt-md-8 pb-8 mb-md-8">
+        <div class="container">
+          <div class="row">
+            <div class="col-12">
+              
+              <div class="row mb-6 mb-md-8">
+                <div class="col-auto">
+                  
+                  <!-- Icon -->
+                  <div class="icon-circle bg-primary text-white">
+                      {% avatar user %}                  
+                  </div>
+  
+                </div>
+                <div class="col ml-n4">
+                  
+                  <!-- Heading -->
+                  <h2 class="font-weight-bold mb-0">
+                    {{ requested_user.first_name }}
+                  </h2>
+  
+                  <!-- Text -->
+                  <p class="font-size-lg text-gray-700 mb-6">
+                    {{ requested_user.bio }}
+                  </p>
 
-{% avatar requested_user %}
-<h4>{{ requested_user.first_name }}</h4>
+                  <h2 class="font-weight-bold mb-0">
+                    Favorite genres
+                  </h2>
 
-<h5>Bio</h5>
-<p>{{ requested_user.bio }}</p>
+                  <ul>
+                    {% for genre in requested_user.genres.all %}
+                    <li>{{ genre }}</li>
+                    {% endfor %}
+                  </ul>
 
-<h5>Favorite Genres</h5>
-{% for genre in requested_user.genres.all %}
-<li>{{ genre }}</li>
-{% endfor %}
+                  {% if user.id == requested_user.id %}
+                  <a class="btn btn-primary" href="{% url 'avatar_change' %}">Update Avatar</a>
+                  <a class="btn btn-primary" href="{% url 'edit_profile' user.id %}">Edit Your Profile</a>
+                  {% endif %}
+  
+                </div>
+              </div> <!-- / .row -->
+  
+              <!-- Card for interested -->
+              <div class="card shadow-light-lg accordion mb-5 mb-md-6" id="helpAccordionOne">
+                <div class="list-group">
+                  <div class="list-group-item">
+                    
+                    <!-- Header -->
+                    <div class="d-flex align-items-center">
+                      <div class="mr-auto">
+                        <h2 class="font-weight-bold mb-0">
+                          {{ requested_user.first_name }} is interested in {{ requested_user.interested.count }} concerts.
+                        </h2>
+                      </div>
+                    </div>
+                  </div>
 
-{% if user.id == requested_user.id %}
-<!-- on the left is the user's actual ID, on the right is the ID in the URL -->
-<br>
-<a class="btn btn-primary" href="{% url 'edit_profile' user.id %}">Edit Your Profile</a>
-<a href="{% url 'avatar_change' %}">Change your avatar</a>
-<br><br>
-{% endif %}
+                  {% for interested in requested_user.interested.all %}
+                  <div class="list-group-item">
+                    <a class="d-flex align-items-center text-reset text-decoration-none" data-toggle="collapse" href="#id{{ interested.id }}" role="button">
+                      <span class="mr-4">
+                        {{ interested.performer_names }}
+                      </span>
+                      <div class="text-muted ml-auto">
+                        <span class="font-size-sm mr-4 d-none d-md-inline">
+                          Details
+                        </span>
+                        <span class="collapse-chevron text-muted">
+                          <i class="fas fa-caret-down"></i>
+                        </span>
+                      </div>
+                    </a>
+                    
+                    <!-- Collapse -->
+                    <div class="collapse" id="id{{ interested.id }}" data-parent="#helpAccordionOne">
+                      <div class="py-5">
+  
+                        <!-- Text -->
+                        <p class="text-gray-700">
+                          Date: {{ interested.datetime }} <br>
+                          Venue: {{ interested.venue_name }} <br>
+                          Borough: {{ interested.get_borough_display }}
+                          
+                        </p>
+                      </div>
+                      
+                    </div>
+  
+                  </div>
+                {% endfor %}
+  
+                </div>
+              </div>
+  
+              <!-- Card for going -->
+              <div class="card shadow-light-lg accordion mb-5 mb-md-6" id="helpAccordionTwo">
+                  <div class="list-group">
+                    <div class="list-group-item">
+                      
+                      <!-- Header -->
+                      <div class="d-flex align-items-center">
+                        <div class="mr-auto">
+                          <h2 class="font-weight-bold mb-0">
+                            {{ requested_user.first_name }} is going to {{ requested_user.going.count }} concerts.
+                          </h2>
+                        </div>
+                      </div>
+                    </div>
 
-<h5>Events this user interested in:</h5>
-{% for interested in requested_user.interested.all %}
-  <p>{{interested}}</p>
-{% endfor %}
+                    {% for going in requested_user.going.all %}
+                    <div class="list-group-item">
+                      <a class="d-flex align-items-center text-reset text-decoration-none" data-toggle="collapse" href="#id{{ going.id }}" role="button">
+                        <span class="mr-4">
+                          {{ going.performer_names }}
+                        </span>
+                        <div class="text-muted ml-auto">
+                          <span class="font-size-sm mr-4 d-none d-md-inline">
+                            Details
+                          </span>
+                          <span class="collapse-chevron text-muted">
+                            <i class="fas fa-caret-down"></i>
+                          </span>
+                        </div>
+                      </a>
+                      
+                      <!-- Collapse -->
+                      <div class="collapse" id="id{{ going.id }}" data-parent="#helpAccordionTwo">
+                        <div class="py-5">
 
-<h5>Events this user is going to:</h5>
-{% for going in requested_user.going.all %}
-  <p>{{going}}</p>
-{% endfor %}
+                          <!-- Text -->
+                          <p class="text-gray-700">
+                            Date: {{ going.datetime }} <br>
+                            Venue: {{ going.venue_name }} <br>
+                            Borough: {{ going.get_borough_display }}
+                            
+                          </p>
+                        </div>
+                        
+                      </div>
+
+                    </div>
+                  {% endfor %}
+
+                  </div>
+                </div>
+      </section>
+
 
 {% endblock %}
-
-</html>

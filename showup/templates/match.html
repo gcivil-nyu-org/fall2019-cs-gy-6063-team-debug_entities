@@ -1,67 +1,71 @@
 {% extends 'header.html' %}
 {% load avatar_tags %}
-
-<body>
-
+{% load static %}
 {% block content %}
-<p>Logged in as {{ user.first_name }}.</p>
-<br><br><br>
 
-<div class="carousel carousel-slider center">
-  {% if users %}
-  {% for user in users %}  
-  <div class="carousel-item red white-text" href="#one!">
-    <h2><a class="white-text" href="{% url 'user' user.id %}">{{ user.first_name }}</a></h2>
-    <p>{% avatar user %}</p>
-    <p class="white-text">{{user.bio}}</p>
-    <br><br>
-    <form action="#" method="POST">
-      {% csrf_token %}
-      <input type="hidden" name="swipee_id" value="{{ user.id }}">
-      <!-- Dislike Someone -->
-      <button class="btn waves-effect white grey-text darken-text-2" type="submit" name="match" value="False">
-        <i class="material-icons">thumb_down</i></button>
-      <!-- like Someone -->
-      <button class="btn waves-effect white grey-text darken-text-2" type="submit" name="match" value="True">
-        <i class="material-icons">thumb_up</i></button>
-    </form>
-    </div>
-    {% if popup == 1 %}
-    {% if id_to_send == user.id %}
-    <div id="modal1" class="modal">
-      <div class="modal-title">
-              <h4>CONGRATULATIONS!</h4>
-              <div class="modal-content">
-                <h5>You matched with {{user.first_name}}</h5>
-              </div>
-      <div class="modal-footer">
-        <a href="#!" class="modal-close btn orange">Message</a>
-        <a href="#!" class="modal-close btn orange">Keep Swiping</a>
+
+{% if users %}
+{% with users|first as swipee %}
+<section class="py-14 bg-white bg-between" style="background-image: url({% static 'dancing match.png' %}); background-position: center; background-repeat: no-repeat; background-size:cover;">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-12 col-md-10 col-lg-7 text-center" data-aos="fade-up">
+
+        <div class="my-5">
+          {% avatar swipee %}
+        </div>
+
+        <!-- Heading -->
+        <h1 class="display-2 font-weight-bold"><a href="{% url 'user' swipee.id %}">{{ swipee.first_name }}</a></h1>
+
+        <!-- Text -->
+        <p class="font-size-lg text-muted mb-6 mb-md-8">{{ swipee.bio }}</p>
+
+        <form action="#" method="POST">
+          {% csrf_token %}
+          <input type="hidden" name="swipee_id" value="{{ swipee.id }}">
+          <button class="btn mr-1 lift" type="submit" name="match" value="False">
+            <i class="far fa-thumbs-down fa-3x"></i>
+          </button>
+          <button class="btn mr-1 lift" type="submit" name="match" value="True">
+              <i class="far fa-thumbs-up fa-3x"></i>
+            </button>
+        </form>
+
       </div>
+    </div> <!-- / .row -->
+  </div> <!-- / .container -->
+</section>
+      {% if popup == 1 %}
+      {% if id_to_send == swipee.id %}
+      <div class="modal" id="myModal" data-toggle="modal" data-target="#myModal">
+        <div class="modal-dialog modal-lg">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h3 class="modal-title">Congratulations!</h3>
+            </div>
+            <div class="modal-body">
+              <h4>You matched with {{swipee.first_name}}.</h4>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-primary">Message</button>
+              <button type="button" class="btn btn-secondary">Keep Swiping</button>
+            </div>
+          </div>
+        </div>
       </div>
-    </div>
-    {% endif %}
-    {% endif %}
-  {% endfor %}
+      {% endif %}
+      {% endif %}
+{% endwith %}
   {% else %}
-    <p>There's no one in this stack. To be in this stack, people have to be interested in this event, they can't have swiped left on you,
-    you can't have swiped on them in any direction, and they can't be you.</p>
+  <div class="col-12 mt-10 text-center">
+    <img src="{% static 'lonely.jpg' %}">
+  </div>
   {% endif %}
-</div>
-
-<!-- Add javascript and jquery per page that requires it -->
-<!-- Jquery Import -->
-<script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
-<!-- Compiled and minified JavaScript -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js">
-</script>
-<!-- Using Carousel feature in materialize css -->
-<script>
-	$(document).ready(function() {
-		$('.carousel.carousel-slider').carousel({fullWidth: false, noWrap: true});
-        $('.modal').modal({dismissible: false,});
-        $('.modal').modal('open');
-	});
-</script>
+  <script>
+      $(document).ready(function(){
+            $('.modal').modal({dismissible: false,});
+            $('.modal').modal('open');
+      });
+  </script>
 {% endblock %}
-</body>
