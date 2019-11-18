@@ -2,7 +2,9 @@
 {% load avatar_tags %}
 
 {% block content %}
-
+<div style = "position:relative; top:20px">
+<center><h2>Lets talk, Shall we?</h2></center>
+</div>
 <section class="pt-6 pt-md-8 pb-8 mb-md-8">
   <div class="container">
     <div class="row">
@@ -11,7 +13,42 @@
           <div class="list-group">
             <div class="list-group-item">
               {% for match in matches %}
-                <div class="list-group-item">
+              <div class="list-group-item">
+                <a class="d-flex align-items-center text-reset text-decoration-none" data-toggle="collapse" href="#id{{ match.event.id }}" role="button">
+                  <span class="mr-4">
+                  <h3>
+                  {% avatar match.swipee %}  {{ match.swipee.first_name }}
+                  </h3>
+                  </span>
+                  <div class="text-muted ml-auto">
+                    <span class="font-size-sm mr-4 d-none d-md-inline">
+                      Details
+                    </span>
+                    <span class="collapse-chevron text-muted">
+                      <i class="fas fa-caret-down"></i>
+                    </span>
+                  </div>
+                </a>
+
+                <!-- Collapse -->
+                <div class="collapse" id="id{{ match.event.id }}" data-parent="#helpAccordionOne">
+                  <div class="py-5">
+
+                    <!-- Text -->
+                    <p class="text-gray-700">
+                      Performer: {{ match.event.performer_names }} <br>
+                      Date: {{ match.event.datetime }} <br>
+                      Venue: {{ match.event.venue_name }} <br>
+                      Borough: {{ match.event.get_borough_display }}
+                    </p>
+                    <a href="#">Message</a> &nbsp &nbsp
+                    <a href="{% url 'user' match.swipee.id %}">User Profile</a>
+                  </div>
+
+                </div>
+
+              </div>
+                <!-- <div class="list-group-item">
                   <span class="mr-4">
                     <p>{{ match.event.performer_names }}<br>
                     Date: {{ match.event.datetime }}<br>
@@ -19,7 +56,7 @@
                     Borough: {{ match.event.get_borough_display }}</p>
                     <p>{% avatar match.swipee %} {{ match.swipee.first_name }}</p>
                   </span>
-                </div>
+                </div> -->
               {% endfor %}
             </div>
           </div>
