@@ -18,7 +18,7 @@ class Migration(migrations.Migration):
                 null=True,
                 on_delete=django.db.models.deletion.CASCADE,
                 related_name="squad",
-                to="showup.Squad"
+                to="showup.Squad",
             ),
         ),
         migrations.AlterField(

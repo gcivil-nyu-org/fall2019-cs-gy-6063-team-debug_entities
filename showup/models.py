@@ -45,7 +45,6 @@ class SquadSwipe(models.Model):
     swipee = models.ForeignKey(
         Squad, on_delete=models.CASCADE, related_name="squadswipee"
     )
-    
 
     direction = models.BooleanField()
 

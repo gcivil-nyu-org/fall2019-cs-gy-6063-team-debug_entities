@@ -20,27 +20,56 @@ class Migration(migrations.Migration):
                         auto_created=True,
                         primary_key=True,
                         serialize=False,
-                        verbose_name='ID'
-                    )
+                        verbose_name="ID",
+                    ),
                 ),
             ],
         ),
         migrations.CreateModel(
             name="SquadSwipe",
             fields=[
-                ("id", models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name="ID")),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID"
+                    ),
+                ),
                 ("direction", models.BooleanField()),
-                ("swipee", models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name="squadswipee", to="showup.Squad")),
-                ("swiper", models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name="squadswiper", to="showup.Squad")),
+                (
+                    "swipee",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="squadswipee",
+                        to="showup.Squad"
+                    ),
+                ),
+                (
+                    "swiper",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="squadswiper",
+                        to="showup.Squad"
+                    ),
+                ),
             ],
         ),
         migrations.AddField(
             model_name="customuser",
             name="squad",
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, related_name="squad", to="showup.Squad"),
+            field=models.ForeignKey(
+                null=True,on_delete=django.db.models.deletion.CASCADE,
+                related_name="squad",
+                to="showup.Squad"
+            ),
         ),
         migrations.AddConstraint(
             model_name="squadswipe",
-            constraint=models.UniqueConstraint(fields=("swiper", "swipee"), name="Squad member can only swipe on another Squad once"),
+            constraint=models.UniqueConstraint(
+                fields=("swiper", "swipee"),
+                name="Squad member can only swipe on another Squad once"
+            ),
         ),
     ]

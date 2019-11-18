@@ -1,5 +1,5 @@
 from .forms import CustomUserChangeForm
-from .models import Concert, CustomUser, Swipe
+from .models import Concert, CustomUser, Swipe, SquadSwipe
 from allauth.account.admin import EmailAddress
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
@@ -135,18 +135,17 @@ def event_stack(request, eid):
         # Update users.
         users = get_stack(request, eid)
 
-        
         # squad_id
         squad_id = request.squad.id
 
         # The squads that I swiped right on.
         i_swiped_right = [
-            x for x in squads.objects.filter(swiper__id=squad_id, direction=True)
+            x for x in SquadSwipe.objects.filter(swiper__id=squad_id, direction=True)
         ]
 
         # The squads that swiped right on my squad.
         they_swiped_right = [
-            x.swiper for x in Swipe.objects.filter(swipee__id=squad_id, direction=True)
+            x.swiper for x in SquadSwipe.objects.filter(swipee__id=squad_id, direction=True)
         ]
 
         # The intersection of the above two.
