@@ -102,7 +102,7 @@ def event_stack(request, eid):
     match = CustomUser.objects.get(id=request.user.id)
     popup = 0
     users = get_stack(request, eid)
-    squad_matches = Squad.objects.get(id=request.squad.id)
+    squad_matches = match.squad
 
     if request.method == "POST":  # user is submitting a swipe
         swipee_id = request.POST["swipee_id"]
@@ -137,7 +137,7 @@ def event_stack(request, eid):
         users = get_stack(request, eid)
 
         # squad_id
-        squad_id = request.squad.id
+        squad_id = match.squad.id
 
         # The squads that I swiped right on.
         i_swiped_right = [
