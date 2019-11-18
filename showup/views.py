@@ -163,19 +163,18 @@ def matches(request):
 @login_required
 def squads(request):
     
-    # squadid
-    uid = request.squad.id
+    # squad_id
+    squad_id = request.squad.id
 
-    # The users that I swiped right on.
-    i_swiped_right = [x for x in squads.objects.filter(swiper__id=uid, direction=True)]
+    # The squads that I swiped right on.
+    i_swiped_right = [x for x in squads.objects.filter(swiper__id=squad_id, direction=True)]
 
-    # The users that swiped right on me.
+    # The squads that swiped right on my squad.
     they_swiped_right = [
-        x.swiper for x in Swipe.objects.filter(swipee__id=uid, direction=True)
+        x.swiper for x in Swipe.objects.filter(swipee__id=squad_id, direction=True)
     ]
 
     # The intersection of the above two.
-    matches = [x for x in i_swiped_right if x.swipee in they_swiped_right]
-    matches.sort(key=lambda x: x.event.id)
+    squad_matches = [x for x in i_swiped_right if x.swipee in they_swiped_right]
 
-    return render(request, "matches.html", {"matches": matches})
+    return render(request, "matches.html", {"squd": squad_matches})
