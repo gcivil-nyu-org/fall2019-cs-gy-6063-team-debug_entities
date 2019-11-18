@@ -99,7 +99,7 @@ def get_stack(request, eid):
 @login_required
 def event_stack(request, eid):
     my_id = request.user.id
-    id_to_send = request.user.id
+    match = CustomUser.objects.get(id=request.user.id)
     popup = 0
     users = get_stack(request, eid)
 
@@ -130,15 +130,13 @@ def event_stack(request, eid):
         # the line below checks criteria 1 and 2
         if my_direction and their_swipe_on_me and their_swipe_on_me.direction:
             popup = 1
-            id_to_send = their_swipe_on_me.swiper_id
+            match = CustomUser.objects.get(id=their_swipe_on_me.swiper_id)
 
         # Update users.
         users = get_stack(request, eid)
 
     return render(
-        request,
-        "match.html",
-        {"users": users, "popup": popup, "id_to_send": id_to_send},
+        request, "match.html", {"users": users, "popup": popup, "match": match}
     )
 
 
