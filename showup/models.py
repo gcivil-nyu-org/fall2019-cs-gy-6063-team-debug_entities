@@ -78,8 +78,3 @@ class Swipe(models.Model):
             f"Swiper: {self.swiper.email}, Swipee: {self.swipee.email}, "
             f"Event: {self.event.id}, Direction: {self.direction}"
         )
-
-
-class Squad(models.Model):
-    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="squad")
-    email_id = models.EmailField()
