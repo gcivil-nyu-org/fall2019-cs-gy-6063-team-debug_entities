@@ -43,7 +43,7 @@ class Migration(migrations.Migration):
                     models.ForeignKey(
                         on_delete=django.db.models.deletion.CASCADE,
                         related_name="squadswipee",
-                        to="showup.Squad"
+                        to="showup.Squad",
                     ),
                 ),
                 (
@@ -51,7 +51,7 @@ class Migration(migrations.Migration):
                     models.ForeignKey(
                         on_delete=django.db.models.deletion.CASCADE,
                         related_name="squadswiper",
-                        to="showup.Squad"
+                        to="showup.Squad",
                     ),
                 ),
             ],
@@ -60,16 +60,17 @@ class Migration(migrations.Migration):
             model_name="customuser",
             name="squad",
             field=models.ForeignKey(
-                null=True,on_delete=django.db.models.deletion.CASCADE,
+                null=True,
+                on_delete=django.db.models.deletion.CASCADE,
                 related_name="squad",
-                to="showup.Squad"
+                to="showup.Squad",
             ),
         ),
         migrations.AddConstraint(
             model_name="squadswipe",
             constraint=models.UniqueConstraint(
                 fields=("swiper", "swipee"),
-                name="Squad member can only swipe on another Squad once"
+                name="Squad member can only swipe on another Squad once",
             ),
         ),
     ]
