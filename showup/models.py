@@ -38,7 +38,7 @@ class Squad(models.Model):
         return str(self.id)
 
 class SquadSwipe(models.Model):
-    swipee = models.ForeignKey(
+    swiper = models.ForeignKey(
         Squad, on_delete=models.CASCADE, related_name="squadswiper"
     )
     swipee = models.ForeignKey(

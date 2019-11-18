@@ -251,4 +251,30 @@ class Migration(migrations.Migration):
                 ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='squad', to=settings.AUTH_USER_MODEL)),
             ],
         ),
+        migrations.RemoveField(
+            model_name='squad',
+            name='email_id',
+        ),
+        migrations.RemoveField(
+            model_name='squad',
+            name='user',
+        ),
+        migrations.CreateModel(
+            name='SquadSwipe',
+            fields=[
+                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('direction', models.BooleanField()),
+                ('swipee', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='squadswipee', to='showup.Squad')),
+            ],
+        ),
+        migrations.AddConstraint(
+            model_name='squadswipe',
+            constraint=models.UniqueConstraint(fields=('swiper', 'swipee'), name='Squad member can only swipe on another Squad once'),
+        ),
+        migrations.AddField(
+            model_name='squadswipe',
+            name='swiper',
+            field=models.ForeignKey(default=django.utils.timezone.now, on_delete=django.db.models.deletion.CASCADE, related_name='squadswiper', to='showup.Squad'),
+            preserve_default=False,
+        ),
     ]
