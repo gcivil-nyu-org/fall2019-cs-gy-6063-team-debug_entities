@@ -17,12 +17,18 @@
                 <a class="d-flex align-items-center text-reset text-decoration-none" data-toggle="collapse" href="#id{{ match.event.id }}" role="button">
                   <span class="mr-4">
                   <h3>
-                  {% avatar match.swipee %}  {{ match.swipee.first_name }}
+                  {{ match.event.performer_names }}
                   </h3>
+                  <p class="font-size-lg text-gray-700 mb-0">
+                    Performer: {{ match.event.performer_names }} <br>
+                    Date: {{ match.event.datetime }} <br>
+                    Venue: {{ match.event.venue_name }} <br>
+                    Borough: {{ match.event.get_borough_display }}
+                  </p>
                   </span>
                   <div class="text-muted ml-auto">
                     <span class="font-size-sm mr-4 d-none d-md-inline">
-                      Details
+                      Matches
                     </span>
                     <span class="collapse-chevron text-muted">
                       <i class="fas fa-caret-down"></i>
@@ -36,10 +42,7 @@
 
                     <!-- Text -->
                     <p class="text-gray-700">
-                      Performer: {{ match.event.performer_names }} <br>
-                      Date: {{ match.event.datetime }} <br>
-                      Venue: {{ match.event.venue_name }} <br>
-                      Borough: {{ match.event.get_borough_display }}
+                      {% avatar match.swipee %}  {{ match.swipee.first_name }}
                     </p>
                     <a href="#">Message</a> &nbsp &nbsp
                     <a href="{% url 'user' match.swipee.id %}">User Profile</a>
@@ -65,5 +68,6 @@
     </div>
   </div>
 </section>
+
 
 {% endblock %}
