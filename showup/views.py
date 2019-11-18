@@ -1,5 +1,5 @@
 from .forms import CustomUserChangeForm
-from .models import Concert, CustomUser, Swipe, Squad, SquadSwipe
+from .models import Concert, CustomUser, Swipe, SquadSwipe
 from allauth.account.admin import EmailAddress
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
