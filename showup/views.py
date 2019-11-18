@@ -1,5 +1,5 @@
 from .forms import CustomUserChangeForm
-from .models import Concert, CustomUser, Swipe
+from .models import Concert, CustomUser, Squad, Swipe
 from allauth.account.admin import EmailAddress
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
@@ -65,6 +65,17 @@ def edit_profile(request, id):
         return render(request, "edit_profile.html", {"form": form})
     else:
         raise PermissionDenied
+
+
+@login_required
+def squad(request, id):
+    # See if this squad exists.
+    try:
+        requested_squad = Squad.objects.get(id=id)
+    except Squad.DoesNotExist:
+        raise PermissionDenied
+
+    return render(request, "squad.html", context={"requested_squad": requested_squad})
 
 
 def get_stack(request, eid):
