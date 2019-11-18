@@ -41,11 +41,12 @@
                   <div class="py-5">
 
                     <!-- Text -->
-                    <p class="text-gray-700">
-                      {% avatar match.swipee %}  {{ match.swipee.first_name }}
-                    </p>
-                    <a href="#">Message</a> &nbsp &nbsp
-                    <a href="{% url 'user' match.swipee.id %}">User Profile</a>
+                    <div class="text-gray-700">
+                      {% avatar match.swipee %} &nbsp {{ match.swipee.first_name }}
+                        <a style = "position:relative; left:500px" href="#">Message</a>
+                        <a style = "position:relative; left:550px" href="{% url 'user' match.swipee.id %}">User Profile</a>
+                    </div>
+
                   </div>
 
                 </div>
