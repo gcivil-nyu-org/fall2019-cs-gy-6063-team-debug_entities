@@ -150,7 +150,7 @@ def event_stack(request, eid):
         squad_matches = [x for x in i_swiped_right if x.swipee in they_swiped_right]
 
     return render(
-        request, "match.html", {"users": users, "popup": popup, "match": match, "squad:" squad_matches}
+        request, "match.html", {"users": users, "popup": popup, "match": match, "squad": squad_matches}
     )
 
 
