@@ -5,27 +5,28 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('showup', '0002_auto_20191110_1616'),
-    ]
+    dependencies = [("showup", "0002_auto_20191110_1616")]
 
     operations = [
-        migrations.RemoveField(
-            model_name='concert',
-            name='genres',
-        ),
+        migrations.RemoveField(model_name="concert", name="genres"),
         migrations.AddField(
-            model_name='concert',
-            name='genres',
-            field=models.ManyToManyField(blank=True, related_name='genres', to='showup.Genre'),
+            model_name="concert",
+            name="genres",
+            field=models.ManyToManyField(
+                blank=True, related_name="genres", to="showup.Genre"
+            ),
         ),
         migrations.AlterField(
-            model_name='customuser',
-            name='genres',
-            field=models.ManyToManyField(blank=True, related_name='fav_genres', to='showup.Genre'),
+            model_name="customuser",
+            name="genres",
+            field=models.ManyToManyField(
+                blank=True, related_name="fav_genres", to="showup.Genre"
+            ),
         ),
         migrations.AddConstraint(
-            model_name='genre',
-            constraint=models.UniqueConstraint(fields=('genre',), name='The Genre model should not have duplicates'),
+            model_name="genre",
+            constraint=models.UniqueConstraint(
+                fields=("genre",), name="The Genre model should not have duplicates"
+            ),
         ),
     ]

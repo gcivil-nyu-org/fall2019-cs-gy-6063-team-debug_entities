@@ -6,12 +6,7 @@ class Genre(models.Model):
     genre = models.TextField()
 
     class Meta:
-        constraints = [
-            models.UniqueConstraint(
-                fields=["genre"],
-                name="The Genre model should not have duplicates",
-            )
-        ]
+        constraints = [models.UniqueConstraint(fields=["genre"], name="Genre_unique")]
 
     def __str__(self):
         return self.genre
