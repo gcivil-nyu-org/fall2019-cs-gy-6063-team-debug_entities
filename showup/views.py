@@ -135,8 +135,22 @@ def event_stack(request, eid):
         # Update users.
         users = get_stack(request, eid)
 
+         # squad_id
+        squad_id = request.squad.id
+
+        # The squads that I swiped right on.
+        i_swiped_right = [x for x in squads.objects.filter(swiper__id=squad_id, direction=True)]
+
+        # The squads that swiped right on my squad.
+        they_swiped_right = [
+            x.swiper for x in Swipe.objects.filter(swipee__id=squad_id, direction=True)
+        ]
+
+        # The intersection of the above two.
+        squad_matches = [x for x in i_swiped_right if x.swipee in they_swiped_right]
+
     return render(
-        request, "match.html", {"users": users, "popup": popup, "match": match}
+        request, "match.html", {"users": users, "popup": popup, "match": match, "squad": squad_matches}
     )
 
 
