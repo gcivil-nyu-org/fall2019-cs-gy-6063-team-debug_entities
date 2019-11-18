@@ -7,18 +7,25 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('showup', '0001_initial'),
+        ("showup", "0001_initial"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='customuser',
-            name='squad',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, related_name='squad', to='showup.Squad'),
+            model_name="customuser",
+            name="squad",
+            field=models.ForeignKey(
+                null=True,
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="squad",
+                to="showup.Squad"
+            ),
         ),
         migrations.AlterField(
-            model_name='customuser',
-            name='genres',
-            field=models.ManyToManyField(blank=True, related_name='genres', to='showup.Genre'),
+            model_name="customuser",
+            name="genres",
+            field=models.ManyToManyField(
+                blank=True, related_name="genres", to="showup.Genre"
+            ),
         ),
     ]

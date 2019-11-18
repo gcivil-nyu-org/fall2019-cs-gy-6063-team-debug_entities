@@ -37,6 +37,7 @@ class Squad(models.Model):
     def __str__(self):
         return str(self.id)
 
+
 class SquadSwipe(models.Model):
     swiper = models.ForeignKey(
         Squad, on_delete=models.CASCADE, related_name="squadswiper"
@@ -45,15 +46,14 @@ class SquadSwipe(models.Model):
         Squad, on_delete=models.CASCADE, related_name="squadswipee"
     )
     
+
     direction = models.BooleanField()
 
     class Meta:
         constraints = [
             models.UniqueConstraint(
                 fields=["swiper", "swipee"],
-                name=(
-                    "Squad member can only swipe on another Squad once"
-                ),
+                name=("Squad member can only swipe on another Squad once"),
             )
         ]
 
@@ -62,6 +62,7 @@ class SquadSwipe(models.Model):
             f"Swiper: {self.swiper.id}, Swipee: {self.swipee.id}, "
             f"Direction: {self.direction}"
         )
+
 
 class CustomUser(AbstractUser):
     date_of_birth = models.DateField(null=True, blank=True)
