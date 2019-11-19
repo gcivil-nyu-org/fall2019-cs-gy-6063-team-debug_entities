@@ -3,6 +3,7 @@
 {% load static %}
 
 {% block content %}
+<!-- CSS and JS for the dropdown widgets -->
 <link rel="stylesheet" href="https://res.cloudinary.com/dxfq3iotg/raw/upload/v1569006288/BBBootstrap/choices.min.css?version=7.0.0">
 <script src="https://res.cloudinary.com/dxfq3iotg/raw/upload/v1569006273/BBBootstrap/choices.min.js?version=7.0.0"></script>
 <script type="text/javascript" src="{% static 'theme/multiselect.js' %}"></script>
@@ -30,11 +31,9 @@
                             <label for="id_borough" class="">Boroughs</label>
                             <div>
                                 <select name="borough" id="id_borough" placeholder="Click here to select boroughs" multiple>
-                                    <option value="BK">Brooklyn</option>
-                                    <option value="MN">Manhattan</option>
-                                    <option value="BX">The Bronx</option>
-                                    <option value="QN">Queens</option>
-                                    <option value="SI">Staten Island</option>
+                                    {% for borough in boroughs %}
+                                        <option value="{{ borough.0 }}">{{ borough.1 }}</option>
+                                    {% endfor %}
                                 </select>   
                             </div>
                         </div>
@@ -44,8 +43,8 @@
                             <label for="id_performers" class="">Performers</label>
                             <div>
                                 <select name="performers" id="id_performers" placeholder="Click here to select performers" multiple>
-                                    {% for event in filter.qs %}
-                                        <option value="{{ event.performer_names }}">{{ event.performer_names }}</option>
+                                    {% for performer in unique_performers %}
+                                        <option value="{{ performer }}">{{ performer }}</option>
                                     {% endfor %}
                                 </select>
                             </div>
@@ -56,8 +55,8 @@
                             <label for="id_venues" class="">Venues</label>
                             <div>
                                 <select name="venues" id="id_venues" placeholder="Click here to select venues" multiple>
-                                    {% for event in filter.qs %}
-                                        <option value="{{ event.venue_name }}">{{ event.venue_name }}</option>
+                                    {% for venue in unique_venues %}
+                                        <option value="{{ venue }}">{{ venue }}</option>
                                     {% endfor %}
                                 </select>
                             </div>
@@ -68,8 +67,8 @@
                             <label for="id_genres" class="">Genres</label>
                             <div class="">
                                 <select name="genres" id="id_genres" placeholder="Click here to select genres" multiple>
-                                    {% for genre in all_genres %}
-                                        <option value="{{ genre.genre }}">{{ genre.genre }}</option>
+                                    {% for genre in unique_genres %}
+                                        <option value="{{ genre }}">{{ genre }}</option>
                                     {% endfor %}
                                 </select>
                             </div>
@@ -100,7 +99,7 @@
                                     <h3 class="card-title text-center">{% if event.id in interested_list or event.id in going_list %}<a href="{% url 'event_stack' event.id %}">{% endif %}{{event.performer_names}}</a></h3>
                                     <p class="card-text">{{event.venue_name}} on {{event.datetime}}</p>
                                     <div class="text-center">
-                                        <form action="#" method="get">
+                                        <form action="" method="get">
                                             <button class="btn btn-sm shadow {% if event.id in interested_list %}btn-primary{% endif %}" type="submit" name="interested" value={{event.id}}>{% if event.id in interested_list %} Not {% endif %}Interested</button>
                                             <button class="btn btn-sm shadow {% if event.id in going_list %}btn-primary{% endif %}" type="submit" name="going" value={{event.id}}>{% if event.id in going_list %} Not {% endif %}Going</button>
                                         </form>
