@@ -18,7 +18,10 @@ def events(request):
         "filter": filter,
         "interested_list": request.user.interested.values_list("id", flat=True),
         "going_list": request.user.going.values_list("id", flat=True),
-        "all_genres": Genre.objects.all(),
+        "unique_genres": [g.genre for g in Genre.objects.all()],
+        "unique_venues": set([c.venue_name for c in Concert.objects.all()]),
+        "unique_performers": set([c.performer_names for c in Concert.objects.all()]),
+        "boroughs": Concert.BOROUGH_CHOICES,
     }
     # User clicked "Interested" button.
     if "interested" in request.GET:
