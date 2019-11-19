@@ -1,9 +1,33 @@
 {% extends 'header.html' %}
-
+{% load avatar_tags %}
 {% block content %}
 
-{% for user in users %}
-  <p>{{ user }}</p>
-{% endfor %}
+<section class="pt-6 pt-md-8 pb-8 mb-md-8">
+    <div class="container">
+        <div class="row flex-grow-1 overflow-hidden">
+            <div class="col-9 mh-100 overflow-auto py-2">
+                <div class="card shadow">
+                    <div class="card-body">
+                        <h2 class="card-title text-center">Squad Up</h2>
+                        <div class="row">
+                            {% for user in users %}
+                                <div class="col-3 d-flex my-2">
+                                    <div class="card shadow lift">
+                                        {% avatar user %}
 
+                                        <div class="card-body">
+                                            <h3 class="card-title text-center">
+                                                <a href="{% url 'user' user.id %}">{{ user.first_name }}</a>
+                                            </h3>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div> <!-- closes body of big card that holds all events -->
+                </div> <!-- closes big card that holds all events -->
+            </div> <!-- closes column that holds card with all events -->
+        </div> <!-- closes row that holds everything -->
+    </div>
+</section>
 {% endblock %}
