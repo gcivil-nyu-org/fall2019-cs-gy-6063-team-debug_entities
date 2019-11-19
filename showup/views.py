@@ -1,5 +1,5 @@
 from .forms import CustomUserChangeForm
-from .models import Concert, CustomUser, Swipe
+from .models import Concert, CustomUser, Swipe, Genre
 from allauth.account.admin import EmailAddress
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
@@ -18,6 +18,7 @@ def events(request):
         "filter": filter,
         "interested_list": request.user.interested.values_list("id", flat=True),
         "going_list": request.user.going.values_list("id", flat=True),
+        "all_genres": Genre.objects.all(),
     }
     # User clicked "Interested" button.
     if "interested" in request.GET:
