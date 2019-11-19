@@ -69,13 +69,13 @@ def edit_profile(request, id):
 
 @login_required
 def squad(request, id):
-    # See if this squad exists.
     try:
-        requested_squad = Squad.objects.get(id=id)
+        squad = Squad.objects.get(id=id)
+        users = CustomUser.objects.filter(squad=squad)
     except Squad.DoesNotExist:
         raise PermissionDenied
 
-    return render(request, "squad.html", context={"requested_squad": requested_squad})
+    return render(request, "squad.html", context={"users": users})
 
 
 def get_stack(request, eid):
