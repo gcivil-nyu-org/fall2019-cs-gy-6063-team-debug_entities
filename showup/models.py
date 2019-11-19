@@ -36,13 +36,6 @@ class Concert(models.Model):
         )
 
 
-class Genre(models.Model):
-    genre = models.TextField()
-
-    def __str__(self):
-        return self.genre
-
-
 class Squad(models.Model):
     def __str__(self):
         return str(self.id)
