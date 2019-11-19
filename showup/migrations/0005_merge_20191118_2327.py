@@ -10,5 +10,4 @@ class Migration(migrations.Migration):
         ('showup', '0003_auto_20191118_1915'),
     ]
 
-    operations = [
-    ]
+    operations = []
