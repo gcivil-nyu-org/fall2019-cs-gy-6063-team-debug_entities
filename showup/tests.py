@@ -262,11 +262,10 @@ class Event_StackViewTests(TestCase):
         # Login user.
         self.client.login(username=username, password=password)
 
-
     def test_event_stack_basic(self):
         response = self.client.get(reverse("matches"))
         self.assertEqual(response.status_code, 200)
-        
+
     def test_squad(self):
         get = "?squad=1"
         response = self.client.get(reverse("matches") + get)
