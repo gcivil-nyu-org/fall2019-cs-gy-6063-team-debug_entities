@@ -259,7 +259,6 @@ class AuthenticatedViewTests(TestCase):
         testuser = CustomUser.objects.create_user(username=username, password=password)
         EmailAddress.objects.get_or_create(id=1, user=testuser, verified=True)
         self.client.login(username=username, password=password)
-        match=CustomUser.objects.get(id=testuser.id)
         Concert.objects.get_or_create(
             id=1,
             performer_names="Team Debug Entities",
