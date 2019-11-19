@@ -270,7 +270,7 @@ class Event_StackViewTests(TestCase):
         
     def test_squad(self):
         get = "?squad=1"
-        response = self.client.get(reverse("match") + get)
+        response = self.client.get(reverse("matches") + get)
         self.assertEqual(response.status_code, 200)
 
 
