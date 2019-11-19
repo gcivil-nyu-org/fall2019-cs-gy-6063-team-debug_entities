@@ -3,7 +3,7 @@
 
 {% block content %}
 <div style = "position:relative; top:20px">
-<center><h2>Lets talk, Shall we?</h2></center>
+<center><h2>Lets talk, shall we?</h2></center>
 </div>
 <section class="pt-6 pt-md-8 pb-8 mb-md-8">
   <div class="container">
@@ -12,51 +12,55 @@
         <div class="card shadow-light-lg accordion mb-5 mb-md-6" id="helpAccordionOne">
           <div class="list-group">
             <div class="list-group-item">
-              {% for event in events %}
-              <div class="list-group-item">
-                <a class="d-flex align-items-center text-reset text-decoration-none" data-toggle="collapse" href="#id{{ event.id }}" role="button">
-                  <span class="mr-4">
-                  <h3>
-                  {{ match.event.performer_names }}
-                  </h3>
-                  <p class="font-size-lg text-gray-700 mb-0">
-                    Performer: {{ event.performer_names }} <br>
-                    Date: {{ event.datetime }} <br>
-                    Venue: {{ event.venue_name }} <br>
-                    Borough: {{ event.get_borough_display }}
-                  </p>
-                  </span>
-                  <div class="text-muted ml-auto">
-                    <span class="font-size-sm mr-4 d-none d-md-inline">
-                      Matches
+              {% if events|length > 0 %}
+                {% for event in events %}
+                <div class="list-group-item">
+                  <a class="d-flex align-items-center text-reset text-decoration-none" data-toggle="collapse" href="#id{{ event.id }}" role="button">
+                    <span class="mr-4">
+                    <h3>
+                    {{ match.event.performer_names }}
+                    </h3>
+                    <p class="font-size-lg text-gray-700 mb-0">
+                      Performer: {{ event.performer_names }} <br>
+                      Date: {{ event.datetime }} <br>
+                      Venue: {{ event.venue_name }} <br>
+                      Borough: {{ event.get_borough_display }}
+                    </p>
                     </span>
-                    <span class="collapse-chevron text-muted">
-                      <i class="fas fa-caret-down"></i>
-                    </span>
-                  </div>
-                </a>
+                    <div class="text-muted ml-auto">
+                      <span class="font-size-sm mr-4 d-none d-md-inline">
+                        Matches
+                      </span>
+                      <span class="collapse-chevron text-muted">
+                        <i class="fas fa-caret-down"></i>
+                      </span>
+                    </div>
+                  </a>
 
-                <!-- Collapse -->
-                {% for match in matches %}
-                {% if match.event.id == event.id %}
-                <div class="collapse" id="id{{ event.id }}" data-parent="#helpAccordionOne">
-                  <div class="py-5">
+                  <!-- Collapse -->
+                  {% for match in matches %}
+                  {% if match.event.id == event.id %}
+                  <div class="collapse" id="id{{ event.id }}" data-parent="#helpAccordionOne">
+                    <div class="py-5">
 
-                    <!-- Text -->
-                    <div class="text-gray-700">
-                      {% avatar match.swipee %} &nbsp {{ match.swipee.first_name }}
-                        <a style = "position:relative; left:500px" href="#">Message</a> &nbsp &nbsp
-                        <a style = "position:relative; left:550px" href="{% url 'user' match.swipee.id %}">User Profile</a>
+                      <!-- Text -->
+                      <div class="text-gray-700">
+                        {% avatar match.swipee %} &nbsp {{ match.swipee.first_name }}
+                          <a style = "position:relative; left:500px" href="#">Message</a> &nbsp &nbsp
+                          <a style = "position:relative; left:550px" href="{% url 'user' match.swipee.id %}">User Profile</a>
+                      </div>
+
                     </div>
 
                   </div>
+                  {% endif %}
+                  {% endfor %}
 
                 </div>
-                {% endif %}
                 {% endfor %}
-
-              </div>
-              {% endfor %}
+              {% else %}
+                <center><p>No matches. Let's get swiping!</p></center>
+              {% endif %}
             </div>
           </div>
         </div>
