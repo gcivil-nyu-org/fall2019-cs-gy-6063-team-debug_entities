@@ -1,6 +1,6 @@
 {% extends 'header.html' %}
 {% load avatar_tags %}
-
+{% load static %}
 {% block content %}
 <div style = "position:relative; top:20px">
 <center><h2>Let's talk, shall we?</h2></center>
@@ -38,9 +38,9 @@
                   </a>
 
                   <!-- Collapse -->
-                  {% for match in matches %}
-                  {% if match.event.id == event.id %}
                   <div class="collapse" id="id{{ event.id }}" data-parent="#helpAccordionOne">
+                    {% for match in matches %}
+                    {% if match.event.id == event.id %}
                     <div class="py-5">
 
                       <!-- Text -->
@@ -51,15 +51,15 @@
                       </div>
 
                     </div>
-
+                    {% endif %}
+                    {% endfor %}
                   </div>
-                  {% endif %}
-                  {% endfor %}
+
 
                 </div>
                 {% endfor %}
               {% else %}
-                <center><p>No matches. Let's get swiping!</p></center>
+                <center><h3>No matches. Let's get swiping!</h3></center>
               {% endif %}
             </div>
           </div>
