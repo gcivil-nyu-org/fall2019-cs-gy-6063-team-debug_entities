@@ -144,6 +144,7 @@ def event_stack(request, eid):
 def matches(request):
     # My uid.
     uid = request.user.id
+    unique_events = set()
 
     # The users that I swiped right on.
     i_swiped_right = [x for x in Swipe.objects.filter(swiper__id=uid, direction=True)]
@@ -156,5 +157,7 @@ def matches(request):
     # The intersection of the above two.
     matches = [x for x in i_swiped_right if x.swipee in they_swiped_right]
     matches.sort(key=lambda x: x.event.id)
+    for match in matches:
+        unique_events.add(match.event)
 
-    return render(request, "matches.html", {"matches": matches})
+    return render(request, "matches.html", {"matches": matches, "events": unique_events})
