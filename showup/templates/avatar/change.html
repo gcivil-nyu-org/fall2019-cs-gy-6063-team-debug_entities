@@ -24,6 +24,7 @@
                         {{ upload_avatar_form|crispy }}
                         <p>{% csrf_token %}<input type="submit" class="btn btn-primary" value="{% trans "Upload New Image" %}" /></p>
                     </form>
+                    <a class="nav-link" href="{% url 'user' user.id %}">My Profile</a>
                 </div>
             </div>
         </div>

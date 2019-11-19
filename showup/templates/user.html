@@ -9,11 +9,23 @@
               <div class="row mb-6 mb-md-8">
                 <div class="col-auto">
                   
-                  <!-- Icon -->
-                  <div class="icon-circle bg-primary text-white">
-                      {% avatar user %}                  
+                  <!-- Avatar as a link to change it -->
+                  {% if user.id == requested_user.id %}
+                  <div>
+                    <a href="{% url 'avatar_change' %}"><img src="{% avatar_url requested_user %}" /></a>
                   </div>
-  
+
+                  <!-- Need to allow users to delete their avatars -->
+                  <div>
+                    <a href="{% url 'avatar_delete' %}">Avatar Delete</a>
+                  </div>
+                  {% else %}
+                  <!-- If its not your profile, cannot edit avatar -->
+                  <div>
+                    <img src="{% avatar_url requested_user %}">
+                  </div>
+                  {% endif %}
+                  
                 </div>
                 <div class="col ml-n4">
                   
