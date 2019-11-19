@@ -9,6 +9,7 @@
             <div class="card shadow">
                 <div class="card-body">
                     <p>{% trans "Your current avatar: " %}</p>
+                    
                     {% avatar user %}
                     {% if not avatars %}
                         <p>{% trans "You haven't uploaded an avatar yet. Please upload one now." %}</p>
@@ -17,7 +18,7 @@
                             <ul>
                                 {{ primary_avatar_form|crispy }}
                             </ul>
-                            <p>{% csrf_token %}<input type="submit" class="btn btn-primary" value="{% trans "Choose new Default" %}" /></p>
+                            <p>{% csrf_token %}<input type="submit" class="btn btn-primary" value="{% trans "Choose new Default" %}"></p>
                         </form>
                     {% endif %}
                     <form enctype="multipart/form-data" method="POST" action="{% url 'avatar_add' %}">
@@ -25,6 +26,9 @@
                         <p>{% csrf_token %}<input type="submit" class="btn btn-primary" value="{% trans "Upload New Image" %}" /></p>
                     </form>
                     <a class="nav-link" href="{% url 'user' user.id %}">My Profile</a>
+                    {% if avatars %}
+                    <a href="{% url 'avatar_delete' %}">Delete Avatars</a>
+                    {% endif %}
                 </div>
             </div>
         </div>
