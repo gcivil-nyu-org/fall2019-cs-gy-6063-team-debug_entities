@@ -1,6 +1,6 @@
 import datetime
 
-from .models import Concert, CustomUser, Genre, Swipe
+from .models import Concert, CustomUser, Genre, Swipe, Squad, SquadSwipe
 from allauth.account.admin import EmailAddress
 from django.test import Client, TestCase
 from django.urls import reverse
@@ -83,6 +83,38 @@ class SwipeModelTests(TestCase):
             f"Swiper: {swiper.email}, "
             f"Swipee: {swipee.email}, "
             f"Event: {event.id}, "
+            f"Direction: {direction}"
+        )
+        self.assertEqual(swipe.__str__(), expected_output)
+        
+
+class SquadModelTests(TestCase):
+    def test_Squad_basic(self):
+        squad = Squad()
+        squad.save()
+        self.assertEqual(squad.__str__(), str(squad.id))
+ 
+
+class SquadSwipeModelTests(TestCase):
+    def test_SquadSwipe_basic(self):
+        # Create needed objects for Swipe model.
+        swiper = Squad(id="1")
+        swipee = Squad(id="2")
+        direction = True
+
+        # Save the objects.
+        swiper.save()
+        swipee.save()
+        
+        # Create the Swipe object.
+        swipe = SquadSwipe(swiper=swiper, swipee=swipee, direction=direction)
+
+        # Save the Swipe object.
+        swipe.save()
+
+        expected_output = (
+            f"Swiper: {swiper.id}, "
+            f"Swipee: {swipee.id}, "
             f"Direction: {direction}"
         )
         self.assertEqual(swipe.__str__(), expected_output)
@@ -219,6 +251,26 @@ class MatchesViewTests(TestCase):
 
     def test_matches_basic(self):
         response = self.client.get(reverse("matches"))
+        self.assertEqual(response.status_code, 200)
+        
+        
+class Event_StackViewTests(TestCase):
+    def setUp(self):
+        # Create and save user.
+        username, password = "jspringer@example.com", "heyhey123"
+        user = CustomUser.objects.create_user(username=username, password=password)
+        EmailAddress.objects.get_or_create(id=1, user=user, verified=True)
+        
+        # Login user.
+        self.client.login(username=username, password=password)
+
+    def test_event_stack_basic(self):
+        response = self.client.get(reverse("matches"))
+        self.assertEqual(response.status_code, 200)
+        
+    def test_squad(self):
+        get = "?squad=1"
+        response = self.client.get(reverse("match") + get)
         self.assertEqual(response.status_code, 200)
 
 
