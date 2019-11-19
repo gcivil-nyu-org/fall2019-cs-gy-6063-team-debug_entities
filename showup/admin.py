@@ -1,4 +1,4 @@
-from .models import CustomUser, Genre, Squad, Swipe
+from .models import CustomUser, Genre, Squad, Swipe, Concert
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 
@@ -59,7 +59,13 @@ class SwipeAdmin(admin.ModelAdmin):
         model = Swipe
 
 
+class ConcertAdmin(admin.ModelAdmin):
+    class Meta:
+        model = Concert
+
+
 admin.site.register(CustomUser, CustomUserAdmin)
 admin.site.register(Genre, GenreAdmin)
 admin.site.register(Squad, SquadAdmin)
 admin.site.register(Swipe, SwipeAdmin)
+admin.site.register(Concert, ConcertAdmin)
