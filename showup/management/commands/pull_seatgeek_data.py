@@ -9,21 +9,6 @@ from showup.models import Concert, Genre
 
 
 class Command(BaseCommand):
-    def OpenGenre():
-        genres_fromfile = set()
-        file = "showup/static/genres.txt"
-        with open(file, "w+") as existing_genre:
-            lines = existing_genre.read().splitlines()
-            for line in lines:
-                genres_fromfile.add(line)
-        return genres_fromfile
-
-    def WriteGenre(genre_set):
-        file = "showup/static/genres.txt"
-        with open(file, "w+") as genre_file:
-            for genre in genre_set:
-                genre_file.write(genre + "\n")
-
     def handle(self, *args, **options):
         # Due to heroku limitations, setting event cap to 100
         base_url = (
@@ -40,20 +25,18 @@ class Command(BaseCommand):
         # it's important that Manhattan is last because it's very badly
         # represented by a circle. So we do the other boroughs first so that the
         # inevitable overlap from MN's circle won't misassign concerts to MN.
-        log_file = log_file = "showup/management/commands/logs/pull_seatgeek_data.log"
+
+        log_file = "showup/management/commands/logs/pull_seatgeek_data.log"
         logging.basicConfig(
             filename=log_file,
             level=logging.DEBUG,
             format="%(asctime)s - %(levelname)s - %(message)s",
-        )  # setting up the logger to write to a file name pull_seatgeek_data.log
-
-        existing_genres = Command.OpenGenre()
+        )
 
         for borough_abbrev in borough_urls:
             response = requests.get(base_url + borough_urls[borough_abbrev])
-            concert_list = json.loads(response.content)[
-                "events"
-            ]  # each item in concert_list is a dict that represents an event.
+            concert_list = json.loads(response.content)["events"]
+            # each item in concert_list is a dict that represents an event.
 
             for concert in concert_list:
                 if Concert.objects.filter(id=concert["id"]).exists():
@@ -74,7 +57,6 @@ class Command(BaseCommand):
                         if "genres" in perf:
                             for g in perf["genres"]:
                                 genres_set.add(g["name"])
-                                existing_genres.add(g["name"])
 
                     aware_date = make_aware(
                         datetime.strptime(
@@ -90,12 +72,10 @@ class Command(BaseCommand):
                         venue_name=concert["venue"]["name_v2"],
                         borough=borough_abbrev,
                         performer_names=", ".join(perf_name_list),
-                        genres=", ".join(genres_set),
                         event_url=concert["url"],
                         performer_image_url=concert["performers"][0]["image"],
                     )
-                    # parse all necessary information from the concert data and put
-                    # it into an object in our database
+
                     logging.debug(
                         "I'm about to try to save this concert: Venue - "
                         + concert["venue"]["name_v2"]
@@ -107,14 +87,8 @@ class Command(BaseCommand):
                         "I just saved event " + str(concert["id"]) + " to the database"
                     )
 
-        Genre.objects.all().delete()
-        # Sort genres alphabetically.
-        genres = sorted(existing_genres)
-
-        # Add genres to Genre model.
-
-        for genre in genres:
-            Genre(genre=genre).save()
-
-        # Add genres to genres.txt.
-        Command.WriteGenre(genres)
+                    # we have to create the Concert object before adding its genres
+                    # because genres is a many-to-many field
+                    for genre_string in genres_set:
+                        genre_obj, c = Genre.objects.get_or_create(genre=genre_string)
+                        curr_concert.genres.add(genre_obj)
