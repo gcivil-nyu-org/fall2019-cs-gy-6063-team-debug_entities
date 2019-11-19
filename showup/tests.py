@@ -251,7 +251,7 @@ class MatchesViewTests(TestCase):
         response = self.client.get(reverse("matches"))
         self.assertEqual(response.status_code, 200)
 
-        
+
 class Event_StackViewTests(TestCase):
     def setUp(self):
         # Create and save user.
@@ -261,6 +261,7 @@ class Event_StackViewTests(TestCase):
 
         # Login user.
         self.client.login(username=username, password=password)
+
 
     def test_event_stack_basic(self):
         response = self.client.get(reverse("matches"))
