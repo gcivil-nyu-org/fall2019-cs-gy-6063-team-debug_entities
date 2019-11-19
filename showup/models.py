@@ -2,6 +2,16 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 
 
+class Genre(models.Model):
+    genre = models.TextField()
+
+    class Meta:
+        constraints = [models.UniqueConstraint(fields=["genre"], name="Genre_unique")]
+
+    def __str__(self):
+        return self.genre
+
+
 class Concert(models.Model):
     BOROUGH_CHOICES = [
         ("BK", "Brooklyn"),
@@ -16,7 +26,7 @@ class Concert(models.Model):
     venue_name = models.TextField()
     borough = models.TextField(choices=BOROUGH_CHOICES)
     performer_names = models.TextField()
-    genres = models.TextField()
+    genres = models.ManyToManyField(Genre, related_name="genres", blank=True)
     event_url = models.URLField(max_length=100000)
     performer_image_url = models.URLField(max_length=100000, null=True)
 
@@ -26,13 +36,6 @@ class Concert(models.Model):
         )
 
 
-class Genre(models.Model):
-    genre = models.TextField()
-
-    def __str__(self):
-        return self.genre
-
-
 class CustomUser(AbstractUser):
     date_of_birth = models.DateField(null=True, blank=True)
     gender = models.CharField(max_length=255, blank=True)
@@ -40,7 +43,7 @@ class CustomUser(AbstractUser):
     going = models.ManyToManyField(Concert, related_name="going", blank=True)
     bio = models.TextField(max_length=500, default="", blank=True)
     swipes = models.ManyToManyField("self", through="Swipe", symmetrical=False)
-    genres = models.ManyToManyField(Genre, related_name="genres", blank=True)
+    genres = models.ManyToManyField(Genre, related_name="fav_genres", blank=True)
 
     def __str__(self):
         return self.email
