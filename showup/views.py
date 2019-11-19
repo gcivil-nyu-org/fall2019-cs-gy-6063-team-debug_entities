@@ -1,4 +1,4 @@
-from .forms import CustomUserChangeForm
+from .forms import CustomUserChangeForm, SquadForm
 from .models import Concert, CustomUser, Squad, Swipe
 from allauth.account.admin import EmailAddress
 from django.contrib.auth.decorators import login_required
@@ -76,6 +76,30 @@ def squad(request, id):
         raise PermissionDenied
 
     return render(request, "squad.html", context={"users": users})
+
+
+@login_required
+def edit_squad(request, id):
+    if request.user.squad.id == id:
+        form = SquadForm(request.POST or None)
+        if request.method == "POST" and form.is_valid():
+            # Get our squads.
+            my_squad = request.user.squad
+            their_squad = CustomUser.objects.get(email=request.email).squad.id
+            their_members = CustomUser.objects.filter(squad=their_squad)
+
+            # Merge squads.
+            for member in their_members:
+                member.squad = my_squad
+                member.save()
+
+            # Delete the old squad.
+            Squad.objects.get(id=their_squad).delete()
+
+            return redirect(reverse("squad", kwargs={"id": id}))
+        return render(request, "edit_squad.html", {"form": form})
+    else:
+        raise PermissionDenied
 
 
 def get_stack(request, eid):

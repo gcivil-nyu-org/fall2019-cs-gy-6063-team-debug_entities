@@ -29,3 +29,7 @@ class CustomUserChangeForm(UserChangeForm):
         model = CustomUser
         fields = ("bio", "genres")
         widgets = {"genres": forms.CheckboxSelectMultiple}
+
+
+class SquadForm(forms.Form):
+    email = forms.EmailField()

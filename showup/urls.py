@@ -12,6 +12,7 @@ urlpatterns = [
     path("u/<int:id>", views.user, name="user"),
     path("u/<int:id>/edit", views.edit_profile, name="edit_profile"),
     path("s/<int:id>", views.squad, name="squad"),
+    path("s/<int:id>/edit", views.edit_squad, name="edit_squad"),
     path("<int:eid>/match", views.event_stack, name="event_stack"),
     path("avatar/", include("avatar.urls")),
 ]
