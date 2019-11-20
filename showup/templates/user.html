@@ -9,12 +9,20 @@
               <div class="row mb-6 mb-md-8">
                 <div class="col-auto">
                   
-                  <!-- Icon -->
-                  <div class="icon-circle bg-primary text-white">
-                      {% avatar user %}                  
+                  <!-- Edit Image link only if its your account  -->
+                  {% if user.id == requested_user.id %}
+                  <div>
+                    <a href="{% url 'avatar_change' %}"><img src="{% avatar_url requested_user 200 %}"></a>
                   </div>
-  
+
+                  <!-- If its not your profile, cannot edit avatar -->
+                  {% else %}
+                  <div>
+                    <img src="{% avatar_url requested_user %}">
+                  </div>
+                  {% endif %}
                 </div>
+
                 <div class="col ml-n4">
                   
                   <!-- Heading -->
@@ -38,7 +46,6 @@
                   </ul>
 
                   {% if user.id == requested_user.id %}
-                  <a class="btn btn-primary" href="{% url 'avatar_change' %}">Update Avatar</a>
                   <a class="btn btn-primary" href="{% url 'edit_profile' user.id %}">Edit Your Profile</a>
                   {% endif %}
   
