@@ -1,6 +1,6 @@
 import datetime
 
-from .models import Concert, CustomUser, Genre, Swipe
+from .models import Concert, CustomUser, Genre, Squad, Swipe
 from allauth.account.admin import EmailAddress
 from django.test import Client, TestCase
 from django.urls import reverse
@@ -98,7 +98,9 @@ class EventsViewTests(TestCase):
     def setUp(self):
         # Create and save user.
         username, password = "jspringer@example.com", "heyhey123"
-        user = CustomUser.objects.create_user(username=username, password=password)
+        squad = Squad()
+        squad.save()
+        user = CustomUser.objects.create_user(username=username, password=password, squad=squad)
         EmailAddress.objects.get_or_create(id=1, user=user, verified=True)
 
         # Login user.
@@ -211,12 +213,16 @@ class MatchesViewTests(TestCase):
     def setUp(self):
         # Create and save user one.
         username, password = "jspringer@example.com", "heyhey123"
-        user_1 = CustomUser.objects.create_user(username=username, password=password)
+        squad_1 = Squad()
+        squad_1.save()
+        user_1 = CustomUser.objects.create_user(username=username, password=password, squad=squad_1)
         EmailAddress.objects.get_or_create(id=1, user=user_1, verified=True)
 
         # Create and save user two.
         username, password = "jfallon@example.com", "heyhey123"
-        user_2 = CustomUser.objects.create_user(username=username, password=password)
+        squad_2 = Squad()
+        squad_2.save()
+        user_2 = CustomUser.objects.create_user(username=username, password=password, squad=squad_2)
 
         # Create needed objects for Swipe model.
         event = Concert(id=1, datetime=datetime.datetime.now(tz=utc))
@@ -245,7 +251,9 @@ class AuthenticatedViewTests(TestCase):
     def setUp(self):  # this logs in a test user for the subsequent test cases
         username = "testuser"
         password = "testpass"
-        testuser = CustomUser.objects.create_user(username=username, password=password)
+        squad = Squad()
+        squad.save()
+        testuser = CustomUser.objects.create_user(username=username, password=password, squad=squad)
         EmailAddress.objects.get_or_create(id=1, user=testuser, verified=True)
         self.client.login(username=username, password=password)
         Concert.objects.get_or_create(
