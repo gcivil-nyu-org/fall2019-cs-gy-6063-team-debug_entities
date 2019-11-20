@@ -211,6 +211,23 @@ class EditProfileViewTests(TestCase):
         self.assertEqual(response.status_code, 403)
 
 
+class SquadViewTests(TestCase):
+    def setUp(self):
+        # Create and save user.
+        username, password = "jspringer@example.com", "heyhey123"
+        squad = Squad(id=1)
+        squad.save()
+        user = CustomUser.objects.create_user(username=username, password=password, squad=squad)
+        EmailAddress.objects.get_or_create(id=1, user=user, verified=True)
+
+        # Login user.
+        self.client.login(username=username, password=password)
+
+    def test_squad_basic(self):
+        response = self.client.get(reverse("squad", args=(1,)))
+        self.assertEqual(response.status_code, 200)
+
+
 class MatchesViewTests(TestCase):
     def setUp(self):
         # Create and save user one.
