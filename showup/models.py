@@ -31,8 +31,9 @@ class Concert(models.Model):
     performer_image_url = models.URLField(max_length=100000, null=True)
 
     def __str__(self):
-        return "{} at {} on {} in {}".format(
-            self.performer_names, self.venue_name, str(self.datetime), self.borough
+        return (
+            f"{self.performer_names} at {self.venue_name}"
+            f" on {str(self.datetime)} in {self.borough}"
         )
 
 
