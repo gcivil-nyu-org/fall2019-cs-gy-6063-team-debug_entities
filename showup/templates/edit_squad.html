@@ -1,9 +1,9 @@
 {% extends 'header.html' %}
 {% block content %}
 
-<div style = "position:relative; top:20px">
+<div style="position:relative; top:20px">
   <center>
-    <h2>Let's squad up.</h2>
+    <h2>Grow your squad.</h2>
   </center>
 </div>
 
@@ -13,11 +13,13 @@
       <div class="col-12">
         <p>Enter a user's email address to add them to your squad.</p>
 
-        <div class="form-group my-3">
-          <input type="email" name="email" class="form-control" placeholder="email address" required>
-        </div>
-
-        <button type="submit" class="btn btn-block btn-primary shadow lift">Add User</button>
+        <form method='POST'>
+          {% csrf_token %}
+          <div class="form-group my-3">
+            <input type="email" name="email" class="form-control" placeholder="email address" required>
+          </div>
+          <button type="submit" class="btn btn-block btn-primary shadow lift">Add User</button>
+        </form>
       </div>
     </div>
   </div>

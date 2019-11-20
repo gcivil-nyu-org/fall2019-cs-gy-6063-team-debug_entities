@@ -80,21 +80,34 @@ def squad(request, id):
 
 @login_required
 def edit_squad(request, id):
+    # You can only edit your own squad.
     if request.user.squad.id == id:
         form = SquadForm(request.POST or None)
         if request.method == "POST" and form.is_valid():
-            # Get our squads.
+            # Get my squad.
             my_squad = request.user.squad
-            their_squad = CustomUser.objects.get(email=request.email).squad.id
-            their_members = CustomUser.objects.filter(squad=their_squad)
+
+            # Get their squad and their members.
+            try:
+                their_squad = CustomUser.objects.get(email=request.POST["email"]).squad
+
+                # We are already in the same squad.
+                if my_squad.id == their_squad.id:
+                    # TODO: Output some sort of message.
+                    return render(request, "edit_squad.html", {"form": form})
+
+                their_members = CustomUser.objects.filter(squad=their_squad)
+            except CustomUser.DoesNotExist:
+                # TODO: Output some sort of message.
+                return render(request, "edit_squad.html", {"form": form})
 
             # Merge squads.
             for member in their_members:
                 member.squad = my_squad
                 member.save()
 
-            # Delete the old squad.
-            Squad.objects.get(id=their_squad).delete()
+            # Delete their old squad.
+            Squad.objects.get(id=their_squad.id).delete()
 
             return redirect(reverse("squad", kwargs={"id": id}))
         return render(request, "edit_squad.html", {"form": form})
