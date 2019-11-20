@@ -1,8 +1,10 @@
 {% extends 'header.html' %}
 {% load avatar_tags %}
-
+{% load static %}
 {% block content %}
-
+<div style = "position:relative; top:20px">
+<center><h2>Let's talk, shall we?</h2></center>
+</div>
 <section class="pt-6 pt-md-8 pb-8 mb-md-8">
   <div class="container">
     <div class="row">
@@ -10,17 +12,55 @@
         <div class="card shadow-light-lg accordion mb-5 mb-md-6" id="helpAccordionOne">
           <div class="list-group">
             <div class="list-group-item">
-              {% for match in matches %}
+              {% if events|length > 0 %}
+                {% for event in events %}
                 <div class="list-group-item">
-                  <span class="mr-4">
-                    <p>{{ match.event.performer_names }}<br>
-                    Date: {{ match.event.datetime }}<br>
-                    Venue: {{ match.event.venue_name }}<br>
-                    Borough: {{ match.event.get_borough_display }}</p>
-                    <p>{% avatar match.swipee %} {{ match.swipee.first_name }}</p>
-                  </span>
+                  <a class="d-flex align-items-center text-reset text-decoration-none" data-toggle="collapse" href="#id{{ event.id }}" role="button">
+                    <span class="mr-4">
+                    <h3>
+                    {{ match.event.performer_names }}
+                    </h3>
+                    <p class="font-size-lg text-gray-700 mb-0">
+                      Performer: {{ event.performer_names }} <br>
+                      Date: {{ event.datetime }} <br>
+                      Venue: {{ event.venue_name }} <br>
+                      Borough: {{ event.get_borough_display }}
+                    </p>
+                    </span>
+                    <div class="text-muted ml-auto">
+                      <span class="font-size-sm mr-4 d-none d-md-inline">
+                        Matches
+                      </span>
+                      <span class="collapse-chevron text-muted">
+                        <i class="fas fa-caret-down"></i>
+                      </span>
+                    </div>
+                  </a>
+
+                  <!-- Collapse -->
+                  <div class="collapse" id="id{{ event.id }}" data-parent="#helpAccordionOne">
+                    {% for match in matches %}
+                    {% if match.event.id == event.id %}
+                    <div class="py-5">
+
+                      <!-- Text -->
+                      <div class="text-gray-700">
+                        {% avatar match.swipee %} &nbsp {{ match.swipee.first_name }}
+                          <a style = "position:relative; left:500px" href="#">Message</a> &nbsp &nbsp
+                          <a style = "position:relative; left:550px" href="{% url 'user' match.swipee.id %}">User Profile</a>
+                      </div>
+
+                    </div>
+                    {% endif %}
+                    {% endfor %}
+                  </div>
+
+
                 </div>
-              {% endfor %}
+                {% endfor %}
+              {% else %}
+                <center><h3>No matches. Let's get swiping!</h3></center>
+              {% endif %}
             </div>
           </div>
         </div>
@@ -28,5 +68,6 @@
     </div>
   </div>
 </section>
+
 
 {% endblock %}
