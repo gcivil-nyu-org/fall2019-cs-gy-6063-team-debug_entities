@@ -12,7 +12,7 @@
                   <!-- Edit Image link only if its your account  -->
                   {% if user.id == requested_user.id %}
                   <div>
-                    <a href="{% url 'avatar_change' %}"><img src="{% avatar_url requested_user 200 %}"></a>
+                    <a href="{% url 'avatar_change' %}"><img src="{% avatar_url requested_user 190 %}"></a>
                   </div>
 
                   <!-- If its not your profile, cannot edit avatar -->
