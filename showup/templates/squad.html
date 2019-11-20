@@ -11,21 +11,23 @@
       <div class="card shadow">
         <div class="card-body">
           <h2 class="card-title text-center pb-5">Squad Up</h2>
-          <div class="row">
-            {% for user in users %}
-              <div class="col-3 d-flex my-2">
-                <div class="card shadow lift pt-5">
-                  <center>
-                    {% avatar user %}
-                  </center>
-                  <div class="card-body">
-                    <h3 class="card-title text-center pt-5">
-                      <a href="{% url 'user' user.id %}">{{ user.first_name }}</a>
-                    </h3>
+          <div class="list-group-item shadow">
+            <div class="row">
+              {% for user in users %}
+                <div class="col-3 d-flex my-2">
+                  <div class="card shadow lift pt-5">
+                    <center>
+                      {% avatar user %}
+                    </center>
+                    <div class="card-body">
+                      <h3 class="card-title text-center pt-5">
+                        <a href="{% url 'user' user.id %}">{{ user.first_name }}</a>
+                      </h3>
+                    </div>
                   </div>
                 </div>
-              </div>
-            {% endfor %}
+              {% endfor %}
+            </div>
           </div>
           <center>
             <a style = "position:relative; top:15px" class="btn btn-primary" href="{% url 'edit_squad' user.squad.id %}">Edit Your Squad</a>
