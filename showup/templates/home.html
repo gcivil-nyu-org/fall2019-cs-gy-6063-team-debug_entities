@@ -7,36 +7,28 @@
         <div class="container">
           <div class="row">
             <div class="col-12">
-              
-              <div class="row mb-6 mb-md-8">
-                <div class="col-auto">
-                  
-                  <!-- Icon -->
-                  <div class="icon-circle bg-primary text-white">
-                      {% avatar user %}                  
-                  </div>
-  
-                </div>
+
+              <div class="row mb-6 mb-md-8 text-center">
                 <div class="col ml-n4">
-                  
+
                   <!-- Heading -->
                   <h2 class="font-weight-bold mb-0">
                     Howdy, {{ user.first_name }}.
                   </h2>
-  
+
                   <!-- Text -->
-                  <p class="font-size-lg text-gray-700 mb-0">
+                  <h4 class="font-size-lg text-gray-700 mb-0">
                     Let's get you dancing ASAP.
-                  </p>
-  
+                  </h4>
+
                 </div>
               </div> <!-- / .row -->
-  
+
               <!-- Card for interested -->
-              <div class="card shadow-light-lg accordion mb-5 mb-md-6" id="helpAccordionOne">
+              <div class="card shadow-light-lg accordion mb-5 mb-md-6">
                 <div class="list-group">
                   <div class="list-group-item">
-                    
+
                     <!-- Header -->
                     <div class="d-flex align-items-center">
                       <div class="mr-auto">
@@ -48,48 +40,27 @@
                   </div>
 
                   {% for interested in user.interested.all %}
-                  <div class="list-group-item">
-                    <a class="d-flex align-items-center text-reset text-decoration-none" data-toggle="collapse" href="#id{{ interested.id }}" role="button">
-                      <span class="mr-4">
-                        {{ interested.performer_names }}
-                      </span>
-                      <div class="text-muted ml-auto">
-                        <span class="font-size-sm mr-4 d-none d-md-inline">
-                          Details
-                        </span>
-                        <span class="collapse-chevron text-muted">
-                          <i class="fas fa-caret-down"></i>
-                        </span>
-                      </div>
-                    </a>
-                    
-                    <!-- Collapse -->
-                    <div class="collapse" id="id{{ interested.id }}" data-parent="#helpAccordionOne">
-                      <div class="py-5">
-  
-                        <!-- Text -->
+                  <div class="list-group-item pt-1">
+                      <a class="btn btn-primary" style = "position:relative; left:700px; top:85px" href="{% url 'event_stack' interested.id %}">Matching Stack</a>
+                      <div class="mr-4">
+                        {{ interested.performer_names }}<br>
                         <p class="text-gray-700">
                           Date: {{ interested.datetime }} <br>
                           Venue: {{ interested.venue_name }} <br>
                           Borough: {{ interested.get_borough_display }}
-                          
                         </p>
-                        <a href="{% url 'event_stack' interested.id %}">Link to matching stack</a>
                       </div>
-                      
-                    </div>
-  
                   </div>
                 {% endfor %}
-  
+
                 </div>
               </div>
-  
+
               <!-- Card for going -->
-              <div class="card shadow-light-lg accordion mb-5 mb-md-6" id="helpAccordionTwo">
+              <div class="card shadow-light-lg accordion mb-5 mb-md-6">
                   <div class="list-group">
                     <div class="list-group-item">
-                      
+
                       <!-- Header -->
                       <div class="d-flex align-items-center">
                         <div class="mr-auto">
@@ -101,37 +72,16 @@
                     </div>
 
                     {% for going in user.going.all %}
-                    <div class="list-group-item">
-                      <a class="d-flex align-items-center text-reset text-decoration-none" data-toggle="collapse" href="#id{{ going.id }}" role="button">
-                        <span class="mr-4">
-                          {{ going.performer_names }}
-                        </span>
-                        <div class="text-muted ml-auto">
-                          <span class="font-size-sm mr-4 d-none d-md-inline">
-                            Details
-                          </span>
-                          <span class="collapse-chevron text-muted">
-                            <i class="fas fa-caret-down"></i>
-                          </span>
-                        </div>
-                      </a>
-                      
-                      <!-- Collapse -->
-                      <div class="collapse" id="id{{ going.id }}" data-parent="#helpAccordionTwo">
-                        <div class="py-5">
-
-                          <!-- Text -->
+                    <div class="list-group-item pt-1">
+                        <a class="btn btn-primary" style = "position:relative; left:700px; top:85px" href="{% url 'event_stack' going.id %}">Matching Stack</a>
+                        <div class="mr-4">
+                          {{ going.performer_names }}<br>
                           <p class="text-gray-700">
                             Date: {{ going.datetime }} <br>
                             Venue: {{ going.venue_name }} <br>
                             Borough: {{ going.get_borough_display }}
-                            
                           </p>
-                          <a href="{% url 'event_stack' going.id %}">Link to matching stack</a>
                         </div>
-                        
-                      </div>
-
                     </div>
                   {% endfor %}
 
@@ -145,25 +95,25 @@
         <div class="container">
           <div class="row align-items-center">
             <div class="col-12 col-md-5 col-lg-6 order-md-2">
-              
+
               <!-- Image -->
               {% load static %}
               <img src="{% static 'dancing.png' %}" class="img-fluid mw-md-150 mw-lg-130 mb-6 mb-md-0" alt="..." data-aos="fade-up" data-aos-delay="100">
-  
+
             </div>
             <div class="col-12 col-md-7 col-lg-6 order-md-1" data-aos="fade-up">
-              
+
               <!-- Heading -->
               <h1 class="display-3 text-center text-md-left">
                 Welcome to <span class="text-primary">ShowUp</span>.
                 Find concert buddies.
               </h1>
-  
+
               <!-- Text -->
               <p class="lead text-center text-md-left text-muted mb-6 mb-lg-8">
                 Find people in your area who want to go to concerts with you.
               </p>
-                  
+
               <!-- Buttons -->
               <div class="text-center text-md-left">
                 <a href="{% url 'account_login' %}" class="btn btn-primary shadow lift mr-1">
@@ -173,12 +123,12 @@
                   Sign up
                 </a>
               </div>
-  
+
             </div>
           </div> <!-- / .row -->
         </div> <!-- / .container -->
       </section>
-  
+
       <!-- FEATURES -->
       <section class="py-8 py-md-11 border-bottom">
         <div class="container">
@@ -188,9 +138,9 @@
               <div class="icon text-primary mb-3">
                 <span class="fas fa-podcast fa-5x"></span>
               </div>
-  
+
               <h3>Find concert buddies</h3>
-  
+
               <p class="text-muted mb-6 mb-md-0">
                 ShowUp will help you find people to go with you to concerts.
               </p>
@@ -201,9 +151,9 @@
               <div class="icon text-primary mb-3">
                 <span class="fas fa-user-friends fa-5x"></span>
               </div>
-  
+
               <h3>Join a squad</h3>
-  
+
               <p class="text-muted mb-6 mb-md-0">
                 Find a group of people who like the music you like.
               </p>
@@ -214,9 +164,9 @@
               <div class="icon text-primary mb-3">
                 <span class="fas fa-user-astronaut fa-5x"></span>
               </div>
-  
+
               <h3>Have some fun</h3>
-  
+
               <p class="text-muted mb-6 mb-md-0">
                 Bring your squad to see your favorite artists perform.
               </p>
