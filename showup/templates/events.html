@@ -100,8 +100,8 @@
                                     <p class="card-text">{{event.venue_name}} on {{event.datetime}}</p>
                                     <div class="text-center">
                                         <form action="" method="get">
-                                            <button class="btn btn-sm shadow {% if event.id in interested_list %}btn-primary{% endif %}" type="submit" name="interested" value={{event.id}}>{% if event.id in interested_list %} Not {% endif %}Interested</button>
-                                            <button class="btn btn-sm shadow {% if event.id in going_list %}btn-primary{% endif %}" type="submit" name="going" value={{event.id}}>{% if event.id in going_list %} Not {% endif %}Going</button>
+                                            <button class="btn btn-sm shadow {% if event.id in interested_list %}btn-primary{% endif %}" type="submit" name="interested" value={{event.id}}>Interested</button>
+                                            <button class="btn btn-sm shadow {% if event.id in going_list %}btn-primary{% endif %}" type="submit" name="going" value={{event.id}}>Going</button>
                                         </form>
                                     </div>
                                 </div>
