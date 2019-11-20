@@ -25,10 +25,23 @@
                         {{ upload_avatar_form|crispy }}
                         <p>{% csrf_token %}<input type="submit" class="btn btn-primary" value="{% trans "Upload New Image" %}" /></p>
                     </form>
+                    <!-- 
                     <a class="nav-link" href="{% url 'user' user.id %}">My Profile</a>
                     {% if avatars %}
                     <a href="{% url 'avatar_delete' %}">Delete Avatars</a>
                     {% endif %}
+                    -->
+                    <br>
+                    <div class="text-center"> 
+                    <a class="btn" href="{% url 'user' user.id %}">My Profile</a>
+                     {% if avatars %}
+                    <a class="btn" href="{% url 'avatar_delete' %}">Delete Avatars</a>
+                     {% endif %}
+                 </div>
+
+
+
+
                 </div>
             </div>
         </div>

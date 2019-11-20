@@ -20,7 +20,10 @@
                         <p>{% csrf_token %}<input type="submit" class="btn btn-primary" value="{% trans "Delete These" %}"></p>
                     </form>
                     {% endif %}
-                    <a class="nav-link" href="{% url 'user' user.id %}">My Profile</a>
+                    <div class="text-center"> 
+                     <a class="btn" href="{% url 'user' user.id %}">My Profile</a>
+                     <a class="btn" href="{% url 'avatar_change' %}">Change Avatars</a>
+                    </div>
                 </div>
             </div>
         </div>
