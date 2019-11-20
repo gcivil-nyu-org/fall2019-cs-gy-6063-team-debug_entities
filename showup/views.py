@@ -1,5 +1,5 @@
 from .forms import CustomUserChangeForm
-from .models import Concert, CustomUser, Swipe
+from .models import Concert, CustomUser, Swipe, Genre
 from allauth.account.admin import EmailAddress
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
@@ -18,6 +18,10 @@ def events(request):
         "filter": filter,
         "interested_list": request.user.interested.values_list("id", flat=True),
         "going_list": request.user.going.values_list("id", flat=True),
+        "unique_genres": [g.genre for g in Genre.objects.all()],
+        "unique_venues": set([c.venue_name for c in Concert.objects.all()]),
+        "unique_performers": set([c.performer_names for c in Concert.objects.all()]),
+        "boroughs": Concert.BOROUGH_CHOICES,
     }
     # User clicked "Interested" button.
     if "interested" in request.GET:
@@ -144,6 +148,7 @@ def event_stack(request, eid):
 def matches(request):
     # My uid.
     uid = request.user.id
+    uniq_events = set()
 
     # The users that I swiped right on.
     i_swiped_right = [x for x in Swipe.objects.filter(swiper__id=uid, direction=True)]
@@ -156,5 +161,7 @@ def matches(request):
     # The intersection of the above two.
     matches = [x for x in i_swiped_right if x.swipee in they_swiped_right]
     matches.sort(key=lambda x: x.event.id)
+    for match in matches:
+        uniq_events.add(match.event)
 
-    return render(request, "matches.html", {"matches": matches})
+    return render(request, "matches.html", {"matches": matches, "events": uniq_events})

@@ -209,10 +209,29 @@ class EditProfileViewTests(TestCase):
 
 class MatchesViewTests(TestCase):
     def setUp(self):
-        # Create and save user.
+        # Create and save user one.
         username, password = "jspringer@example.com", "heyhey123"
-        user = CustomUser.objects.create_user(username=username, password=password)
-        EmailAddress.objects.get_or_create(id=1, user=user, verified=True)
+        user_1 = CustomUser.objects.create_user(username=username, password=password)
+        EmailAddress.objects.get_or_create(id=1, user=user_1, verified=True)
+
+        # Create and save user two.
+        username, password = "jfallon@example.com", "heyhey123"
+        user_2 = CustomUser.objects.create_user(username=username, password=password)
+
+        # Create needed objects for Swipe model.
+        event = Concert(id=1, datetime=datetime.datetime.now(tz=utc))
+        direction = True
+
+        # Save the objects.
+        user_1.save()
+        user_2.save()
+        event.save()
+
+        # Create the Swipe objects.
+        swipe = Swipe(swiper=user_1, swipee=user_2, event=event, direction=direction)
+        swipe.save()
+        swipe = Swipe(swiper=user_2, swipee=user_1, event=event, direction=direction)
+        swipe.save()
 
         # Login user.
         self.client.login(username=username, password=password)
