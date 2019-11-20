@@ -234,6 +234,63 @@ class SquadViewTests(TestCase):
         self.assertEqual(response.status_code, 403)
 
 
+class EditSquadViewTests(TestCase):
+    def setUp(self):
+        # Create and save user one.
+        email, password = "jspringer@example.com", "heyhey123"
+        squad = Squad(id=1)
+        squad.save()
+        user = CustomUser.objects.create_user(
+            username=email, email=email, password=password, squad=squad
+        )
+        EmailAddress.objects.get_or_create(id=1, user=user, verified=True)
+
+        # Login user one.
+        self.client.login(username=email, password=password)
+
+        # Create and save user two.
+        email, password = "jfallon@example.com", "heyhey123"
+        squad = Squad(id=2)
+        squad.save()
+        user = CustomUser.objects.create_user(
+            username=email, email=email, password=password, squad=squad
+        )
+        user.save()
+
+    def test_editsquad_basic(self):
+        # Create form data.
+        data = {"email": "jfallon@example.com"}
+
+        # Send a POST request containing the form data.
+        self.client.post(reverse("edit_squad", kwargs={"id": 1}), data=data)
+
+        # Ensure the POST request was successful.
+        user = CustomUser.objects.get(username="jfallon@example.com")
+        self.assertEqual(user.squad.id, 1)
+
+    def test_editsquad_already_in_squad(self):
+        # Create form data.
+        data = {"email": "jspringer@example.com"}
+
+        # Send a POST request containing the form data.
+        self.client.post(reverse("edit_squad", kwargs={"id": 1}), data=data)
+
+        # Ensure the POST request was successful.
+        users = CustomUser.objects.filter(squad=1)
+        self.assertEqual(len(users), 1)
+
+    def test_editsquad_email_does_not_exist(self):
+        # Create form data.
+        data = {"email": "jkimmel@example.com"}
+
+        # Send a POST request containing the form data.
+        response = self.client.post(reverse("edit_squad", kwargs={"id": 1}), data=data)
+
+        # Ensure the POST request was successful.
+        users = CustomUser.objects.filter(squad=1)
+        self.assertEqual(len(users), 1)
+
+
 class MatchesViewTests(TestCase):
     def setUp(self):
         # Create and save user one.
