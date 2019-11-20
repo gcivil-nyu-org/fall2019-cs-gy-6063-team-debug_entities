@@ -100,7 +100,9 @@ class EventsViewTests(TestCase):
         username, password = "jspringer@example.com", "heyhey123"
         squad = Squad()
         squad.save()
-        user = CustomUser.objects.create_user(username=username, password=password, squad=squad)
+        user = CustomUser.objects.create_user(
+            username=username, password=password, squad=squad
+        )
         EmailAddress.objects.get_or_create(id=1, user=user, verified=True)
 
         # Login user.
@@ -215,14 +217,18 @@ class MatchesViewTests(TestCase):
         username, password = "jspringer@example.com", "heyhey123"
         squad_1 = Squad()
         squad_1.save()
-        user_1 = CustomUser.objects.create_user(username=username, password=password, squad=squad_1)
+        user_1 = CustomUser.objects.create_user(
+            username=username, password=password, squad=squad_1
+        )
         EmailAddress.objects.get_or_create(id=1, user=user_1, verified=True)
 
         # Create and save user two.
         username, password = "jfallon@example.com", "heyhey123"
         squad_2 = Squad()
         squad_2.save()
-        user_2 = CustomUser.objects.create_user(username=username, password=password, squad=squad_2)
+        user_2 = CustomUser.objects.create_user(
+            username=username, password=password, squad=squad_2
+        )
 
         # Create needed objects for Swipe model.
         event = Concert(id=1, datetime=datetime.datetime.now(tz=utc))
@@ -253,7 +259,9 @@ class AuthenticatedViewTests(TestCase):
         password = "testpass"
         squad = Squad()
         squad.save()
-        testuser = CustomUser.objects.create_user(username=username, password=password, squad=squad)
+        testuser = CustomUser.objects.create_user(
+            username=username, password=password, squad=squad
+        )
         EmailAddress.objects.get_or_create(id=1, user=testuser, verified=True)
         self.client.login(username=username, password=password)
         Concert.objects.get_or_create(
