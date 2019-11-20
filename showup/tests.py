@@ -229,6 +229,10 @@ class SquadViewTests(TestCase):
         response = self.client.get(reverse("squad", args=(1,)))
         self.assertEqual(response.status_code, 200)
 
+    def test_squad_does_not_exist(self):
+        response = self.client.get(reverse("squad", args=(2,)))
+        self.assertEqual(response.status_code, 403)
+
 
 class MatchesViewTests(TestCase):
     def setUp(self):
