@@ -217,7 +217,9 @@ class SquadViewTests(TestCase):
         username, password = "jspringer@example.com", "heyhey123"
         squad = Squad(id=1)
         squad.save()
-        user = CustomUser.objects.create_user(username=username, password=password, squad=squad)
+        user = CustomUser.objects.create_user(
+            username=username, password=password, squad=squad
+        )
         EmailAddress.objects.get_or_create(id=1, user=user, verified=True)
 
         # Login user.
