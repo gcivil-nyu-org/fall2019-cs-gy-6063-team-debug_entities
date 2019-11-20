@@ -284,7 +284,7 @@ class EditSquadViewTests(TestCase):
         data = {"email": "jkimmel@example.com"}
 
         # Send a POST request containing the form data.
-        response = self.client.post(reverse("edit_squad", kwargs={"id": 1}), data=data)
+        self.client.post(reverse("edit_squad", kwargs={"id": 1}), data=data)
 
         # Ensure the POST request was successful.
         users = CustomUser.objects.filter(squad=1)
