@@ -1,5 +1,5 @@
 from django.core.management.base import BaseCommand
-from showup.models import CustomUser
+from showup.models import CustomUser, Squad
 from allauth.account.admin import EmailAddress
 
 
@@ -9,14 +9,16 @@ class Command(BaseCommand):
         if CustomUser.objects.filter(email=email).exists():
             print(f"We already have a user with the email address {email}")
         else:
+            squad = Squad.objects.create()
+            squad.save()
             password = "heyhey123"
             if superuser:
                 new_user = CustomUser.objects.create_superuser(
-                    username=name, email=email, password=password, first_name=name
+                    username=name, email=email, password=password, first_name=name, squad=squad
                 )
             else:
                 new_user = CustomUser.objects.create_user(
-                    username=name, email=email, password=password, first_name=name
+                    username=name, email=email, password=password, first_name=name, squad=squad
                 )
             EmailAddress.objects.get_or_create(  # verify the user's email
                 user=new_user, email=email, verified=True

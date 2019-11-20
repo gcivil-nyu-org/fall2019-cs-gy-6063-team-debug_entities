@@ -1,4 +1,4 @@
-from .models import CustomUser
+from .models import CustomUser, Squad
 from allauth.account.forms import SignupForm
 from django import forms
 from django.contrib.auth.forms import UserChangeForm
@@ -15,6 +15,9 @@ class CustomSignupForm(SignupForm):
         user = super(CustomSignupForm, self).save(request)
         user.date_of_birth = self.cleaned_data["date_of_birth"]
         user.gender = self.cleaned_data["gender"]
+        squad = Squad.objects.create()
+        squad.save()
+        user.squad = squad
         user.save()
         return user
 
@@ -26,3 +29,7 @@ class CustomUserChangeForm(UserChangeForm):
         model = CustomUser
         fields = ("bio", "genres")
         widgets = {"genres": forms.CheckboxSelectMultiple}
+
+
+class SquadForm(forms.Form):
+    email = forms.EmailField()

@@ -1,5 +1,5 @@
-from .forms import CustomUserChangeForm
-from .models import Concert, CustomUser, Swipe, Genre
+from .forms import CustomUserChangeForm, SquadForm
+from .models import Concert, CustomUser, Genre, Squad, Swipe
 from allauth.account.admin import EmailAddress
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
@@ -67,6 +67,54 @@ def edit_profile(request, id):
             form.save()
             return redirect(reverse("user", kwargs={"id": id}))
         return render(request, "edit_profile.html", {"form": form})
+    else:
+        raise PermissionDenied
+
+
+@login_required
+def squad(request, id):
+    try:
+        squad = Squad.objects.get(id=id)
+        users = CustomUser.objects.filter(squad=squad)
+    except Squad.DoesNotExist:
+        raise PermissionDenied
+
+    return render(request, "squad.html", context={"users": users})
+
+
+@login_required
+def edit_squad(request, id):
+    # You can only edit your own squad.
+    if request.user.squad.id == id:
+        form = SquadForm(request.POST or None)
+        if request.method == "POST" and form.is_valid():
+            # Get my squad.
+            my_squad = request.user.squad
+
+            # Get their squad and their members.
+            try:
+                their_squad = CustomUser.objects.get(email=request.POST["email"]).squad
+
+                # We are already in the same squad.
+                if my_squad.id == their_squad.id:
+                    # TODO: Output some sort of message.
+                    return render(request, "edit_squad.html", {"form": form})
+
+                their_members = CustomUser.objects.filter(squad=their_squad)
+            except CustomUser.DoesNotExist:
+                # TODO: Output some sort of message.
+                return render(request, "edit_squad.html", {"form": form})
+
+            # Merge squads.
+            for member in their_members:
+                member.squad = my_squad
+                member.save()
+
+            # Delete their old squad.
+            Squad.objects.get(id=their_squad.id).delete()
+
+            return redirect(reverse("squad", kwargs={"id": id}))
+        return render(request, "edit_squad.html", {"form": form})
     else:
         raise PermissionDenied
 
