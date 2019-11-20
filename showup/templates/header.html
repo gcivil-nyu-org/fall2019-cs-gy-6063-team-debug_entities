@@ -54,6 +54,9 @@
               <a class="nav-link" href="{% url 'user' user.id %}">My Profile</a>
             </li>
             <li class="nav-item">
+              <a class="nav-link" href="{% url 'squad' user.squad.id %}">My Squad</a>
+            </li>
+            <li class="nav-item">
               <a class="nav-link" href="{% url 'events' %}">Events</a>
             </li>
             <li class="nav-item">

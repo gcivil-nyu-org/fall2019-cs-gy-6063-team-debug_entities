@@ -1,5 +1,5 @@
-from .forms import CustomUserChangeForm
-from .models import Concert, CustomUser, Swipe
+from .forms import CustomUserChangeForm, SquadForm
+from .models import Concert, CustomUser, Genre, Squad, Swipe
 from allauth.account.admin import EmailAddress
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
@@ -18,6 +18,10 @@ def events(request):
         "filter": filter,
         "interested_list": request.user.interested.values_list("id", flat=True),
         "going_list": request.user.going.values_list("id", flat=True),
+        "unique_genres": [g.genre for g in Genre.objects.all()],
+        "unique_venues": set([c.venue_name for c in Concert.objects.all()]),
+        "unique_performers": set([c.performer_names for c in Concert.objects.all()]),
+        "boroughs": Concert.BOROUGH_CHOICES,
     }
     # User clicked "Interested" button.
     if "interested" in request.GET:
@@ -67,6 +71,54 @@ def edit_profile(request, id):
         raise PermissionDenied
 
 
+@login_required
+def squad(request, id):
+    try:
+        squad = Squad.objects.get(id=id)
+        users = CustomUser.objects.filter(squad=squad)
+    except Squad.DoesNotExist:
+        raise PermissionDenied
+
+    return render(request, "squad.html", context={"users": users})
+
+
+@login_required
+def edit_squad(request, id):
+    # You can only edit your own squad.
+    if request.user.squad.id == id:
+        form = SquadForm(request.POST or None)
+        if request.method == "POST" and form.is_valid():
+            # Get my squad.
+            my_squad = request.user.squad
+
+            # Get their squad and their members.
+            try:
+                their_squad = CustomUser.objects.get(email=request.POST["email"]).squad
+
+                # We are already in the same squad.
+                if my_squad.id == their_squad.id:
+                    # TODO: Output some sort of message.
+                    return render(request, "edit_squad.html", {"form": form})
+
+                their_members = CustomUser.objects.filter(squad=their_squad)
+            except CustomUser.DoesNotExist:
+                # TODO: Output some sort of message.
+                return render(request, "edit_squad.html", {"form": form})
+
+            # Merge squads.
+            for member in their_members:
+                member.squad = my_squad
+                member.save()
+
+            # Delete their old squad.
+            Squad.objects.get(id=their_squad.id).delete()
+
+            return redirect(reverse("squad", kwargs={"id": id}))
+        return render(request, "edit_squad.html", {"form": form})
+    else:
+        raise PermissionDenied
+
+
 def get_stack(request, eid):
     # My uid.
     uid = request.user.id
@@ -99,7 +151,7 @@ def get_stack(request, eid):
 @login_required
 def event_stack(request, eid):
     my_id = request.user.id
-    id_to_send = request.user.id
+    match = CustomUser.objects.get(id=request.user.id)
     popup = 0
     users = get_stack(request, eid)
 
@@ -130,15 +182,13 @@ def event_stack(request, eid):
         # the line below checks criteria 1 and 2
         if my_direction and their_swipe_on_me and their_swipe_on_me.direction:
             popup = 1
-            id_to_send = their_swipe_on_me.swiper_id
+            match = CustomUser.objects.get(id=their_swipe_on_me.swiper_id)
 
         # Update users.
         users = get_stack(request, eid)
 
     return render(
-        request,
-        "match.html",
-        {"users": users, "popup": popup, "id_to_send": id_to_send},
+        request, "match.html", {"users": users, "popup": popup, "match": match}
     )
 
 
@@ -146,6 +196,7 @@ def event_stack(request, eid):
 def matches(request):
     # My uid.
     uid = request.user.id
+    uniq_events = set()
 
     # The users that I swiped right on.
     i_swiped_right = [x for x in Swipe.objects.filter(swiper__id=uid, direction=True)]
@@ -158,5 +209,7 @@ def matches(request):
     # The intersection of the above two.
     matches = [x for x in i_swiped_right if x.swipee in they_swiped_right]
     matches.sort(key=lambda x: x.event.id)
+    for match in matches:
+        uniq_events.add(match.event)
 
-    return render(request, "matches.html", {"matches": matches})
+    return render(request, "matches.html", {"matches": matches, "events": uniq_events})

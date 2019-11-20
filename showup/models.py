@@ -2,6 +2,16 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 
 
+class Genre(models.Model):
+    genre = models.TextField()
+
+    class Meta:
+        constraints = [models.UniqueConstraint(fields=["genre"], name="Genre_unique")]
+
+    def __str__(self):
+        return self.genre
+
+
 class Concert(models.Model):
     BOROUGH_CHOICES = [
         ("BK", "Brooklyn"),
@@ -16,21 +26,20 @@ class Concert(models.Model):
     venue_name = models.TextField()
     borough = models.TextField(choices=BOROUGH_CHOICES)
     performer_names = models.TextField()
-    genres = models.TextField()
+    genres = models.ManyToManyField(Genre, related_name="genres", blank=True)
     event_url = models.URLField(max_length=100000)
     performer_image_url = models.URLField(max_length=100000, null=True)
 
     def __str__(self):
-        return "{} at {} on {} in {}".format(
-            self.performer_names, self.venue_name, str(self.datetime), self.borough
+        return (
+            f"{self.performer_names} at {self.venue_name}"
+            f" on {str(self.datetime)} in {self.borough}"
         )
 
 
-class Genre(models.Model):
-    genre = models.TextField()
-
+class Squad(models.Model):
     def __str__(self):
-        return self.genre
+        return str(self.id)
 
 
 class CustomUser(AbstractUser):
@@ -40,7 +49,10 @@ class CustomUser(AbstractUser):
     going = models.ManyToManyField(Concert, related_name="going", blank=True)
     bio = models.TextField(max_length=500, default="", blank=True)
     swipes = models.ManyToManyField("self", through="Swipe", symmetrical=False)
-    genres = models.ManyToManyField(Genre, related_name="genres", blank=True)
+    genres = models.ManyToManyField(Genre, related_name="fav_genres", blank=True)
+    squad = models.ForeignKey(
+        Squad, null=True, on_delete=models.CASCADE, related_name="squad"
+    )
 
     def __str__(self):
         return self.email

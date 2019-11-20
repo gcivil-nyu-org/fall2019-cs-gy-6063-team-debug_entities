@@ -1,6 +1,6 @@
 import datetime
 
-from .models import Concert, CustomUser, Genre, Swipe
+from .models import Concert, CustomUser, Genre, Squad, Swipe
 from allauth.account.admin import EmailAddress
 from django.test import Client, TestCase
 from django.urls import reverse
@@ -98,7 +98,11 @@ class EventsViewTests(TestCase):
     def setUp(self):
         # Create and save user.
         username, password = "jspringer@example.com", "heyhey123"
-        user = CustomUser.objects.create_user(username=username, password=password)
+        squad = Squad()
+        squad.save()
+        user = CustomUser.objects.create_user(
+            username=username, password=password, squad=squad
+        )
         EmailAddress.objects.get_or_create(id=1, user=user, verified=True)
 
         # Login user.
@@ -207,12 +211,119 @@ class EditProfileViewTests(TestCase):
         self.assertEqual(response.status_code, 403)
 
 
-class MatchesViewTests(TestCase):
+class SquadViewTests(TestCase):
     def setUp(self):
         # Create and save user.
         username, password = "jspringer@example.com", "heyhey123"
-        user = CustomUser.objects.create_user(username=username, password=password)
+        squad = Squad(id=1)
+        squad.save()
+        user = CustomUser.objects.create_user(
+            username=username, password=password, squad=squad
+        )
         EmailAddress.objects.get_or_create(id=1, user=user, verified=True)
+
+        # Login user.
+        self.client.login(username=username, password=password)
+
+    def test_squad_basic(self):
+        response = self.client.get(reverse("squad", args=(1,)))
+        self.assertEqual(response.status_code, 200)
+
+    def test_squad_does_not_exist(self):
+        response = self.client.get(reverse("squad", args=(2,)))
+        self.assertEqual(response.status_code, 403)
+
+
+class EditSquadViewTests(TestCase):
+    def setUp(self):
+        # Create and save user one.
+        email, password = "jspringer@example.com", "heyhey123"
+        squad = Squad(id=1)
+        squad.save()
+        user = CustomUser.objects.create_user(
+            username=email, email=email, password=password, squad=squad
+        )
+        EmailAddress.objects.get_or_create(id=1, user=user, verified=True)
+
+        # Login user one.
+        self.client.login(username=email, password=password)
+
+        # Create and save user two.
+        email, password = "jfallon@example.com", "heyhey123"
+        squad = Squad(id=2)
+        squad.save()
+        user = CustomUser.objects.create_user(
+            username=email, email=email, password=password, squad=squad
+        )
+        user.save()
+
+    def test_editsquad_basic(self):
+        # Create form data.
+        data = {"email": "jfallon@example.com"}
+
+        # Send a POST request containing the form data.
+        self.client.post(reverse("edit_squad", kwargs={"id": 1}), data=data)
+
+        # Ensure the POST request was successful.
+        user = CustomUser.objects.get(username="jfallon@example.com")
+        self.assertEqual(user.squad.id, 1)
+
+    def test_editsquad_already_in_squad(self):
+        # Create form data.
+        data = {"email": "jspringer@example.com"}
+
+        # Send a POST request containing the form data.
+        self.client.post(reverse("edit_squad", kwargs={"id": 1}), data=data)
+
+        # Ensure the POST request was successful.
+        users = CustomUser.objects.filter(squad=1)
+        self.assertEqual(len(users), 1)
+
+    def test_editsquad_email_does_not_exist(self):
+        # Create form data.
+        data = {"email": "jkimmel@example.com"}
+
+        # Send a POST request containing the form data.
+        self.client.post(reverse("edit_squad", kwargs={"id": 1}), data=data)
+
+        # Ensure the POST request was successful.
+        users = CustomUser.objects.filter(squad=1)
+        self.assertEqual(len(users), 1)
+
+
+class MatchesViewTests(TestCase):
+    def setUp(self):
+        # Create and save user one.
+        username, password = "jspringer@example.com", "heyhey123"
+        squad_1 = Squad()
+        squad_1.save()
+        user_1 = CustomUser.objects.create_user(
+            username=username, password=password, squad=squad_1
+        )
+        EmailAddress.objects.get_or_create(id=1, user=user_1, verified=True)
+
+        # Create and save user two.
+        username, password = "jfallon@example.com", "heyhey123"
+        squad_2 = Squad()
+        squad_2.save()
+        user_2 = CustomUser.objects.create_user(
+            username=username, password=password, squad=squad_2
+        )
+
+        # Create needed objects for Swipe model.
+        event = Concert(id=1, datetime=datetime.datetime.now(tz=utc))
+        direction = True
+
+        # Save the objects.
+        user_1.save()
+        user_2.save()
+        event.save()
+
+        # Create the Swipe objects.
+        swipe = Swipe(swiper=user_1, swipee=user_2, event=event, direction=direction)
+        swipe.save()
+        swipe = Swipe(swiper=user_2, swipee=user_1, event=event, direction=direction)
+        swipe.save()
 
         # Login user.
         self.client.login(username=username, password=password)
@@ -226,7 +337,11 @@ class AuthenticatedViewTests(TestCase):
     def setUp(self):  # this logs in a test user for the subsequent test cases
         username = "testuser"
         password = "testpass"
-        testuser = CustomUser.objects.create_user(username=username, password=password)
+        squad = Squad()
+        squad.save()
+        testuser = CustomUser.objects.create_user(
+            username=username, password=password, squad=squad
+        )
         EmailAddress.objects.get_or_create(id=1, user=testuser, verified=True)
         self.client.login(username=username, password=password)
         Concert.objects.get_or_create(
