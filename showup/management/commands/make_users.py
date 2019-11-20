@@ -22,8 +22,10 @@ class Command(BaseCommand):
                 user=new_user, email=email, verified=True
             )
 
-            print(f"I made {name} as a {'super' if superuser else 'normal '}user"
-                f" and verified {email}")
+            print(
+                f"I made {name} as a {'super' if superuser else 'normal '}user"
+                f" and verified {email}"
+            )
 
     def handle(self, *args, **options):
         superusers = [
@@ -34,7 +36,8 @@ class Command(BaseCommand):
         for u in superusers:
             Command.make_user(u["name"], u["email"], True)
 
-        normal_users = [{"name": f"Vik{i}", "email": f"vm1564+{i}@nyu.edu"}
-                        for i in range(1, 10)]
+        normal_users = [
+            {"name": f"Vik{i}", "email": f"vm1564+{i}@nyu.edu"} for i in range(1, 10)
+        ]
         for u in normal_users:
             Command.make_user(u["name"], u["email"], False)
