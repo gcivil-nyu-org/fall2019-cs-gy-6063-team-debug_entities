@@ -14,11 +14,19 @@ class Command(BaseCommand):
             password = "heyhey123"
             if superuser:
                 new_user = CustomUser.objects.create_superuser(
-                    username=name, email=email, password=password, first_name=name, squad=squad
+                    username=name,
+                    email=email,
+                    password=password,
+                    first_name=name,
+                    squad=squad,
                 )
             else:
                 new_user = CustomUser.objects.create_user(
-                    username=name, email=email, password=password, first_name=name, squad=squad
+                    username=name,
+                    email=email,
+                    password=password,
+                    first_name=name,
+                    squad=squad,
                 )
             EmailAddress.objects.get_or_create(  # verify the user's email
                 user=new_user, email=email, verified=True
