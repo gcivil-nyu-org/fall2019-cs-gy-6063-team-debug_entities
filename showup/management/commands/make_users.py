@@ -38,16 +38,17 @@ class Command(BaseCommand):
             )
 
     def handle(self, *args, **options):
-        superusers = [
-            {"name": "Vik", "email": "vm1564@nyu.edu"},
-            {"name": "Professor", "email": "gcivil@nyu.edu"},
-            {"name": "Dan", "email": "dgopstein@nyu.edu"},
-        ]
+        superusers = [{"name": "Vik", "email": "vm1564@nyu.edu"}]
         for u in superusers:
             Command.make_user(u["name"], u["email"], True)
 
         normal_users = [
             {"name": f"Vik{i}", "email": f"vm1564+{i}@nyu.edu"} for i in range(1, 10)
         ]
+        normal_users += [
+            {"name": "Professor", "email": "gcivil@nyu.edu"},
+            {"name": "Dan", "email": "dgopstein@nyu.edu"},
+        ]
+
         for u in normal_users:
             Command.make_user(u["name"], u["email"], False)
