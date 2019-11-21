@@ -14,7 +14,7 @@ class Command(BaseCommand):
             password = "heyhey123"
             if superuser:
                 new_user = CustomUser.objects.create_superuser(
-                    username=name,
+                    username=email,
                     email=email,
                     password=password,
                     first_name=name,
@@ -22,7 +22,7 @@ class Command(BaseCommand):
                 )
             else:
                 new_user = CustomUser.objects.create_user(
-                    username=name,
+                    username=email,
                     email=email,
                     password=password,
                     first_name=name,
