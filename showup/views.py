@@ -120,76 +120,69 @@ def edit_squad(request, id):
 
 
 def get_stack(request, eid):
-    # My uid.
-    uid = request.user.id
+    # My sid.
+    sid = request.squad.id
 
-    # Get the users interested in or going to the event.
-    users = CustomUser.objects.filter(interested__id=eid) | CustomUser.objects.filter(
+    # Get the squads interested in or going to the event.
+    squads = Squad.objects.filter(interested__id=eid) | Squad.objects.filter(
         going__id=eid
     )
 
-    # These are the users that swiped left on me.
+    # These are the squads that swiped left on my squad.
     swiped_left = [
         x.swiper.id
-        for x in Swipe.objects.filter(event__id=eid, swipee__id=uid, direction=False)
+        for x in Swipe.objects.filter(swipee__id=sid, event__id=eid, direction=False)
     ]
 
-    # These are the users that I swiped on.
-    swiped = [x.swipee.id for x in Swipe.objects.filter(event__id=eid, swiper__id=uid)]
+    # These are the squads that my squad swiped on.
+    swiped = [x.swipee.id for x in Swipe.objects.filter(swiper__id=sid, event__id=eid)]
 
-    # Exclude the users that swiped left on me, the users that I swiped on, and
-    # myself.
-    users = [
-        u
-        for u in users
-        if u.id not in swiped_left and u.id not in swiped and u.id != uid
+    """
+    Exclude the following squads:
+    - The squads that swiped left on my squad.
+    - The squads that my squad swiped on.
+    - My squad.
+    """
+    squads = [
+        s
+        for s in squads
+        if s.id not in swiped_left and s.id not in swiped and s.id != sid
     ]
 
-    return users
+    return squads
 
 
 @login_required
 def event_stack(request, eid):
-    my_id = request.user.id
-    match = CustomUser.objects.get(id=request.user.id)
-    popup = 0
-    users = get_stack(request, eid)
+    if request.method == "POST":
+        # Create a Swipe object.
+        my_sid = request.squad.id
+        their_sid = request.POST["swipee_id"]
+        direction = True if request.POST["match"] == "True" else False
 
-    if request.method == "POST":  # user is submitting a swipe
-        swipee_id = request.POST["swipee_id"]
-        my_direction = True if request.POST["match"] == "True" else False
-        Swipe.objects.get_or_create(  # write user's swipe to the database
-            swiper=CustomUser(id=my_id),
-            swipee=CustomUser(id=swipee_id),
+        my_swipe = Swipe.objects.create(
+            swiper=Squad(id=my_sid),
+            swipee=Squad(id=their_sid),
             event=Concert(id=eid),
-            direction=my_direction,
+            direction=direction,
         )
 
-        """
-        Figure out if a match happened
-        Criteria:
-        1. The swipe that just happened was to the right
-        2. The swipee has previously swiped right on the swiper
-        """
-        try:
-            their_swipe_on_me = Swipe.objects.get(
-                swiper__id=swipee_id, swipee__id=my_id, event__id=eid
-            )
+        # Check to see if their squad swiped on our squad.
+        their_swipe = Swipe.objects.filter(
+            swiper__id=their_sid, swipee__id=my_sid, event__id=eid
+        )
+        if their_swipe.exists():
+            if my_swipe.direction and their_swipe.direction:
+                match = Squad.objects.get(id=their_sid)
+            else:
+                match = None
 
-        except Swipe.DoesNotExist:
-            their_swipe_on_me = None
+        squads = get_stack(request, eid)
+        return render(request, "match.html", {"squads": squads, "match": match})
 
-        # the line below checks criteria 1 and 2
-        if my_direction and their_swipe_on_me and their_swipe_on_me.direction:
-            popup = 1
-            match = CustomUser.objects.get(id=their_swipe_on_me.swiper_id)
-
-        # Update users.
-        users = get_stack(request, eid)
-
-    return render(
-        request, "match.html", {"users": users, "popup": popup, "match": match}
-    )
+    else:
+        squads = get_stack(request, eid)
+        return render(request, "match.html", {"squads": squads, "match": None})
 
 
 @login_required

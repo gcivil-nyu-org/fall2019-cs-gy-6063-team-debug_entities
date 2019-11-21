@@ -59,12 +59,8 @@ class CustomUser(AbstractUser):
 
 
 class Swipe(models.Model):
-    swiper = models.ForeignKey(
-        CustomUser, on_delete=models.CASCADE, related_name="swiper"
-    )
-    swipee = models.ForeignKey(
-        CustomUser, on_delete=models.CASCADE, related_name="swipee"
-    )
+    swiper = models.ForeignKey(Squad, on_delete=models.CASCADE, related_name="swiper")
+    swipee = models.ForeignKey(Squad, on_delete=models.CASCADE, related_name="swipee")
     event = models.ForeignKey(Concert, on_delete=models.CASCADE, related_name="event")
     direction = models.BooleanField()
 
@@ -74,13 +70,15 @@ class Swipe(models.Model):
                 fields=["swiper", "swipee", "event"],
                 name=(
                     "You can only swipe on another particular person for a"
-                    "particular event once"
+                    "particular event once."
                 ),
             )
         ]
 
     def __str__(self):
         return (
-            f"Swiper: {self.swiper.email}, Swipee: {self.swipee.email}, "
-            f"Event: {self.event.id}, Direction: {self.direction}"
+            f"Swiper: {self.swiper.email}, "
+            f"Swipee: {self.swipee.email}, "
+            f"Event: {self.event.id}, "
+            f"Direction: {self.direction}"
         )
