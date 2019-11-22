@@ -95,7 +95,9 @@ def edit_squad(request, id):
 
                 # Get their squad and their members.
                 try:
-                    their_squad = CustomUser.objects.get(email=request.POST["email"]).squad
+                    their_squad = CustomUser.objects.get(
+                        email=request.POST["email"]
+                    ).squad
 
                     # We are already in the same squad.
                     if my_squad.id == their_squad.id:
@@ -117,8 +119,6 @@ def edit_squad(request, id):
 
             elif "remove" in request.POST:
                 print(request.user.squad)
-                
-                
 
             return redirect(reverse("squad", kwargs={"id": id}))
         return render(request, "edit_squad.html", {"form": form})
