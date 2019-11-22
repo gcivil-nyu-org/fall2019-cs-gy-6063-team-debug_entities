@@ -16,9 +16,10 @@
         <form method='POST'>
           {% csrf_token %}
           <div class="form-group my-3">
-            <input type="email" name="email" class="form-control" placeholder="email address" required>
+            <input type="email" name="email" class="form-control" placeholder="email address">
           </div>
-          <button type="submit" class="btn btn-block btn-primary shadow lift">Add User</button>
+          <button type="submit" name="add" class="btn btn-block btn-primary shadow lift">Add User</button>
+          <button type="submit" name="remove" class="btn btn-block btn-primary shadow lift">Remove Yourself</button>
         </form>
       </div>
     </div>
