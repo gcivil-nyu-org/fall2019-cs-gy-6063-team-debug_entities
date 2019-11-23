@@ -395,6 +395,10 @@ class AuthenticatedViewTests(TestCase):
         self.response = self.client.get(reverse("events") + get)
         self.assertEqual(self.response.status_code, 200)
 
+    def test_authed_user_can_see_messages_page(self):
+        self.response = self.client.get(reverse("messages", args=(1, 1)))
+        self.assertEqual(self.response.status_code, 200)
+
 
 class UnauthenticatedViewTests(TestCase):
     def test_unauthed_user_cannot_see_events(self):
