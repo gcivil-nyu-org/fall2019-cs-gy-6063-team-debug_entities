@@ -213,3 +213,15 @@ def matches(request):
         uniq_events.add(match.event)
 
     return render(request, "matches.html", {"matches": matches, "events": uniq_events})
+
+
+@login_required
+def messages(request, squad1, squad2):
+    base_url = "https://showup-nyc-messaging.herokuapp.com/"
+    if squad1 > squad2:
+        squad1, squad2 = squad2, squad1
+    # we need only 1 chat room between any two squads so we choose arbitrarily
+    # to only have squad1 < squad2
+    return render(
+        request, "messages.html", {"iframe_url": f"{base_url}{squad1}-{squad2}"}
+    )
