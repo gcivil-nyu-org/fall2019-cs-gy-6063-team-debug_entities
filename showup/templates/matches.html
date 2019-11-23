@@ -44,10 +44,14 @@
                     <div class="py-5">
 
                       <!-- Text -->
-                      <div class="text-gray-700">
+                      <div class="text-gray-700 row">
+                        <div class="col">
                         {% avatar match.swipee %} &nbsp {{ match.swipee.first_name }}
-                          <a style = "position:relative; left:500px" href="#">Message</a> &nbsp &nbsp
-                          <a style = "position:relative; left:550px" href="{% url 'user' match.swipee.id %}">User Profile</a>
+                        </div>
+                        <div class="col text-right">
+                          <a style = "position:relative; top:26px" href="#">Message</a> &nbsp &nbsp &nbsp
+                          <a style = "position:relative; top:26px" href="{% url 'user' match.swipee.id %}">View Profile</a>
+                        </div>
                       </div>
 
                     </div>
