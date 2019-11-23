@@ -8,9 +8,6 @@
         <div class="col-6">
             <div class="card shadow">
                 <div class="card-body pl-8">
-                  <div class="text-right pr-6 pt-5">
-                  <a href="{% url 'user' user.id %}"><h5>My Profile</h5></a>
-                  </div>
                     <h3>{% trans "Your current avatar:" %}</h3>
 
                     {% avatar user %}
@@ -32,23 +29,16 @@
                         {% endif %}
                         </p>
                     </form>
-                    <!--
-                    <a class="nav-link" href="{% url 'user' user.id %}">My Profile</a>
-                    {% if avatars %}
-                    <a href="{% url 'avatar_delete' %}">Delete Avatars</a>
-                    {% endif %}
-                    -->
                     <br>
-                    <!-- <div class="text-right pr-5">
-                    <a class="btn" href="{% url 'user' user.id %}">My Profile</a>
-                     <!-- {% if avatars %}
-                    <a class="btn" href="{% url 'avatar_delete' %}">Delete Avatars</a>
-                     {% endif %} -->
                  </div>
 
 
 
-
+                 <div class="text-left">
+                 <a class="btn" href="{% url 'user' user.id %}">
+                   <i class="fa fa-hand-o-left fa-2x"></i>
+                   </a>
+                 </div>
                 </div>
             </div>
         </div>
