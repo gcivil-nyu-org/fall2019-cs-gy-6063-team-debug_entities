@@ -46,7 +46,7 @@
                       <!-- Text -->
                       <div class="text-gray-700">
                         {% avatar match.swipee %} &nbsp {{ match.swipee.first_name }}
-                          <a style = "position:relative; left:500px" href="#">Message</a> &nbsp &nbsp
+                          <a style = "position:relative; left:500px" href="{% url 'messages' user.squad.id match.swipee.squad.id %}">Message</a> &nbsp &nbsp
                           <a style = "position:relative; left:550px" href="{% url 'user' match.swipee.id %}">User Profile</a>
                       </div>
 
