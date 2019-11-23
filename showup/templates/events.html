@@ -100,8 +100,8 @@
                                     <p class="card-text">{{event.venue_name}} on {{event.datetime}}</p>
                                     <div class="text-center">
                                         <form action="" method="get">
-                                            <button class="btn btn-sm shadow {% if event.id in interested_list %}btn-primary{% endif %}" type="submit" name="interested" value={{event.id}}>Interested</button>
-                                            <button class="btn btn-sm shadow {% if event.id in going_list %}btn-primary{% endif %}" type="submit" name="going" value={{event.id}}>Going</button>
+                                            <button class="btn btn-sm shadow {% if event.id in interested_list %}btn-primary{% endif %}" type="submit" name="interested" value={{event.id}} id = "interested">Interested</button>
+                                            <button class="btn btn-sm shadow {% if event.id in going_list %}btn-primary{% endif %}" type="submit" name="going" value={{event.id}} id = "going">Going</button>
                                         </form>
                                     </div>
                                 </div>
@@ -114,5 +114,18 @@
         </div> <!-- closes column that holds card with all events -->
     </div> <!-- closes row that holds everything -->
 </div>
+
+<script>
+    $(document).ready(function(){
+        $("#interested").click(function(){
+            alert("this is interested!!");
+        });
+        
+        $("#going").click(function(){
+            alert("this is going!!");
+        });
+        
+    })
+</script>
 
 {% endblock %}
