@@ -5,12 +5,13 @@
 
 <div class="container-fluid mt-5 mx-3">
     <div class="row justify-content-center">
-        <div class="col-6">
+        <div class="col-7">
             <div class="card shadow">
                 <div class="card-body pl-8">
-                    <h3>{% trans "Your current avatar:" %}</h3>
-
+                    <h3 style="position:relative; top:60px">{% trans "Your current profile picture:" %}</h3>
+                    <p class="text-center pr-15">
                     {% avatar user %}
+                    </p>
                     {% if not avatars %}
                         <h4 class="pt-3">{% trans "You haven't uploaded an avatar yet. Please upload one now." %}</h4>
                     {% else %}
@@ -18,12 +19,12 @@
                             <ul class="pt-5 pl-0">
                                 {{ primary_avatar_form|crispy }}
                             </ul>
-                            <p>{% csrf_token %}<input type="submit" class="btn btn-primary" value="{% trans "Choose new Default" %}"></p>
+                            <p>{% csrf_token %}<input type="submit" class="btn btn-primary" value="{% trans "Set Profile Picture" %}"></p>
                         </form>
                     {% endif %}
                     <form enctype="multipart/form-data" method="POST" action="{% url 'avatar_add' %}">
                         {{ upload_avatar_form|crispy }}
-                        <p>{% csrf_token %}<input type="submit" class="btn btn-primary" value="{% trans "Upload New Image" %}" />
+                        <p>{% csrf_token %}<input type="submit" class="btn btn-primary" value="{% trans "Upload" %}" />
                         {% if avatars %}
                        <a style="position:relative; left:10px" class="btn btn-primary" href="{% url 'avatar_delete' %}">Delete Avatars</a>
                         {% endif %}

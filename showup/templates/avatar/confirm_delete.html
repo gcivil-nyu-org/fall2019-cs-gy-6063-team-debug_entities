@@ -5,7 +5,7 @@
 
 <div class="container-fluid mt-5 mx-3">
     <div class="row justify-content-center">
-        <div class="col-5">
+        <div class="col-6">
             <div class="card shadow">
                 <div class="card-body pt-5 pl-5">
                     <h4>{% trans "Please select the avatars that you would like to delete." %}</h4>
@@ -17,7 +17,7 @@
                         <ul>
                             {{ delete_avatar_form.as_ul }}
                         </ul>
-                        <p class="pl-6 pb-5">{% csrf_token %}<input type="submit" class="btn btn-primary" value="{% trans "Delete Selected" %}"></p>
+                        <p class="text-center pl-6 pb-5">{% csrf_token %}<input type="submit" class="btn btn-primary" value="{% trans "Delete Selected" %}"></p>
                     </form>
                     {% endif %}
                 </div>
