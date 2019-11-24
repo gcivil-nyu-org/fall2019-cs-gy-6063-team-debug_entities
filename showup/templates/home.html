@@ -3,7 +3,17 @@
 {% block content %}
 
 {% if user.is_authenticated %}
-    <section class="pt-6 pt-md-8 pb-8 mb-md-8">
+<div class="text-center pt-7">
+<h2 class="font-weight-bold mb-0">
+  Howdy, {{ user.first_name }}.
+</h2>
+
+<!-- Text -->
+<h4 class="font-size-lg text-gray-700 mb-0">
+  Let's get you dancing ASAP.
+</h4>
+</div>
+    <section class="pt-6 pt-md-5 pb-8 mb-md-8">
         <div class="container">
           <div class="row">
             <div class="col-12">
@@ -12,14 +22,14 @@
                 <div class="col ml-n4">
 
                   <!-- Heading -->
-                  <h2 class="font-weight-bold mb-0">
+                  <!-- <h2 class="font-weight-bold mb-0">
                     Howdy, {{ user.first_name }}.
                   </h2>
 
                   <!-- Text -->
-                  <h4 class="font-size-lg text-gray-700 mb-0">
+                  <!-- <h4 class="font-size-lg text-gray-700 mb-0">
                     Let's get you dancing ASAP.
-                  </h4>
+                  </h4> -->
 
                 </div>
               </div> <!-- / .row -->
