@@ -100,8 +100,8 @@
                                     <p class="card-text">{{event.venue_name}} on {{event.datetime}}</p>
                                     <div class="text-center">
                                         <form action="" method="get">
-                                            <button class="btn btn-sm shadow {% if event.id in interested_list %}btn-primary{% endif %}" type="submit" name="interested" value={{event.id}} id = "interested">Interested</button>
-                                            <button class="btn btn-sm shadow {% if event.id in going_list %}btn-primary{% endif %}" type="submit" name="going" value={{event.id}} id = "going">Going</button>
+                                            <button class="btn btn-sm shadow {% if event.id in interested_list %}btn-primary{% endif %}" type="submit" name="interested" value={{event.id}} onclick = "SetScrollPosition()">Interested</button>
+                                            <button class="btn btn-sm shadow {% if event.id in going_list %}btn-primary{% endif %}" type="submit" name="going" value={{event.id}} onclick = "SetScrollPosition()">Going</button>
                                         </form>
                                     </div>
                                 </div>
@@ -116,16 +116,16 @@
 </div>
 
 <script>
-    $(document).ready(function(){
-        $("#interested").click(function(){
-            alert("this is interested!!");
-        });
-        
-        $("#going").click(function(){
-            alert("this is going!!");
-        });
-        
-    })
-</script>
+var position = 0;
+var main_card = document.getElementsByClassName("col-9 mh-100 overflow-auto py-2")[0];
+if (sessionStorage.getItem('scrollVertical')) {
+    position = sessionStorage.getItem('scrollVertical');
+}
+main_card.scrollTop = position;
 
+function SetScrollPosition() {
+    scrollVertical = main_card.scrollTop;
+    sessionStorage.setItem('scrollVertical', scrollVertical);
+}
+</script>
 {% endblock %}
