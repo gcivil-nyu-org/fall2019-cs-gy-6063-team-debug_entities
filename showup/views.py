@@ -92,7 +92,6 @@ def edit_squad(request, id):
             my_squad = request.user.squad
 
             if "add" in request.POST:
-
                 # Get their squad and their members.
                 try:
                     their_squad = CustomUser.objects.get(
@@ -118,7 +117,14 @@ def edit_squad(request, id):
                 Squad.objects.get(id=their_squad.id).delete()
 
             elif "remove" in request.POST:
-                print(request.user.squad)
+                # If you are not alone in a squad, change squad id.
+                if CustomUser.objects.filter(squad=my_squad).count() > 1:
+                    me = CustomUser.objects.get(id=request.user.id)
+                    me.squad = Squad.objects.create()
+                    me.save()
+                # If you are alone in a squad do nothing.
+                else:
+                    return render(request, "edit_squad.html", {"form": form})
 
             return redirect(reverse("squad", kwargs={"id": id}))
         return render(request, "edit_squad.html", {"form": form})
