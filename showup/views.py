@@ -174,6 +174,25 @@ def edit_squad(request, id):
         raise PermissionDenied
 
 
+@login_required
+def requests(request):
+    # Get all the squads that requested to join this squad.
+    squads = Request.objects.filter(requestee=request.user.squad)
+    squads = [x.requester for x in squads]
+
+    if squads:
+        # Get all the users of all the squads that requested to join this squad.
+        users = []
+        for squad in squads:
+            users += [CustomUser.objects.filter(squad=squad)]
+    else:
+        users = None
+
+    return render(
+        request, "requests.html", {"squads": squads, "users": users}
+    )
+
+
 def get_stack(request, eid):
     # My sid.
     sid = request.user.squad.id

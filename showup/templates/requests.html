@@ -1,0 +1,72 @@
+{% extends 'header.html' %}
+
+{% load avatar_tags %}
+{% load static %}
+{% block content %}
+
+<div class="text-center pt-7">
+  <h2>Squad Requests</h2>
+</div>
+
+<section class="pt-6 pt-md-5 pb-8 mb-md-8">
+  <div class="container">
+    <div class="row">
+      <div class="col-12">
+        <div class="card shadow-light-lg accordion mb-5 mb-md-6" id="helpAccordionOne">
+          <div class="list-group">
+            <div class="list-group-item">
+              {% if squads|length > 0 %}
+                {% for squad in squads %}
+                  <div class="list-group-item">
+                    <a class="d-flex align-items-center text-reset text-decoration-none" data-toggle="collapse" href="#id{{ squad.id }}" role="button">
+
+                      <span class="mr-4">
+                        <p>idk what goes here</p>
+                      </span>
+
+                      <div class="text-muted ml-auto">
+                        <span class="font-size-sm mr-4 d-none d-md-inline">
+                          Matches
+                        </span>
+
+                        <span class="collapse-chevron text-muted">
+                          <i class="fas fa-caret-down">???</i>
+                        </span>
+                      </div>
+
+                    </a>
+
+                  <!-- Collapse -->
+                  <div class="collapse" id="id{{ squad.id }}" data-parent="#helpAccordionOne">
+                    {% for user in users %}
+                      {% if user.squad.id == squad.id %}
+
+                        <div class="py-5">
+                          <div class="text-gray-700 row">
+                            <div class="col">
+                              <p>avatars go here</p>
+                            </div>
+
+                            <div class="col text-right">
+                              <a style = "position:relative; top:26px" href="">Accept</a> &nbsp &nbsp &nbsp
+                              <a style = "position:relative; top:26px" href="">Decline</a>
+                            </div>
+                          </div>
+                        </div>
+                      {% endif %}
+                    {% endfor %}
+                  </div>
+                  </div>
+                {% endfor %}
+              {% else %}
+                <center><h3>No squad requests.</h3></center>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+</div>
+</section>
+
+{% endblock %}
