@@ -23,16 +23,22 @@ def events(request):
         "unique_performers": set([c.performer_names for c in Concert.objects.all()]),
         "boroughs": Concert.BOROUGH_CHOICES,
     }
+
+    # My squad.
+    squad = request.user.squad
+
     # User clicked "Interested" button.
     if "interested" in request.GET:
         insert_to_list_exclusively(
-            request.GET.get("interested"), request.user.interested, request.user.going
+            request.GET.get("interested"), squad.interested, squad.going
         )
+
     # User clicked "Going" button.
-    elif "going" in request.GET:
+    if "going" in request.GET:
         insert_to_list_exclusively(
-            request.GET.get("going"), request.user.going, request.user.interested
+            request.GET.get("going"), squad.going, squad.interested
         )
+
     return render(request, "events.html", context=context)
 
 
