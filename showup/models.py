@@ -38,6 +38,9 @@ class Concert(models.Model):
 
 
 class Squad(models.Model):
+    interested = models.ManyToManyField(Concert, related_name="interested", blank=True)
+    going = models.ManyToManyField(Concert, related_name="going", blank=True)
+
     def __str__(self):
         return str(self.id)
 
@@ -45,8 +48,6 @@ class Squad(models.Model):
 class CustomUser(AbstractUser):
     date_of_birth = models.DateField(null=True, blank=True)
     gender = models.CharField(max_length=255, blank=True)
-    interested = models.ManyToManyField(Concert, related_name="interested", blank=True)
-    going = models.ManyToManyField(Concert, related_name="going", blank=True)
     bio = models.TextField(max_length=500, default="", blank=True)
     swipes = models.ManyToManyField("self", through="Swipe", symmetrical=False)
     genres = models.ManyToManyField(Genre, related_name="fav_genres", blank=True)
