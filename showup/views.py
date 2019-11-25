@@ -192,18 +192,18 @@ def event_stack(request, eid):
 @login_required
 def matches(request):
     # My uid.
-    uid = request.user.id
-    uniq_events = set()
+    sid = request.user.squad.id
 
-    # The users that I swiped right on.
-    i_swiped_right = [x for x in Swipe.objects.filter(swiper__id=uid, direction=True)]
+    # The squads that my squad swiped right on.
+    i_swiped_right = [x for x in Swipe.objects.filter(swiper__id=sid, direction=True)]
 
-    # The users that swiped right on me.
+    # The squads that swiped right on my squad.
     they_swiped_right = [
-        x.swiper for x in Swipe.objects.filter(swipee__id=uid, direction=True)
+        x.swiper for x in Swipe.objects.filter(swipee__id=sid, direction=True)
     ]
 
     # The intersection of the above two.
+    uniq_events = set()
     matches = [x for x in i_swiped_right if x.swipee in they_swiped_right]
     matches.sort(key=lambda x: x.event.id)
     for match in matches:
