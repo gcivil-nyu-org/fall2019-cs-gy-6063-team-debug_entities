@@ -238,28 +238,32 @@ class EditSquadViewTests(TestCase):
     def setUp(self):
         # Create and save user one.
         email, password = "jspringer@example.com", "heyhey123"
-        squad = Squad(id=1)
-        squad.save()
+        squad = Squad.objects.create(id=1)
         user = CustomUser.objects.create_user(
             username=email, email=email, password=password, squad=squad
         )
-        EmailAddress.objects.get_or_create(id=1, user=user, verified=True)
 
         # Login user one.
+        EmailAddress.objects.create(id=1, user=user, verified=True)
         self.client.login(username=email, password=password)
 
         # Create and save user two.
         email, password = "jfallon@example.com", "heyhey123"
-        squad = Squad(id=2)
-        squad.save()
+        squad = Squad.objects.create(id=2)
         user = CustomUser.objects.create_user(
             username=email, email=email, password=password, squad=squad
         )
-        user.save()
+
+        # Create and save user three.
+        email, password = "jkimmel@example.com", "heyhey123"
+        squad = Squad.objects.create(id=3)
+        user = CustomUser.objects.create_user(
+            username=email, email=email, password=password, squad=squad
+        )
 
     def test_editsquad_basic(self):
         # Create form data.
-        data = {"email": "jfallon@example.com", "add": "add"}
+        data = {"add": "", "email": "jfallon@example.com"}
 
         # Send a POST request containing the form data.
         self.client.post(reverse("edit_squad", kwargs={"id": 1}), data=data)
@@ -270,36 +274,46 @@ class EditSquadViewTests(TestCase):
 
     def test_editsquad_already_in_squad(self):
         # Create form data.
-        data = {"email": "jspringer@example.com"}
+        data = {"add": "", "email": "jspringer@example.com"}
 
         # Send a POST request containing the form data.
         self.client.post(reverse("edit_squad", kwargs={"id": 1}), data=data)
 
         # Ensure the POST request was successful.
         users = CustomUser.objects.filter(squad=1)
-        self.assertEqual(len(users), 1)
+        self.assertEqual(users.count(), 1)
 
     def test_editsquad_email_does_not_exist(self):
         # Create form data.
-        data = {"email": "jkimmel@example.com"}
+        data = {"add": "", "email": "jseinfeld@example.com"}
 
         # Send a POST request containing the form data.
         self.client.post(reverse("edit_squad", kwargs={"id": 1}), data=data)
 
         # Ensure the POST request was successful.
         users = CustomUser.objects.filter(squad=1)
-        self.assertEqual(len(users), 1)
+        self.assertEqual(users.count(), 1)
 
-    def test_editsquad_remove(self):
+    def test_editsquad_add_remove(self):
         # Create form data.
-        data = {"email": "jfallon@example.com", "remove": "remove"}
+        data = {"add": "", "email": "jfallon@example.com"}
 
         # Send a POST request containing the form data.
         self.client.post(reverse("edit_squad", kwargs={"id": 1}), data=data)
 
         # Ensure the POST request was successful.
         users = CustomUser.objects.filter(squad=1)
-        self.assertEqual(len(users), 1)
+        self.assertEqual(users.count(), 2)
+
+        # Create form data.
+        data = {"leave": ""}
+
+        # Send a POST request containing the form data.
+        self.client.post(reverse("edit_squad", kwargs={"id": 1}), data=data)
+
+        # Ensure the POST request was successful.
+        users = CustomUser.objects.filter(squad=1)
+        self.assertEqual(users.count(), 1)
 
 
 class MatchesViewTests(TestCase):
