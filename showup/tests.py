@@ -394,6 +394,14 @@ class MatchesViewTests(TestCase):
         response = self.client.get(reverse("matches"))
         self.assertEqual(response.status_code, 200)
 
+    def test_authed_user_can_see_messages(self):
+        self.response = self.client.get(reverse("messages", args=(2, 1)))
+        self.assertEqual(
+            self.response.context["iframe_url"],
+            "https://showup-nyc-messaging.herokuapp.com/1-2",
+        )  # test that the view correctly puts the smaller squad ID first
+        self.assertEqual(self.response.status_code, 200)
+
 
 class AuthenticatedViewTests(TestCase):
     def setUp(self):  # this logs in a test user for the subsequent test cases
@@ -456,6 +464,11 @@ class AuthenticatedViewTests(TestCase):
         get = "?going=1#"
         self.response = self.client.get(reverse("events") + get)
         self.assertEqual(self.response.status_code, 200)
+
+    def test_authed_user_cannot_see_messages_page_with_different_squad_id(self):
+        self.response = self.client.get(reverse("messages", args=(25, 1)))
+        self.assertEqual(self.response.status_code, 403)
+        # the test user can't access this page because their squad ID is not 25
 
 
 class UnauthenticatedViewTests(TestCase):
