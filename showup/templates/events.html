@@ -116,16 +116,17 @@
 </div>
 
 <script>
-var position = 0;
-var main_card = document.getElementsByClassName("col-9 mh-100 overflow-auto py-2")[0];
-if (sessionStorage.getItem('scrollVertical')) {
+  var position = 0;
+  var main_card = document.getElementsByClassName("col-9 mh-100 overflow-auto py-2")[0];
+  if (sessionStorage.getItem('scrollVertical')) {
     position = sessionStorage.getItem('scrollVertical');
-}
-main_card.scrollTop = position;
+  }
+  main_card.scrollTop = position;
 
-function SetScrollPosition() {
+  function SetScrollPosition() {
     scrollVertical = main_card.scrollTop;
     sessionStorage.setItem('scrollVertical', scrollVertical);
-}
+  }
 </script>
+
 {% endblock %}
