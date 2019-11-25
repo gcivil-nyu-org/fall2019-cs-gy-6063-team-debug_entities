@@ -16,7 +16,9 @@ def events(request):
     # My squad.
     squad = request.user.squad
 
-    filter = ConcertFilter(request.GET, queryset=Concert.objects.all())
+    filter = ConcertFilter(
+        request.GET, queryset=Concert.objects.all().order_by("datetime")
+    )
     context = {
         "filter": filter,
         "interested_list": squad.interested.values_list("id", flat=True),
