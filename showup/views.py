@@ -126,13 +126,24 @@ def edit_squad(request, id):
                         {"form": form, "squad_size": squad_size},
                     )
 
-                # Merge squads.
-                for member in their_members:
-                    member.squad = my_squad
-                    member.save()
+                # Check to see if a request already exists.
+                request = Request.objects.filter(
+                    requester=their_squad, requestee=my_squad
+                )
+                if request.exists():
+                    # Merge squads.
+                    for member in their_members:
+                        member.squad = my_squad
+                        member.save()
 
-                # Delete their old squad.
-                Squad.objects.get(id=their_squad.id).delete()
+                    # Delete their old squad.
+                    Squad.objects.get(id=their_squad.id).delete()
+
+                    # Delete the request.
+                    request.delete()
+                else:
+                    # Create a request.
+                    Request.objects.create(requester=their_squad, requestee=my_squad)
 
                 return redirect(reverse("squad", kwargs={"id": my_squad.id}))
 
