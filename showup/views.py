@@ -224,7 +224,7 @@ def event_stack(request, eid):
 
 @login_required
 def matches(request):
-    # My uid.
+    # My sid.
     sid = request.user.squad.id
 
     # The squads that my squad swiped right on.
@@ -247,28 +247,32 @@ def matches(request):
 
 @login_required
 def messages(request, squad1, squad2):
-    # We need to ensure that squad1 is the squad ID of the current user
-    # and that the user has matched with squad2
-    # because we don't want unauthorized people to access chat rooms
-    # We only need to check that squad1 is the current user's ID, not squad2
-    # because the links to the messages page always put the user's ID as the first
-    # parameter
-    uid = request.user.id
-    i_swiped_right = [x for x in Swipe.objects.filter(swiper__id=uid, direction=True)]
+    # My sid.
+    sid = request.user.squad.id
+
+    # The squads that my squad swiped right on.
+    i_swiped_right = [x for x in Swipe.objects.filter(swiper__id=sid, direction=True)]
+
+    # The squads that swiped right on my squad.
     they_swiped_right = [
-        x.swiper for x in Swipe.objects.filter(swipee__id=uid, direction=True)
+        x.swiper for x in Swipe.objects.filter(swipee__id=sid, direction=True)
     ]
-    matches = [
-        x.swipee.squad.id for x in i_swiped_right if x.swipee in they_swiped_right
-    ]
-    if squad1 != request.user.squad.id or squad2 not in matches:
+
+    # The intersection of the above two.
+    matches = [x.swipee.id for x in i_swiped_right if x.swipee in they_swiped_right]
+
+    if request.user.squad.id != squad1:
+        # If you do not belong to squad1, you do not have permission to view.
+        raise PermissionDenied
+    elif squad2 not in matches:
+        # If squad1 did not match with squad2, they cannot chat.
         raise PermissionDenied
     else:
-        base_url = "https://showup-nyc-messaging.herokuapp.com/"
+        # Have squad1 always be less than squad2.
         if squad1 > squad2:
             squad1, squad2 = squad2, squad1
-        # we need only 1 chat room between any two squads so we choose arbitrarily
-        # to only have squad1 < squad2
+
+        base_url = "https://showup-nyc-messaging.herokuapp.com/"
         return render(
             request, "messages.html", {"iframe_url": f"{base_url}{squad1}-{squad2}"}
         )

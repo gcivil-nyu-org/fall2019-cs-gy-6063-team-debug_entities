@@ -359,18 +359,21 @@ class EditSquadViewTests(TestCase):
 class MatchesViewTests(TestCase):
     def setUp(self):
         # Create and save user one.
-        username, password = "jspringer@example.com", "heyhey123"
-        squad_1 = Squad.objects.create()
-        user_1 = CustomUser.objects.create_user(
-            username=username, password=password, squad=squad_1
+        email, password = "jspringer@example.com", "heyhey123"
+        squad_1 = Squad.objects.create(id=1)
+        user = CustomUser.objects.create_user(
+            username=email, email=email, password=password, squad=squad_1
         )
-        EmailAddress.objects.get_or_create(id=1, user=user_1, verified=True)
+
+        # Login user one.
+        EmailAddress.objects.create(id=1, user=user, verified=True)
+        self.client.login(username=email, password=password)
 
         # Create and save user two.
-        username, password = "jfallon@example.com", "heyhey123"
-        squad_2 = Squad.objects.create()
-        CustomUser.objects.create_user(
-            username=username, password=password, squad=squad_2
+        email, password = "jfallon@example.com", "heyhey123"
+        squad_2 = Squad.objects.create(id=2)
+        user = CustomUser.objects.create_user(
+            username=email, email=email, password=password, squad=squad_2
         )
 
         # Create needed objects for Swipe model.
@@ -385,15 +388,12 @@ class MatchesViewTests(TestCase):
             swiper=squad_2, swipee=squad_1, event=event, direction=direction
         )
 
-        # Login user.
-        self.client.login(username=username, password=password)
-
     def test_matches_basic(self):
         response = self.client.get(reverse("matches"))
         self.assertEqual(response.status_code, 200)
 
     def test_authed_user_can_see_messages(self):
-        self.response = self.client.get(reverse("messages", args=(2, 1)))
+        self.response = self.client.get(reverse("messages", args=(1, 2)))
         self.assertEqual(
             self.response.context["iframe_url"],
             "https://showup-nyc-messaging.herokuapp.com/1-2",
