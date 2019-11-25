@@ -31,7 +31,6 @@ class CustomUserAdmin(UserAdmin):
             },
         ),
     )
-    inlines = (SwipeInline,)
     add_fieldsets = fieldsets
 
     class Meta:
@@ -39,6 +38,7 @@ class CustomUserAdmin(UserAdmin):
 
 
 class SquadAdmin(admin.ModelAdmin):
+    inlines = (SwipeInline,)
     readonly_fields = ("id",)
 
     class Meta:
