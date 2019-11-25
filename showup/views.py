@@ -5,6 +5,9 @@ from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
 from django.shortcuts import redirect, render, reverse
 from .filters import ConcertFilter
+# django-friends package
+from django.contrib.auth.models import User
+from friendship.models import Friend, Follow, Block
 
 
 def home(request):
@@ -122,6 +125,7 @@ def edit_squad(request, id):
                     me = CustomUser.objects.get(id=request.user.id)
                     me.squad = Squad.objects.create()
                     me.save()
+                    return redirect(reverse("squad", kwargs={"id": me.squad.id}))
                 # If you are alone in a squad do nothing.
                 else:
                     return render(request, "edit_squad.html", {"form": form})
