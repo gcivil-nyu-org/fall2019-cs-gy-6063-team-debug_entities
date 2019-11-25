@@ -116,8 +116,6 @@ def edit_squad(request, id):
                             {"form": form, "squad_size": squad_size},
                         )
 
-                    their_members = CustomUser.objects.filter(squad=their_squad)
-
                 except CustomUser.DoesNotExist:
                     # TODO: Output some sort of message.
                     return render(
@@ -131,6 +129,13 @@ def edit_squad(request, id):
                     requester=their_squad, requestee=my_squad
                 )
                 if request.exists():
+                    # Join the squad that has a smaller id.
+                    if their_squad.id < my_squad.id:
+                        my_squad, their_squad = their_squad, my_squad
+
+                    # Get their members.
+                    their_members = CustomUser.objects.filter(squad=their_squad)
+
                     # Merge squads.
                     for member in their_members:
                         member.squad = my_squad

@@ -1,6 +1,6 @@
 import datetime
 
-from .models import Concert, CustomUser, Genre, Squad, Swipe
+from .models import Concert, CustomUser, Genre, Request, Squad, Swipe
 from allauth.account.admin import EmailAddress
 from django.test import Client, TestCase
 from django.urls import reverse
@@ -264,17 +264,6 @@ class EditSquadViewTests(TestCase):
             username=email, email=email, password=password, squad=squad
         )
 
-    def test_editsquad_basic(self):
-        # Create form data.
-        data = {"add": "", "email": "jfallon@example.com"}
-
-        # Send a POST request containing the form data.
-        self.client.post(reverse("edit_squad", kwargs={"id": 1}), data=data)
-
-        # Ensure the POST request was successful.
-        user = CustomUser.objects.get(username="jfallon@example.com")
-        self.assertEqual(user.squad.id, 1)
-
     def test_editsquad_already_in_squad(self):
         # Create form data.
         data = {"add": "", "email": "jspringer@example.com"}
@@ -298,25 +287,30 @@ class EditSquadViewTests(TestCase):
         self.assertEqual(users.count(), 1)
 
     def test_editsquad_add_leave(self):
-        # Create form data.
+        # jspringer@example.com requests jfallon@example.com to join their squad.
         data = {"add": "", "email": "jfallon@example.com"}
-
-        # Send a POST request containing the form data.
         self.client.post(reverse("edit_squad", kwargs={"id": 1}), data=data)
+        users = CustomUser.objects.filter(squad=1)
+        self.assertEqual(users.count(), 1)
 
-        # Ensure the POST request was successful.
+        # jfallon@example.com requests jspringer@example.com to join their squad.
+        requester = Squad.objects.get(id=2)
+        requestee = Squad.objects.get(id=1)
+        Request.objects.create(requester=requester, requestee=requestee)
+
+        # jspringer@example.com requests jfallon@example.com to join their squad.
+        data = {"add": "", "email": "jfallon@example.com"}
+        self.client.post(reverse("edit_squad", kwargs={"id": 1}), data=data)
         users = CustomUser.objects.filter(squad=1)
         self.assertEqual(users.count(), 2)
 
-        # Create form data.
+        # jspringer@example.com leaves their squad.
         data = {"leave": ""}
-
-        # Send a POST request containing the form data.
         self.client.post(reverse("edit_squad", kwargs={"id": 1}), data=data)
 
         # Ensure the POST request was successful.
-        users = CustomUser.objects.filter(squad=1)
-        self.assertEqual(users.count(), 1)
+        user = CustomUser.objects.get(squad=1)
+        self.assertEqual(user.email, "jfallon@example.com")
 
     def test_editsquad_leave_one(self):
         # Create form data.
