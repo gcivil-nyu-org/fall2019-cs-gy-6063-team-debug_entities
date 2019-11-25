@@ -294,7 +294,7 @@ class EditSquadViewTests(TestCase):
         users = CustomUser.objects.filter(squad=1)
         self.assertEqual(users.count(), 1)
 
-    def test_editsquad_add_remove(self):
+    def test_editsquad_add_leave(self):
         # Create form data.
         data = {"add": "", "email": "jfallon@example.com"}
 
@@ -314,6 +314,43 @@ class EditSquadViewTests(TestCase):
         # Ensure the POST request was successful.
         users = CustomUser.objects.filter(squad=1)
         self.assertEqual(users.count(), 1)
+
+    def test_editsquad_leave_one(self):
+        # Create form data.
+        data = {"leave": ""}
+
+        # Send a POST request containing the form data.
+        response = self.client.post(reverse("edit_squad", kwargs={"id": 1}), data=data)
+
+        # Ensure the POST request returns PermissionDenied.
+        self.assertEqual(response.status_code, 403)
+
+    def test_editsquad_malformed_post(self):
+        # Create form data.
+        data = {"remove": ""}
+
+        # Send a POST request containing the form data.
+        response = self.client.post(reverse("edit_squad", kwargs={"id": 1}), data=data)
+
+        # Ensure the POST request returns PermissionDenied.
+        self.assertEqual(response.status_code, 403)
+
+    def test_editsquad_get(self):
+        # Send a GET request.
+        response = self.client.get(reverse("edit_squad", kwargs={"id": 1}))
+
+        # Ensure the POST request was successful.
+        self.assertEqual(response.status_code, 200)
+
+    def test_editsquad_edit_other_squad(self):
+        # Create form data.
+        data = {"add": "", "email": "jfallon@example.com"}
+
+        # Send a POST request containing the form data.
+        response = self.client.post(reverse("edit_squad", kwargs={"id": 2}), data=data)
+
+        # Ensure the POST request returns PermissionDenied.
+        self.assertEqual(response.status_code, 403)
 
 
 class MatchesViewTests(TestCase):
