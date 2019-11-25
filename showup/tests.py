@@ -259,7 +259,7 @@ class EditSquadViewTests(TestCase):
 
     def test_editsquad_basic(self):
         # Create form data.
-        data = {"email": "jfallon@example.com", "submit": "add"}
+        data = {"email": "jfallon@example.com", "add": "add"}
 
         # Send a POST request containing the form data.
         self.client.post(reverse("edit_squad", kwargs={"id": 1}), data=data)
