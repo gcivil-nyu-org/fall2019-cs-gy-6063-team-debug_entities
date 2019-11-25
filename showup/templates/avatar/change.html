@@ -25,9 +25,9 @@
                     <form class="text-left" enctype="multipart/form-data" method="POST" action="{% url 'avatar_add' %}">
                         {{ upload_avatar_form.as_p }}
                         <p>{% csrf_token %}<input type="submit" class="btn btn-primary" value="{% trans "Upload" %}" />
-                        {% if avatars %}
+                        <!-- {% if avatars %}
                        <a style="position:relative; left:10px" class="btn btn-primary" href="{% url 'avatar_delete' %}">Delete Avatars</a>
-                        {% endif %}
+                        {% endif %} -->
                         </p>
                     </form>
                     <br>
