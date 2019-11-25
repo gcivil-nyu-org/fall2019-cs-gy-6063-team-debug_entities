@@ -13,19 +13,19 @@ def home(request):
 
 @login_required
 def events(request):
+    # My squad.
+    squad = request.user.squad
+
     filter = ConcertFilter(request.GET, queryset=Concert.objects.all())
     context = {
         "filter": filter,
-        "interested_list": request.user.interested.values_list("id", flat=True),
-        "going_list": request.user.going.values_list("id", flat=True),
+        "interested_list": squad.interested.values_list("id", flat=True),
+        "going_list": squad.going.values_list("id", flat=True),
         "unique_genres": [g.genre for g in Genre.objects.all()],
         "unique_venues": set([c.venue_name for c in Concert.objects.all()]),
         "unique_performers": set([c.performer_names for c in Concert.objects.all()]),
         "boroughs": Concert.BOROUGH_CHOICES,
     }
-
-    # My squad.
-    squad = request.user.squad
 
     # User clicked "Interested" button.
     if "interested" in request.GET:
