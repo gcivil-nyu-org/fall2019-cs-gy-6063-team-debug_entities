@@ -55,7 +55,7 @@
           <h4>You matched with {{match.first_name}}.</h4>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-primary">Message</button>
+          <a class="btn btn-primary" href="{% url 'messages' user.squad.id match.squad.id %}">Message</a>
           <button type="button" class="btn btn-secondary">Keep Swiping</button>
         </div>
       </div>

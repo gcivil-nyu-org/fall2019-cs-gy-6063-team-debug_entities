@@ -1,4 +1,5 @@
 {% extends 'header.html' %}
+
 {% block content %}
 
 <div style="position:relative; top:20px">
@@ -15,10 +16,15 @@
 
         <form method='POST'>
           {% csrf_token %}
+
           <div class="form-group my-3">
-            <input type="email" name="email" class="form-control" placeholder="email address" required>
+            <input type="email" name="email" class="form-control" placeholder="email address">
           </div>
-          <button type="submit" class="btn btn-block btn-primary shadow lift">Add User</button>
+
+          <button type="submit" name="add" class="btn btn-block btn-primary shadow lift">Add User</button>
+          {% if squad_size > 1 %}
+            <button type="submit" name="leave" class="btn btn-block btn-primary shadow lift">Leave Squad</button>
+          {% endif %}
         </form>
       </div>
     </div>

@@ -32,4 +32,4 @@ class CustomUserChangeForm(UserChangeForm):
 
 
 class SquadForm(forms.Form):
-    email = forms.EmailField()
+    email = forms.EmailField(required=False)
