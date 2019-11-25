@@ -8,22 +8,22 @@
         <div class="col-7">
             <div class="card shadow">
                 <div class="card-body pl-8">
-                    <h3 style="position:relative; top:60px">{% trans "Your current profile picture:" %}</h3>
-                    <p class="text-center pr-15">
-                    {% avatar user %}
-                    </p>
-                    {% if not avatars %}
+                    <h3 style="position:relative; top:60px">{% trans "Your current profile picture:" %}</h3><br><br><br>
+                    <p class="text-center">
+                    {% avatar user 150 %}
+                    </p><br>
+                    <!-- {% if not avatars %}
                         <h4 class="pt-3">{% trans "You haven't uploaded an avatar yet. Please upload one now." %}</h4>
                     {% else %}
                         <form method="POST" action="{% url 'avatar_change' %}">
-                            <ul class="pt-5 pl-0">
+                            <ul class="pt-5 pl-0 ">
                                 {{ primary_avatar_form|crispy }}
                             </ul>
                             <p>{% csrf_token %}<input type="submit" class="btn btn-primary" value="{% trans "Set Profile Picture" %}"></p>
                         </form>
-                    {% endif %}
-                    <form enctype="multipart/form-data" method="POST" action="{% url 'avatar_add' %}">
-                        {{ upload_avatar_form|crispy }}
+                    {% endif %} -->
+                    <form class="text-left" enctype="multipart/form-data" method="POST" action="{% url 'avatar_add' %}">
+                        {{ upload_avatar_form.as_p }}
                         <p>{% csrf_token %}<input type="submit" class="btn btn-primary" value="{% trans "Upload" %}" />
                         {% if avatars %}
                        <a style="position:relative; left:10px" class="btn btn-primary" href="{% url 'avatar_delete' %}">Delete Avatars</a>
@@ -37,7 +37,7 @@
 
                  <div class="text-left">
                  <a class="btn" href="{% url 'user' user.id %}">
-                   <i class="fa fa-chevron-left fa-2x"></i>
+                   <i class="fa fa-chevron-left fa-1x"></i>
                    </a>
                  </div>
                 </div>
