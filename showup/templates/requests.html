@@ -18,44 +18,20 @@
               {% if squads|length > 0 %}
                 {% for squad in squads %}
                   <div class="list-group-item">
-                    <a class="d-flex align-items-center text-reset text-decoration-none" data-toggle="collapse" href="#id{{ squad.id }}" role="button">
-
-                      <span class="mr-4">
-                        <p>idk what goes here</p>
-                      </span>
-
-                      <div class="text-muted ml-auto">
-                        <span class="font-size-sm mr-4 d-none d-md-inline">
-                          Matches
-                        </span>
-
-                        <span class="collapse-chevron text-muted">
-                          <i class="fas fa-caret-down">???</i>
-                        </span>
-                      </div>
-
-                    </a>
-
-                  <!-- Collapse -->
-                  <div class="collapse" id="id{{ squad.id }}" data-parent="#helpAccordionOne">
                     {% for user in users %}
                       {% if user.squad.id == squad.id %}
-
-                        <div class="py-5">
-                          <div class="text-gray-700 row">
-                            <div class="col">
-                              <p>avatars go here</p>
-                            </div>
-
-                            <div class="col text-right">
-                              <a style = "position:relative; top:26px" href="">Accept</a> &nbsp &nbsp &nbsp
-                              <a style = "position:relative; top:26px" href="">Decline</a>
-                            </div>
-                          </div>
+                        <div class="list-group-item">
+                          <p>avatars go here</p>
                         </div>
                       {% endif %}
                     {% endfor %}
-                  </div>
+
+                    <div class="text-muted ml-auto">
+                      <span class="font-size-sm mr-4 d-none d-md-inline">
+                        <a style = "position:relative; top:26px" href="">Accept</a> &nbsp &nbsp &nbsp
+                        <a style = "position:relative; top:26px" href="">Decline</a>
+                      </span>
+                    </div>
                   </div>
                 {% endfor %}
               {% else %}
@@ -66,7 +42,7 @@
         </div>
       </div>
     </div>
-</div>
+  </div>
 </section>
 
 {% endblock %}
