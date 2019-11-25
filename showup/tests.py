@@ -290,6 +290,17 @@ class EditSquadViewTests(TestCase):
         users = CustomUser.objects.filter(squad=1)
         self.assertEqual(len(users), 1)
 
+    def test_editsquad_remove(self):
+        # Create form data.
+        data = {"email": "jfallon@example.com", "remove": "remove"}
+
+        # Send a POST request containing the form data.
+        self.client.post(reverse("edit_squad", kwargs={"id": 1}), data=data)
+
+        # Ensure the POST request was successful.
+        users = CustomUser.objects.filter(squad=1)
+        self.assertEqual(len(users), 1)
+
 
 class MatchesViewTests(TestCase):
     def setUp(self):
