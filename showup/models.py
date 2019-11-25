@@ -84,3 +84,15 @@ class Swipe(models.Model):
             f"Swiper: {self.swiper.email}, Swipee: {self.swipee.email}, "
             f"Event: {self.event.id}, Direction: {self.direction}"
         )
+
+
+class Request(models.Model):
+    requester = models.ForeignKey(
+        CustomUser, on_delete=models.CASCADE, related_name="requester"
+    )
+    requestee = models.ForeignKey(
+        CustomUser, on_delete=models.CASCADE, related_name="requestee"
+    )
+
+    def __str__(self):
+        return f"requester: {self.requester.email} requestee: {self.requestee.email}"
