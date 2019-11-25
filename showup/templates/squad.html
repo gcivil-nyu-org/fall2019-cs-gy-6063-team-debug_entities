@@ -30,10 +30,10 @@
                 </div>
               {% endfor %}
             </div>
+            <center>
+              <a style = "position:relative; top:15px" class="btn btn-primary" href="{% url 'edit_squad' user.squad.id %}">Edit Your Squad</a>
+            </center>
           </div>
-          <center>
-            <a style = "position:relative; top:15px" class="btn btn-primary" href="{% url 'edit_squad' user.squad.id %}">Edit Your Squad</a>
-          </center>
         </div> <!-- closes body of big card that holds all events -->
       </div> <!-- closes big card that holds all events -->
     </div> <!-- closes column that holds card with all events -->
