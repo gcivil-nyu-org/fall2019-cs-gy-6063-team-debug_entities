@@ -64,12 +64,12 @@ class SwipeModelTests(TestCase):
     def test_swipe_basic(self):
         # Create needed objects for Swipe model.
         squad_1 = Squad.objects.create()
-        user_1 = CustomUser.objects.create(
+        CustomUser.objects.create(
             username="1", email="swiper@example.com", squad=squad_1
         )
 
         squad_2 = Squad.objects.create()
-        user_2 = CustomUser.objects.create(
+        CustomUser.objects.create(
             username="2", email="swipee@example.com", squad=squad_2
         )
 
@@ -307,7 +307,7 @@ class MatchesViewTests(TestCase):
         # Create and save user two.
         username, password = "jfallon@example.com", "heyhey123"
         squad_2 = Squad.objects.create()
-        user_2 = CustomUser.objects.create_user(
+        CustomUser.objects.create_user(
             username=username, password=password, squad=squad_2
         )
 
@@ -316,10 +316,10 @@ class MatchesViewTests(TestCase):
         direction = True
 
         # Create the Swipe objects.
-        swipe = Swipe.objects.create(
+        Swipe.objects.create(
             swiper=squad_1, swipee=squad_2, event=event, direction=direction
         )
-        swipe = Swipe.objects.create(
+        Swipe.objects.create(
             swiper=squad_2, swipee=squad_1, event=event, direction=direction
         )
 
