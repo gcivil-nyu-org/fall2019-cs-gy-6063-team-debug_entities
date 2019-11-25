@@ -2,6 +2,7 @@
 
 {% load avatar_tags %}
 {% load static %}
+
 {% block content %}
 
 <div class="text-center pt-7">
@@ -17,22 +18,17 @@
             <div class="list-group-item">
               {% if squads|length > 0 %}
                 {% for squad in squads %}
-                  <div class="list-group-item">
-                    {% for user in users %}
-                      {% if user.squad.id == squad.id %}
-                        <div class="list-group-item">
-                          <p>avatars go here</p>
-                        </div>
-                      {% endif %}
-                    {% endfor %}
-
-                    <div class="text-muted ml-auto">
-                      <span class="font-size-sm mr-4 d-none d-md-inline">
+                  {% for user in users %}
+                    {% if user.squad.id == squad.id %}
+                      <div class="col text-right">
                         <a style = "position:relative; top:26px" href="">Accept</a> &nbsp &nbsp &nbsp
                         <a style = "position:relative; top:26px" href="">Decline</a>
-                      </span>
-                    </div>
-                  </div>
+                      </div>
+                      <div class="mr-4">
+                        Squad Pics Go Here<br>
+                      </div>
+                    {% endif %}
+                  {% endfor %}
                 {% endfor %}
               {% else %}
                 <center><h3>No squad requests.</h3></center>

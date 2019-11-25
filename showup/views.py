@@ -184,7 +184,7 @@ def requests(request):
         # Get all the users of all the squads that requested to join this squad.
         users = []
         for squad in squads:
-            users += [CustomUser.objects.filter(squad=squad)]
+            users += CustomUser.objects.filter(squad=squad)
     else:
         users = None
 
