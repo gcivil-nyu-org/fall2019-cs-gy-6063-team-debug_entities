@@ -176,13 +176,11 @@ def event_stack(request, eid):
                 match = Squad.objects.get(id=their_sid)
             else:
                 match = None
-
-        squads = get_stack(request, eid)
-        return render(request, "match.html", {"squads": squads, "match": match})
-
     else:
-        squads = get_stack(request, eid)
-        return render(request, "match.html", {"squads": squads, "match": None})
+        match = None
+
+    squads = get_stack(request, eid)
+    return render(request, "match.html", {"squads": squads, "match": match})
 
 
 @login_required
