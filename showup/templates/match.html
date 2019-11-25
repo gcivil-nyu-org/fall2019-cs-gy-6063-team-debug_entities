@@ -9,7 +9,7 @@
 <section class="py-14 bg-white bg-between" style="background-image: url({% static 'dancing match.png' %}); background-position: center; background-repeat: no-repeat; background-size:cover;">
   <div class="container">
     <div class="row justify-content-center">
-      <div class="col-12 col-md-10 col-lg-7 text-center" data-aos="fade-up">
+      <div class="mr-1 lift col-12 col-md-10 col-lg-4 text-center" data-aos="fade-up">
 
         <div class="my-5">
           {% avatar swipee %}
@@ -55,7 +55,7 @@
           <h4>You matched with {{match.first_name}}.</h4>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-primary">Message</button>
+          <a class="btn btn-primary" href="{% url 'messages' user.squad.id match.squad.id %}">Message</a>
           <button type="button" class="btn btn-secondary">Keep Swiping</button>
         </div>
       </div>
