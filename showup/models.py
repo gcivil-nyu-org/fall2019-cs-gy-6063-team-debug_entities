@@ -78,8 +78,8 @@ class Swipe(models.Model):
 
     def __str__(self):
         return (
-            f"Swiper: {self.swiper.email}, "
-            f"Swipee: {self.swipee.email}, "
+            f"Swiper: {self.swiper.id}, "
+            f"Swipee: {self.swipee.id}, "
             f"Event: {self.event.id}, "
             f"Direction: {self.direction}"
         )

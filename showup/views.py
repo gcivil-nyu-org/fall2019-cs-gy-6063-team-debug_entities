@@ -127,7 +127,7 @@ def edit_squad(request, id):
 
 def get_stack(request, eid):
     # My sid.
-    sid = request.squad.id
+    sid = request.user.squad.id
 
     # Get the squads interested in or going to the event.
     squads = Squad.objects.filter(interested__id=eid) | Squad.objects.filter(

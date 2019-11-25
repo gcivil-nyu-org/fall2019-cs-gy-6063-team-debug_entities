@@ -6,45 +6,52 @@ import django.db.models.deletion
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('showup', '0004_auto_20191120_0220'),
-    ]
+    dependencies = [("showup", "0004_auto_20191120_0220")]
 
     operations = [
         migrations.RemoveConstraint(
-            model_name='swipe',
-            name='You can only swipe on another particular person for aparticular event once',
+            model_name="swipe",
+            name="You can only swipe on another particular person for aparticular event once",
         ),
-        migrations.RemoveField(
-            model_name='customuser',
-            name='going',
-        ),
-        migrations.RemoveField(
-            model_name='customuser',
-            name='interested',
+        migrations.RemoveField(model_name="customuser", name="going"),
+        migrations.RemoveField(model_name="customuser", name="interested"),
+        migrations.AddField(
+            model_name="squad",
+            name="going",
+            field=models.ManyToManyField(
+                blank=True, related_name="going", to="showup.Concert"
+            ),
         ),
         migrations.AddField(
-            model_name='squad',
-            name='going',
-            field=models.ManyToManyField(blank=True, related_name='going', to='showup.Concert'),
-        ),
-        migrations.AddField(
-            model_name='squad',
-            name='interested',
-            field=models.ManyToManyField(blank=True, related_name='interested', to='showup.Concert'),
+            model_name="squad",
+            name="interested",
+            field=models.ManyToManyField(
+                blank=True, related_name="interested", to="showup.Concert"
+            ),
         ),
         migrations.AlterField(
-            model_name='swipe',
-            name='swipee',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='swipee', to='showup.Squad'),
+            model_name="swipe",
+            name="swipee",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="swipee",
+                to="showup.Squad",
+            ),
         ),
         migrations.AlterField(
-            model_name='swipe',
-            name='swiper',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='swiper', to='showup.Squad'),
+            model_name="swipe",
+            name="swiper",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="swiper",
+                to="showup.Squad",
+            ),
         ),
         migrations.AddConstraint(
-            model_name='swipe',
-            constraint=models.UniqueConstraint(fields=('swiper', 'swipee', 'event'), name='You can only swipe on another particular person for aparticular event once.'),
+            model_name="swipe",
+            constraint=models.UniqueConstraint(
+                fields=("swiper", "swipee", "event"),
+                name="You can only swipe on another particular person for aparticular event once.",
+            ),
         ),
     ]
