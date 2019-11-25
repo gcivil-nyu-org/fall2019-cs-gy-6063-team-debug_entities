@@ -13,7 +13,9 @@ def home(request):
 
 @login_required
 def events(request):
-    filter = ConcertFilter(request.GET, queryset=Concert.objects.all())
+    filter = ConcertFilter(
+        request.GET, queryset=Concert.objects.all().order_by("datetime")
+    )
     context = {
         "filter": filter,
         "interested_list": request.user.interested.values_list("id", flat=True),
