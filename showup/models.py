@@ -87,11 +87,11 @@ class Swipe(models.Model):
 
 class Request(models.Model):
     requester = models.ForeignKey(
-        CustomUser, on_delete=models.CASCADE, related_name="requester"
+        Squad, on_delete=models.CASCADE, related_name="requester"
     )
     requestee = models.ForeignKey(
-        CustomUser, on_delete=models.CASCADE, related_name="requestee"
+        Squad, on_delete=models.CASCADE, related_name="requestee"
     )
 
     def __str__(self):
-        return f"requester: {self.requester.email} requestee: {self.requestee.email}"
+        return f"requester: {self.requester.id} requestee: {self.requestee.id}"

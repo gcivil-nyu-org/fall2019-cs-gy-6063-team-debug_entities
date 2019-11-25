@@ -8,16 +8,6 @@ class ConcertAdmin(admin.ModelAdmin):
         model = Concert
 
 
-class SwipeInline(admin.TabularInline):
-    model = Swipe
-    fk_name = "swiper"
-
-
-class RequestInline(admin.TabularInline):
-    model = Request
-    fk_name = "requester"
-
-
 class CustomUserAdmin(UserAdmin):
     list_display = ["email", "username", "date_of_birth", "gender"]
     readonly_fields = ("id",)
@@ -41,7 +31,6 @@ class CustomUserAdmin(UserAdmin):
             },
         ),
     )
-    inlines = (SwipeInline, RequestInline)
     add_fieldsets = fieldsets
 
     class Meta:
@@ -62,7 +51,18 @@ class RequestAdmin(admin.ModelAdmin):
         model = Request
 
 
+class SwipeInline(admin.TabularInline):
+    model = Swipe
+    fk_name = "swiper"
+
+
+class RequestInline(admin.TabularInline):
+    model = Request
+    fk_name = "requester"
+
+
 class SquadAdmin(admin.ModelAdmin):
+    inlines = (SwipeInline, RequestInline)
     readonly_fields = ("id",)
 
     class Meta:
