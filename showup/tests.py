@@ -63,25 +63,28 @@ class CustomUserModelTests(TestCase):
 class SwipeModelTests(TestCase):
     def test_swipe_basic(self):
         # Create needed objects for Swipe model.
-        swiper = CustomUser(username="1", email="swiper@example.com")
-        swipee = CustomUser(username="2", email="swipee@example.com")
-        event = Concert(id=1, datetime=datetime.datetime.now(tz=utc))
+        squad_1 = Squad.objects.create()
+        CustomUser.objects.create(
+            username="1", email="swiper@example.com", squad=squad_1
+        )
+
+        squad_2 = Squad.objects.create()
+        CustomUser.objects.create(
+            username="2", email="swipee@example.com", squad=squad_2
+        )
+
+        event = Concert.objects.create(id=1, datetime=datetime.datetime.now(tz=utc))
+
         direction = True
 
-        # Save the objects.
-        swiper.save()
-        swipee.save()
-        event.save()
-
         # Create the Swipe object.
-        swipe = Swipe(swiper=swiper, swipee=swipee, event=event, direction=direction)
-
-        # Save the Swipe object.
-        swipe.save()
+        swipe = Swipe.objects.create(
+            swiper=squad_1, swipee=squad_2, event=event, direction=direction
+        )
 
         expected_output = (
-            f"Swiper: {swiper.email}, "
-            f"Swipee: {swipee.email}, "
+            f"Swiper: {squad_1.id}, "
+            f"Swipee: {squad_2.id}, "
             f"Event: {event.id}, "
             f"Direction: {direction}"
         )
@@ -357,8 +360,7 @@ class MatchesViewTests(TestCase):
     def setUp(self):
         # Create and save user one.
         username, password = "jspringer@example.com", "heyhey123"
-        squad_1 = Squad()
-        squad_1.save()
+        squad_1 = Squad.objects.create()
         user_1 = CustomUser.objects.create_user(
             username=username, password=password, squad=squad_1
         )
@@ -366,26 +368,22 @@ class MatchesViewTests(TestCase):
 
         # Create and save user two.
         username, password = "jfallon@example.com", "heyhey123"
-        squad_2 = Squad()
-        squad_2.save()
-        user_2 = CustomUser.objects.create_user(
+        squad_2 = Squad.objects.create()
+        CustomUser.objects.create_user(
             username=username, password=password, squad=squad_2
         )
 
         # Create needed objects for Swipe model.
-        event = Concert(id=1, datetime=datetime.datetime.now(tz=utc))
+        event = Concert.objects.create(id=1, datetime=datetime.datetime.now(tz=utc))
         direction = True
 
-        # Save the objects.
-        user_1.save()
-        user_2.save()
-        event.save()
-
         # Create the Swipe objects.
-        swipe = Swipe(swiper=user_1, swipee=user_2, event=event, direction=direction)
-        swipe.save()
-        swipe = Swipe(swiper=user_2, swipee=user_1, event=event, direction=direction)
-        swipe.save()
+        Swipe.objects.create(
+            swiper=squad_1, swipee=squad_2, event=event, direction=direction
+        )
+        Swipe.objects.create(
+            swiper=squad_2, swipee=squad_1, event=event, direction=direction
+        )
 
         # Login user.
         self.client.login(username=username, password=password)
