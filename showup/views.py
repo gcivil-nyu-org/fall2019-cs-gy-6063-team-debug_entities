@@ -5,9 +5,6 @@ from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
 from django.shortcuts import redirect, render, reverse
 from .filters import ConcertFilter
-# django-friends package
-from django.contrib.auth.models import User
-from friendship.models import Friend, Follow, Block
 
 
 def home(request):
