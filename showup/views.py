@@ -87,15 +87,16 @@ def squad(request, id):
 @login_required
 def edit_squad(request, id):
     # You can only edit your own squad.
-    if request.user.squad.id == id:
+    if id == request.user.squad.id:
+        # Get my squad.
+        my_squad = request.user.squad
+        squad_size = CustomUser.objects.filter(squad=my_squad).count()
+
         form = SquadForm(request.POST or None)
         if request.method == "POST" and form.is_valid():
-            # Get my squad.
-            my_squad = request.user.squad
-
             if "add" in request.POST:
-                # Get their squad and their members.
                 try:
+                    # Get their squad and their members.
                     their_squad = CustomUser.objects.get(
                         email=request.POST["email"]
                     ).squad
@@ -103,12 +104,21 @@ def edit_squad(request, id):
                     # We are already in the same squad.
                     if my_squad.id == their_squad.id:
                         # TODO: Output some sort of message.
-                        return render(request, "edit_squad.html", {"form": form})
+                        return render(
+                            request,
+                            "edit_squad.html",
+                            {"form": form, "squad_size": squad_size},
+                        )
 
                     their_members = CustomUser.objects.filter(squad=their_squad)
+
                 except CustomUser.DoesNotExist:
                     # TODO: Output some sort of message.
-                    return render(request, "edit_squad.html", {"form": form})
+                    return render(
+                        request,
+                        "edit_squad.html",
+                        {"form": form, "squad_size": squad_size},
+                    )
 
                 # Merge squads.
                 for member in their_members:
@@ -118,19 +128,26 @@ def edit_squad(request, id):
                 # Delete their old squad.
                 Squad.objects.get(id=their_squad.id).delete()
 
-            elif "remove" in request.POST:
-                # If you are not alone in a squad, change squad id.
-                if CustomUser.objects.filter(squad=my_squad).count() > 1:
+                return redirect(reverse("squad", kwargs={"id": my_squad.id}))
+
+            elif "leave" in request.POST:
+                # You can only leave a squad if you're not the only one in it.
+                if squad_size > 1:
                     me = CustomUser.objects.get(id=request.user.id)
                     me.squad = Squad.objects.create()
                     me.save()
                     return redirect(reverse("squad", kwargs={"id": me.squad.id}))
-                # If you are alone in a squad do nothing.
-                else:
-                    return render(request, "edit_squad.html", {"form": form})
 
-            return redirect(reverse("squad", kwargs={"id": id}))
-        return render(request, "edit_squad.html", {"form": form})
+                else:
+                    raise PermissionDenied
+
+            else:
+                raise PermissionDenied
+
+        return render(
+            request, "edit_squad.html", {"form": form, "squad_size": squad_size}
+        )
+
     else:
         raise PermissionDenied
 
