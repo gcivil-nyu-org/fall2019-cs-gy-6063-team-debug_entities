@@ -26,10 +26,12 @@
                     {% endif %}
                   {% endfor %}
                       </div>
-                      <div class="col-4 align-self-center">
-                        <a class="btn btn-primary">Accept</a>
-                        <a class="btn btn-secondary">Deny</a>
-                      </div>
+                      <form class="col-4 align-self-center" action="" method="post">
+                        {% csrf_token %}
+                        <input type="hidden" name="their_sid" value="{{ squad.id }}">
+                        <button class="btn btn-primary" type="submit" name="accept">Accept</button>
+                        <button class="btn btn-primary" type="submit" name="deny">Deny</button>
+                      </form>
                       </div>
                       </div><br>
                 {% endfor %}
