@@ -91,6 +91,26 @@ class SwipeModelTests(TestCase):
         self.assertEqual(swipe.__str__(), expected_output)
 
 
+class SquadModelTests(TestCase):
+    def test_Squad_basic(self):
+        # Create a squad.
+        s = Squad.objects.create(id=1)
+
+        expected_output = f"{s.id}"
+        self.assertEqual(s.__str__(), expected_output)
+
+
+class RequestModelTests(TestCase):
+    def test_request_basic(self):
+        # Create a request.
+        requester = Squad.objects.create(id=1)
+        requestee = Squad.objects.create(id=2)
+        r = Request.objects.create(requester=requester, requestee=requestee)
+
+        expected_output = f"requester: {requester.id} requestee: {requestee.id}"
+        self.assertEqual(r.__str__(), expected_output)
+
+
 class HomeViewTests(TestCase):
     def test_home_basic(self):
         response = self.client.get(reverse("home"))

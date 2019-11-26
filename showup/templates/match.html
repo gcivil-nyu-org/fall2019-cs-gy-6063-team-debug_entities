@@ -55,11 +55,7 @@
           <h4>You matched with this squad!</h4>
         </div>
         <div class="modal-footer">
-          {% if user.squad.id < match.id %}
-            <a class="btn btn-primary" href="{% url 'messages' match.id user.squad.id %}">Message</a>
-          {% else %}
-            <a class="btn btn-primary" href="{% url 'messages' user.squad.id match.id %}">Message</a>
-          {% endif %}
+          <a class="btn btn-primary" href="{% url 'messages' user.squad.id match.id %}">Message</a>
           <button type="button" class="btn btn-secondary">Keep Swiping</button>
         </div>
       </div>
