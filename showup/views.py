@@ -1,5 +1,5 @@
 from .forms import CustomUserChangeForm, SquadForm
-from .models import Concert, CustomUser, Genre, Squad, Swipe
+from .models import Concert, CustomUser, Genre, Request, Squad, Swipe
 from allauth.account.admin import EmailAddress
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
@@ -13,28 +13,34 @@ def home(request):
 
 @login_required
 def events(request):
+    # My squad.
+    squad = request.user.squad
+
     filter = ConcertFilter(
         request.GET, queryset=Concert.objects.all().order_by("datetime")
     )
     context = {
         "filter": filter,
-        "interested_list": request.user.interested.values_list("id", flat=True),
-        "going_list": request.user.going.values_list("id", flat=True),
+        "interested_list": squad.interested.values_list("id", flat=True),
+        "going_list": squad.going.values_list("id", flat=True),
         "unique_genres": [g.genre for g in Genre.objects.all()],
         "unique_venues": set([c.venue_name for c in Concert.objects.all()]),
         "unique_performers": set([c.performer_names for c in Concert.objects.all()]),
         "boroughs": Concert.BOROUGH_CHOICES,
     }
+
     # User clicked "Interested" button.
     if "interested" in request.GET:
         insert_to_list_exclusively(
-            request.GET.get("interested"), request.user.interested, request.user.going
+            request.GET.get("interested"), squad.interested, squad.going
         )
+
     # User clicked "Going" button.
-    elif "going" in request.GET:
+    if "going" in request.GET:
         insert_to_list_exclusively(
-            request.GET.get("going"), request.user.going, request.user.interested
+            request.GET.get("going"), squad.going, squad.interested
         )
+
     return render(request, "events.html", context=context)
 
 
@@ -110,8 +116,6 @@ def edit_squad(request, id):
                             {"form": form, "squad_size": squad_size},
                         )
 
-                    their_members = CustomUser.objects.filter(squad=their_squad)
-
                 except CustomUser.DoesNotExist:
                     # TODO: Output some sort of message.
                     return render(
@@ -120,13 +124,31 @@ def edit_squad(request, id):
                         {"form": form, "squad_size": squad_size},
                     )
 
-                # Merge squads.
-                for member in their_members:
-                    member.squad = my_squad
-                    member.save()
+                # Check to see if a request already exists.
+                request = Request.objects.filter(
+                    requester=their_squad, requestee=my_squad
+                )
+                if request.exists():
+                    # Join the squad that has a smaller id.
+                    if their_squad.id < my_squad.id:
+                        my_squad, their_squad = their_squad, my_squad
 
-                # Delete their old squad.
-                Squad.objects.get(id=their_squad.id).delete()
+                    # Get their members.
+                    their_members = CustomUser.objects.filter(squad=their_squad)
+
+                    # Merge squads.
+                    for member in their_members:
+                        member.squad = my_squad
+                        member.save()
+
+                    # Delete their old squad.
+                    Squad.objects.get(id=their_squad.id).delete()
+
+                    # Delete the request.
+                    request.delete()
+                else:
+                    # Create a request.
+                    Request.objects.create(requester=my_squad, requestee=their_squad)
 
                 return redirect(reverse("squad", kwargs={"id": my_squad.id}))
 
@@ -152,94 +174,150 @@ def edit_squad(request, id):
         raise PermissionDenied
 
 
-def get_stack(request, eid):
-    # My uid.
-    uid = request.user.id
+@login_required
+def requests(request):
+    if request.method == "POST":
+        # Get my squad and their squad.
+        my_squad = request.user.squad
+        their_squad = Squad.objects.get(id=request.POST["their_sid"])
 
-    # Get the users interested in or going to the event.
-    users = CustomUser.objects.filter(interested__id=eid) | CustomUser.objects.filter(
+        if "accept" in request.POST:
+            # Get the request.
+            r = Request.objects.get(requester=their_squad, requestee=my_squad)
+
+            # Join the squad that has a smaller id.
+            if their_squad.id < my_squad.id:
+                my_squad, their_squad = their_squad, my_squad
+
+            # Get their members.
+            their_members = CustomUser.objects.filter(squad=their_squad)
+
+            # Merge squads.
+            for member in their_members:
+                member.squad = my_squad
+                member.save()
+
+            # Delete their old squad.
+            Squad.objects.get(id=their_squad.id).delete()
+
+            # Delete the request.
+            r.delete()
+        elif "deny" in request.POST:
+            # Get the request.
+            r = Request.objects.filter(requester=their_squad, requestee=my_squad)
+
+            # Delete the request.
+            r.delete()
+        else:
+            raise PermissionDenied
+
+    # Get all the squads that requested to join this squad.
+    squads = Request.objects.filter(requestee=request.user.squad)
+    squads = [x.requester for x in squads]
+
+    if squads:
+        # Get all the users of all the squads that requested to join this squad.
+        users = []
+        for squad in squads:
+            users += CustomUser.objects.filter(squad=squad)
+    else:
+        users = None
+
+    return render(request, "requests.html", {"squads": squads, "users": users})
+
+
+def get_stack(request, eid):
+    # My sid.
+    sid = request.user.squad.id
+
+    # Get the squads interested in or going to the event.
+    squads = Squad.objects.filter(interested__id=eid) | Squad.objects.filter(
         going__id=eid
     )
 
-    # These are the users that swiped left on me.
+    # These are the squads that swiped left on my squad.
     swiped_left = [
         x.swiper.id
-        for x in Swipe.objects.filter(event__id=eid, swipee__id=uid, direction=False)
+        for x in Swipe.objects.filter(swipee__id=sid, event__id=eid, direction=False)
     ]
 
-    # These are the users that I swiped on.
-    swiped = [x.swipee.id for x in Swipe.objects.filter(event__id=eid, swiper__id=uid)]
+    # These are the squads that my squad swiped on.
+    swiped = [x.swipee.id for x in Swipe.objects.filter(swiper__id=sid, event__id=eid)]
 
-    # Exclude the users that swiped left on me, the users that I swiped on, and
-    # myself.
-    users = [
-        u
-        for u in users
-        if u.id not in swiped_left and u.id not in swiped and u.id != uid
+    """
+    Exclude the following squads:
+    - The squads that swiped left on my squad.
+    - The squads that my squad swiped on.
+    - My squad.
+    """
+    squads = [
+        s
+        for s in squads
+        if s.id not in swiped_left and s.id not in swiped and s.id != sid
     ]
 
-    return users
+    return squads
 
 
 @login_required
 def event_stack(request, eid):
-    my_id = request.user.id
-    match = CustomUser.objects.get(id=request.user.id)
-    popup = 0
-    users = get_stack(request, eid)
+    if request.method == "POST":
+        # Create a Swipe object.
+        my_sid = request.user.squad.id
+        their_sid = request.POST["their_sid"]
+        direction = True if request.POST["match"] == "True" else False
 
-    if request.method == "POST":  # user is submitting a swipe
-        swipee_id = request.POST["swipee_id"]
-        my_direction = True if request.POST["match"] == "True" else False
-        Swipe.objects.get_or_create(  # write user's swipe to the database
-            swiper=CustomUser(id=my_id),
-            swipee=CustomUser(id=swipee_id),
+        my_swipe = Swipe.objects.create(
+            swiper=Squad(id=my_sid),
+            swipee=Squad(id=their_sid),
             event=Concert(id=eid),
-            direction=my_direction,
+            direction=direction,
         )
 
-        """
-        Figure out if a match happened
-        Criteria:
-        1. The swipe that just happened was to the right
-        2. The swipee has previously swiped right on the swiper
-        """
         try:
-            their_swipe_on_me = Swipe.objects.get(
-                swiper__id=swipee_id, swipee__id=my_id, event__id=eid
+            # Check to see if their squad swiped on our squad.
+            their_swipe = Swipe.objects.get(
+                swiper__id=their_sid, swipee__id=my_sid, event__id=eid
             )
-
+            if my_swipe.direction and their_swipe.direction:
+                match = Squad.objects.get(id=their_sid)
+            else:
+                match = None
         except Swipe.DoesNotExist:
-            their_swipe_on_me = None
+            match = None
+    else:
+        match = None
 
-        # the line below checks criteria 1 and 2
-        if my_direction and their_swipe_on_me and their_swipe_on_me.direction:
-            popup = 1
-            match = CustomUser.objects.get(id=their_swipe_on_me.swiper_id)
-
-        # Update users.
-        users = get_stack(request, eid)
+    # Get squads and users.
+    squads = get_stack(request, eid)
+    if squads:
+        # Get all the users of all the squads that are in the stack.
+        users = []
+        for squad in squads:
+            users += CustomUser.objects.filter(squad=squad)
+    else:
+        users = None
 
     return render(
-        request, "match.html", {"users": users, "popup": popup, "match": match}
+        request, "match.html", {"squads": squads, "users": users, "match": match}
     )
 
 
 @login_required
 def matches(request):
-    # My uid.
-    uid = request.user.id
-    uniq_events = set()
+    # My sid.
+    sid = request.user.squad.id
 
-    # The users that I swiped right on.
-    i_swiped_right = [x for x in Swipe.objects.filter(swiper__id=uid, direction=True)]
+    # The squads that my squad swiped right on.
+    i_swiped_right = [x for x in Swipe.objects.filter(swiper__id=sid, direction=True)]
 
-    # The users that swiped right on me.
+    # The squads that swiped right on my squad.
     they_swiped_right = [
-        x.swiper for x in Swipe.objects.filter(swipee__id=uid, direction=True)
+        x.swiper for x in Swipe.objects.filter(swipee__id=sid, direction=True)
     ]
 
     # The intersection of the above two.
+    uniq_events = set()
     matches = [x for x in i_swiped_right if x.swipee in they_swiped_right]
     matches.sort(key=lambda x: x.event.id)
     for match in matches:
@@ -250,28 +328,32 @@ def matches(request):
 
 @login_required
 def messages(request, squad1, squad2):
-    # We need to ensure that squad1 is the squad ID of the current user
-    # and that the user has matched with squad2
-    # because we don't want unauthorized people to access chat rooms
-    # We only need to check that squad1 is the current user's ID, not squad2
-    # because the links to the messages page always put the user's ID as the first
-    # parameter
-    uid = request.user.id
-    i_swiped_right = [x for x in Swipe.objects.filter(swiper__id=uid, direction=True)]
+    # My sid.
+    sid = request.user.squad.id
+
+    # The squads that my squad swiped right on.
+    i_swiped_right = [x for x in Swipe.objects.filter(swiper__id=sid, direction=True)]
+
+    # The squads that swiped right on my squad.
     they_swiped_right = [
-        x.swiper for x in Swipe.objects.filter(swipee__id=uid, direction=True)
+        x.swiper for x in Swipe.objects.filter(swipee__id=sid, direction=True)
     ]
-    matches = [
-        x.swipee.squad.id for x in i_swiped_right if x.swipee in they_swiped_right
-    ]
-    if squad1 != request.user.squad.id or squad2 not in matches:
+
+    # The intersection of the above two.
+    matches = [x.swipee.id for x in i_swiped_right if x.swipee in they_swiped_right]
+
+    if request.user.squad.id != squad1:
+        # If you do not belong to squad1, you do not have permission to view.
+        raise PermissionDenied
+    elif squad2 not in matches:
+        # If squad1 did not match with squad2, they cannot chat.
         raise PermissionDenied
     else:
-        base_url = "https://showup-nyc-messaging.herokuapp.com/"
+        # Have squad1 always be less than squad2.
         if squad1 > squad2:
             squad1, squad2 = squad2, squad1
-        # we need only 1 chat room between any two squads so we choose arbitrarily
-        # to only have squad1 < squad2
+
+        base_url = "https://showup-nyc-messaging.herokuapp.com/"
         return render(
             request, "messages.html", {"iframe_url": f"{base_url}{squad1}-{squad2}"}
         )
