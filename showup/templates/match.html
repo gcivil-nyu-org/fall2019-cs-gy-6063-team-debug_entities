@@ -6,19 +6,21 @@
 {% block content %}
 
 {% if squads %}
+{% with squads|first as swipee %}
   <section class="py-14 bg-white bg-between" style="background-image: url({% static 'dancing match.png' %}); background-position: center; background-repeat: no-repeat; background-size:cover;">
     <div class="container">
       <div class="row justify-content-center">
-        {% for squad in squads %}
           <div class="mr-1 lift col-12 col-md-10 col-lg-4 text-center" data-aos="fade-up">
-            {% for u in users %}
-              {% if u.squad.id == squad.id %}
-                <div class="my-5">
-                  <p>{% avatar u %}</p>
+                <div class="row-8">
+                  {% for u in users %}
+                    {% if u.squad.id == swipee.id %}
+                    <div class="col">
+                  {% avatar u %} &nbsp <a href="{% url 'user' u.id %}">{{ u.first_name }}</a><br><br>
+                    </div>
+                  {% endif %}
+                {% endfor %}
                 </div>
-
-                <h1 class="display-2 font-weight-bold"><a href="">{{ u.first_name }}</a></h1>
-
+                <div>
                 <form action="#" method="POST">
                   {% csrf_token %}
                   <input type="hidden" name="their_sid" value="{{ squad.id }}">
@@ -29,11 +31,9 @@
                     <i class="far fa-thumbs-up fa-3x"></i>
                   </button>
                 </form>
-              {% endif %}
-            {% endfor %}
           </div>
-        {% endfor %}
-        
+        {% endwith %}
+
       </div>
     </div>
   </section>

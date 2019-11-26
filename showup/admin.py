@@ -22,8 +22,6 @@ class CustomUserAdmin(UserAdmin):
                     "date_of_birth",
                     "gender",
                     "email",
-                    "interested",
-                    "going",
                     "bio",
                     "genres",
                     "squad",
