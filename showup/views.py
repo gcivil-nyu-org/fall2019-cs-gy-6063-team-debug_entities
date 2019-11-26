@@ -218,4 +218,4 @@ def matches(request):
 @login_required
 def settings(request):
     user = CustomUser.objects.get(id=request.user.id)
-    return render(request, "settings.html", {"user": request.user})
+    return render(request, "settings.html", {"user": user})
