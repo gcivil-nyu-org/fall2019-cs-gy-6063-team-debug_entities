@@ -411,19 +411,39 @@ class RequestsViewTests(TestCase):
             username=email, email=email, password=password, squad=squad_2
         )
 
-        # Login user two.
-        EmailAddress.objects.create(id=2, user=user, verified=True)
+        # Create and save user three.
+        email, password = "jkimmel@example.com", "heyhey123"
+        squad_3 = Squad.objects.create(id=3)
+        user = CustomUser.objects.create_user(
+            username=email, email=email, password=password, squad=squad_3
+        )
+
+        # Login user three.
+        EmailAddress.objects.create(id=3, user=user, verified=True)
         self.client.login(username=email, password=password)
 
     def test_requests_get(self):
         self.response = self.client.get(reverse("requests"))
         self.assertEqual(self.response.status_code, 200)
 
+    def test_requests_get_multiple(self):
+        # Create the request.
+        squad_1 = Squad.objects.get(id=1)
+        squad_3 = Squad.objects.get(id=3)
+        Request.objects.create(requester=squad_1, requestee=squad_3)
+
+        # Create the request.
+        squad_2 = Squad.objects.get(id=2)
+        Request.objects.create(requester=squad_2, requestee=squad_3)
+
+        self.response = self.client.get(reverse("requests"))
+        self.assertEqual(self.response.status_code, 200)
+
     def test_requests_accept(self):
         # Create the request.
         squad_1 = Squad.objects.get(id=1)
-        squad_2 = Squad.objects.get(id=2)
-        Request.objects.create(requester=squad_1, requestee=squad_2)
+        squad_3 = Squad.objects.get(id=3)
+        Request.objects.create(requester=squad_1, requestee=squad_3)
 
         # Create form data.
         data = {"accept": "", "their_sid": 1}
@@ -437,8 +457,8 @@ class RequestsViewTests(TestCase):
     def test_requests_deny(self):
         # Create the request.
         squad_1 = Squad.objects.get(id=1)
-        squad_2 = Squad.objects.get(id=2)
-        Request.objects.create(requester=squad_1, requestee=squad_2)
+        squad_3 = Squad.objects.get(id=3)
+        Request.objects.create(requester=squad_1, requestee=squad_3)
 
         # Create form data.
         data = {"deny": "", "their_sid": 1}
@@ -452,8 +472,8 @@ class RequestsViewTests(TestCase):
     def test_requests_malformed(self):
         # Create the request.
         squad_1 = Squad.objects.get(id=1)
-        squad_2 = Squad.objects.get(id=2)
-        Request.objects.create(requester=squad_1, requestee=squad_2)
+        squad_3 = Squad.objects.get(id=3)
+        Request.objects.create(requester=squad_1, requestee=squad_3)
 
         # Create form data.
         data = {"malformed": "", "their_sid": 1}
