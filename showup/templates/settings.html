@@ -6,36 +6,40 @@
         <div class="col-12 col-lg">
 
         <div class="form-group my-3">
-          <input type="email" name="email" class="form-control" placeholder="email address">
+          <input type="email" name="email" class="form-control" placeholder="email address" value={{user.email}}>
         </div>
 
         <div class="form-group my-3">
-          <input type="text" name="first_name" class="form-control" maxlength="30" placeholder="first name">
+          <input type="text" name="first_name" class="form-control" maxlength="30" placeholder="first name" value = {{user.first_name}}>
         </div>
 
         <div class="form-group my-3">
-          <input type="text" name="last_name" class="form-control" maxlength="150" placeholder="last name">
+          <input type="text" name="last_name" class="form-control" maxlength="150" placeholder="last name" value = {{user.last_name}}>
         </div>
 
         <div class="form-group my-3">
-          <input type="date" name="date_of_birth" class="form-control" placeholder="date of birth">
+          <input type="text" name="gender" class="form-control" maxlength="255" placeholder="gender" value = {{user.gender}}>
         </div>
 
         <div class="form-group my-3">
-          <input type="text" name="gender" class="form-control" maxlength="255" placeholder="gender">
+          <input type="password" name="password1" class="form-control" placeholder="password" id="password1">
         </div>
 
         <div class="form-group my-3">
-          <input type="password" name="password1" class="form-control" placeholder="password">
+          <input type="password" name="password2" class="form-control" placeholder="confirm password" id="password2">
         </div>
 
-        <div class="form-group my-3">
-          <input type="password" name="password2" class="form-control" placeholder="confirm password">
-        </div>
-
-        <button type="save" class="btn btn-block btn-primary shadow lift">Save</button>
+        <button type="save" class="btn btn-block btn-primary shadow lift" method = "POST" onclick="validate()">Save</button>
+        <button type="cancel" class="btn btn-block btn-primary shadow lift" method = "POST">Cancel</button>
         </div>
     </div>
 </form>
+<script>
+function validate() {
+    if(document.getElementById("password1").value != "" ){
+        document.getElementById("password2").required = true;
+    }
+}
+</script>
 {% endblock %}
              
