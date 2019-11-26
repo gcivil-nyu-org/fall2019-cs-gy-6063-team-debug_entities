@@ -177,11 +177,11 @@ def edit_squad(request, id):
 @login_required
 def requests(request):
     if request.method == "POST":
-        if "accept" in request.POST:
-            # Get my squad and their squad.
-            my_squad = request.user.squad
-            their_squad = Squad.objects.get(id=request.POST["their_sid"])
+        # Get my squad and their squad.
+        my_squad = request.user.squad
+        their_squad = Squad.objects.get(id=request.POST["their_sid"])
 
+        if "accept" in request.POST:
             # Get the request.
             r = Request.objects.get(requester=their_squad, requestee=my_squad)
 

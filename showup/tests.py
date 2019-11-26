@@ -434,6 +434,36 @@ class RequestsViewTests(TestCase):
         squad_size = CustomUser.objects.filter(squad=squad_1).count()
         self.assertEqual(squad_size, 2)
 
+    def test_requests_deny(self):
+        # Create the request.
+        squad_1 = Squad.objects.get(id=1)
+        squad_2 = Squad.objects.get(id=2)
+        Request.objects.create(requester=squad_1, requestee=squad_2)
+
+        # Create form data.
+        data = {"deny": "", "their_sid": 1}
+
+        # Send a POST request containing the form data.
+        self.client.post(reverse("requests"), data=data)
+
+        squad_size = CustomUser.objects.filter(squad=squad_1).count()
+        self.assertEqual(squad_size, 1)
+
+    def test_requests_malformed(self):
+        # Create the request.
+        squad_1 = Squad.objects.get(id=1)
+        squad_2 = Squad.objects.get(id=2)
+        Request.objects.create(requester=squad_1, requestee=squad_2)
+
+        # Create form data.
+        data = {"malformed": "", "their_sid": 1}
+
+        # Send a POST request containing the form data.
+        self.client.post(reverse("requests"), data=data)
+
+        squad_size = CustomUser.objects.filter(squad=squad_1).count()
+        self.assertEqual(squad_size, 1)
+
 
 class AuthenticatedViewTests(TestCase):
     def setUp(self):  # this logs in a test user for the subsequent test cases
