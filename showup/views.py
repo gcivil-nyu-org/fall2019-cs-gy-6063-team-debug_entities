@@ -230,7 +230,9 @@ def event_stack(request, eid):
     else:
         users = None
 
-    return render(request, "match.html", {"squads": squads, "users": users, "match": match})
+    return render(
+        request, "match.html", {"squads": squads, "users": users, "match": match}
+    )
 
 
 @login_required
@@ -263,7 +265,11 @@ def matches(request):
 
     print(uniq_sid)
 
-    return render(request, "matches.html", {"matches": matches, "events": uniq_events, "users": users})
+    return render(
+        request,
+        "matches.html",
+        {"matches": matches, "events": uniq_events, "users": users},
+    )
 
 
 @login_required
