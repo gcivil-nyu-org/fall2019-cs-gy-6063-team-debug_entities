@@ -397,7 +397,7 @@ class MatchesViewTests(TestCase):
 
 class RequestsViewTests(TestCase):
     def setUp(self):
-       # Create and save user one.
+        # Create and save user one.
         email, password = "jspringer@example.com", "heyhey123"
         squad_1 = Squad.objects.create(id=1)
         user = CustomUser.objects.create_user(
