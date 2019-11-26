@@ -15,6 +15,7 @@ urlpatterns = [
     path("s/<int:id>/edit", views.edit_squad, name="edit_squad"),
     path("<int:eid>/match", views.event_stack, name="event_stack"),
     path("avatar/", include("avatar.urls")),
+    path("settings", views.settings, name="settings"),
 ]
 
 if settings.DEBUG:
