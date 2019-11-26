@@ -38,6 +38,9 @@ class Concert(models.Model):
 
 
 class Squad(models.Model):
+    interested = models.ManyToManyField(Concert, related_name="interested", blank=True)
+    going = models.ManyToManyField(Concert, related_name="going", blank=True)
+
     def __str__(self):
         return str(self.id)
 
@@ -45,8 +48,6 @@ class Squad(models.Model):
 class CustomUser(AbstractUser):
     date_of_birth = models.DateField(null=True, blank=True)
     gender = models.CharField(max_length=255, blank=True)
-    interested = models.ManyToManyField(Concert, related_name="interested", blank=True)
-    going = models.ManyToManyField(Concert, related_name="going", blank=True)
     bio = models.TextField(max_length=500, default="", blank=True)
     swipes = models.ManyToManyField("self", through="Swipe", symmetrical=False)
     genres = models.ManyToManyField(Genre, related_name="fav_genres", blank=True)
@@ -59,12 +60,8 @@ class CustomUser(AbstractUser):
 
 
 class Swipe(models.Model):
-    swiper = models.ForeignKey(
-        CustomUser, on_delete=models.CASCADE, related_name="swiper"
-    )
-    swipee = models.ForeignKey(
-        CustomUser, on_delete=models.CASCADE, related_name="swipee"
-    )
+    swiper = models.ForeignKey(Squad, on_delete=models.CASCADE, related_name="swiper")
+    swipee = models.ForeignKey(Squad, on_delete=models.CASCADE, related_name="swipee")
     event = models.ForeignKey(Concert, on_delete=models.CASCADE, related_name="event")
     direction = models.BooleanField()
 
@@ -74,13 +71,27 @@ class Swipe(models.Model):
                 fields=["swiper", "swipee", "event"],
                 name=(
                     "You can only swipe on another particular person for a"
-                    "particular event once"
+                    "particular event once."
                 ),
             )
         ]
 
     def __str__(self):
         return (
-            f"Swiper: {self.swiper.email}, Swipee: {self.swipee.email}, "
-            f"Event: {self.event.id}, Direction: {self.direction}"
+            f"Swiper: {self.swiper.id}, "
+            f"Swipee: {self.swipee.id}, "
+            f"Event: {self.event.id}, "
+            f"Direction: {self.direction}"
         )
+
+
+class Request(models.Model):
+    requester = models.ForeignKey(
+        Squad, on_delete=models.CASCADE, related_name="requester"
+    )
+    requestee = models.ForeignKey(
+        Squad, on_delete=models.CASCADE, related_name="requestee"
+    )
+
+    def __str__(self):
+        return f"requester: {self.requester.id} requestee: {self.requestee.id}"

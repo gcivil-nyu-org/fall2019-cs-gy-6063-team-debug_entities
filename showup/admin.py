@@ -1,11 +1,11 @@
-from .models import Concert, CustomUser, Genre, Squad, Swipe
+from .models import Concert, CustomUser, Genre, Request, Squad, Swipe
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 
 
-class SwipeInline(admin.TabularInline):
-    model = Swipe
-    fk_name = "swiper"
+class ConcertAdmin(admin.ModelAdmin):
+    class Meta:
+        model = Concert
 
 
 class CustomUserAdmin(UserAdmin):
@@ -22,8 +22,6 @@ class CustomUserAdmin(UserAdmin):
                     "date_of_birth",
                     "gender",
                     "email",
-                    "interested",
-                    "going",
                     "bio",
                     "genres",
                     "squad",
@@ -31,18 +29,10 @@ class CustomUserAdmin(UserAdmin):
             },
         ),
     )
-    inlines = (SwipeInline,)
     add_fieldsets = fieldsets
 
     class Meta:
         model = CustomUser
-
-
-class SquadAdmin(admin.ModelAdmin):
-    readonly_fields = ("id",)
-
-    class Meta:
-        model = Squad
 
 
 class GenreAdmin(admin.ModelAdmin):
@@ -52,6 +42,31 @@ class GenreAdmin(admin.ModelAdmin):
         model = Genre
 
 
+class RequestAdmin(admin.ModelAdmin):
+    list_display = ["requester", "requestee"]
+
+    class Meta:
+        model = Request
+
+
+class SwipeInline(admin.TabularInline):
+    model = Swipe
+    fk_name = "swiper"
+
+
+class RequestInline(admin.TabularInline):
+    model = Request
+    fk_name = "requester"
+
+
+class SquadAdmin(admin.ModelAdmin):
+    inlines = (SwipeInline, RequestInline)
+    readonly_fields = ("id",)
+
+    class Meta:
+        model = Squad
+
+
 class SwipeAdmin(admin.ModelAdmin):
     list_display = ["swiper", "swipee", "event", "direction"]
 
@@ -59,13 +74,9 @@ class SwipeAdmin(admin.ModelAdmin):
         model = Swipe
 
 
-class ConcertAdmin(admin.ModelAdmin):
-    class Meta:
-        model = Concert
-
-
+admin.site.register(Concert, ConcertAdmin)
 admin.site.register(CustomUser, CustomUserAdmin)
 admin.site.register(Genre, GenreAdmin)
+admin.site.register(Request, RequestAdmin)
 admin.site.register(Squad, SquadAdmin)
 admin.site.register(Swipe, SwipeAdmin)
-admin.site.register(Concert, ConcertAdmin)

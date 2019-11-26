@@ -1,0 +1,9 @@
+{% extends 'header.html' %}
+{% block content %}
+<div class="container">
+    <div class="col-12">
+        <iframe src="{{ iframe_url }}" width="100%" style="border:none" class="myIframe"></iframe>                
+        <script type="text/javascript" language="javascript">$('.myIframe').css('height', $(window).height()+'px');</script>
+    </div>
+</div>
+{% endblock %}

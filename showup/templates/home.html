@@ -3,7 +3,17 @@
 {% block content %}
 
 {% if user.is_authenticated %}
-    <section class="pt-6 pt-md-8 pb-8 mb-md-8">
+<div class="text-center pt-7">
+<h2 class="font-weight-bold mb-0">
+  Howdy, {{ user.first_name }}.
+</h2>
+
+<!-- Text -->
+<h4 class="font-size-lg text-gray-700 mb-0">
+  Let's get you dancing ASAP.
+</h4>
+</div>
+    <section class="pt-6 pt-md-5 pb-8 mb-md-8">
         <div class="container">
           <div class="row">
             <div class="col-12">
@@ -12,14 +22,14 @@
                 <div class="col ml-n4">
 
                   <!-- Heading -->
-                  <h2 class="font-weight-bold mb-0">
+                  <!-- <h2 class="font-weight-bold mb-0">
                     Howdy, {{ user.first_name }}.
                   </h2>
 
                   <!-- Text -->
-                  <h4 class="font-size-lg text-gray-700 mb-0">
+                  <!-- <h4 class="font-size-lg text-gray-700 mb-0">
                     Let's get you dancing ASAP.
-                  </h4>
+                  </h4> -->
 
                 </div>
               </div> <!-- / .row -->
@@ -33,13 +43,13 @@
                     <div class="d-flex align-items-center">
                       <div class="mr-auto">
                         <h2 class="font-weight-bold mb-0">
-                          These are the {{ user.interested.count }} concerts I'm interested in.
+                          These are the {{ user.squad.interested.count }} concerts I'm interested in.
                         </h2>
                       </div>
                     </div>
                   </div>
 
-                  {% for interested in user.interested.all %}
+                  {% for interested in user.squad.interested.all %}
                   <div class="list-group-item pt-1">
                       <a class="btn btn-primary" style = "position:relative; left:700px; top:85px" href="{% url 'event_stack' interested.id %}">Matching Stack</a>
                       <div class="mr-4">
@@ -65,13 +75,13 @@
                       <div class="d-flex align-items-center">
                         <div class="mr-auto">
                           <h2 class="font-weight-bold mb-0">
-                            These are the {{ user.going.count }} concerts I'm going to.
+                            These are the {{ user.squad.going.count }} concerts I'm going to.
                           </h2>
                         </div>
                       </div>
                     </div>
 
-                    {% for going in user.going.all %}
+                    {% for going in user.squad.going.all %}
                     <div class="list-group-item pt-1">
                         <a class="btn btn-primary" style = "position:relative; left:700px; top:85px" href="{% url 'event_stack' going.id %}">Matching Stack</a>
                         <div class="mr-4">

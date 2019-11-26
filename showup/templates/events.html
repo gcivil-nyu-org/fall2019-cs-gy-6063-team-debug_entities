@@ -81,7 +81,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-9 mh-100 overflow-auto py-2">
+        <div class="col-9 mh-100 overflow-auto py-2" onscroll="SetScrollPosition()">
             <div class="card shadow">
                 <div class="card-body">
                     <h2 class="card-title text-center">Events</h2>
@@ -114,5 +114,19 @@
         </div> <!-- closes column that holds card with all events -->
     </div> <!-- closes row that holds everything -->
 </div>
+
+<script>
+  var position = 0;
+  var main_card = document.getElementsByClassName("col-9 mh-100 overflow-auto py-2")[0];
+  if (sessionStorage.getItem('scrollVertical')) {
+    position = sessionStorage.getItem('scrollVertical');
+  }
+  main_card.scrollTop = position;
+
+  function SetScrollPosition() {
+    scrollVertical = main_card.scrollTop;
+    sessionStorage.setItem('scrollVertical', scrollVertical);
+  }
+</script>
 
 {% endblock %}

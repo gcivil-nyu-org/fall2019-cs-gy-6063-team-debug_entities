@@ -2,10 +2,10 @@
 {% load avatar_tags %}
 {% load static %}
 {% block content %}
-<div style = "position:relative; top:20px">
-<center><h2>Let's talk, shall we?</h2></center>
+<div class="text-center pt-7">
+<h2>Let's talk, shall we?</h2>
 </div>
-<section class="pt-6 pt-md-8 pb-8 mb-md-8">
+<section class="pt-6 pt-md-5 pb-8 mb-md-8">
   <div class="container">
     <div class="row">
       <div class="col-12">
@@ -44,10 +44,19 @@
                     <div class="py-5">
 
                       <!-- Text -->
-                      <div class="text-gray-700">
-                        {% avatar match.swipee %} &nbsp {{ match.swipee.first_name }}
-                          <a style = "position:relative; left:500px" href="#">Message</a> &nbsp &nbsp
-                          <a style = "position:relative; left:550px" href="{% url 'user' match.swipee.id %}">User Profile</a>
+                      <div class="text-gray-700 row">
+                        {% for u in users %}
+                          {% if u.squad.id == match.swipee.id %}
+                        <div class="col">
+                          {% avatar u %} &nbsp <a href="{% url 'user' u.id %}">{{ u.first_name }}</a>
+                        </div>
+                        {% endif %}
+                      {% endfor %}
+                      </div>
+                        <div class="col text-right">
+                          <a style = "position:relative; top:26px" href="{% url 'messages' user.squad.id match.swipee.id %}">Message</a> &nbsp &nbsp &nbsp
+                          <a style = "position:relative; top:26px" href="{% url 'squad' match.swipee.id %}">View Profile</a>
+                        </div>
                       </div>
 
                     </div>
