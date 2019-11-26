@@ -48,7 +48,7 @@
                         {% for u in users %}
                           {% if u.squad.id == match.swipee.id %}
                         <div class="col">
-                          {% avatar u %} &nbsp {{ u.first_name }}
+                          {% avatar u %} &nbsp <a href="{% url 'user' u.id %}">{{ u.first_name }}</a>
                         </div>
                         {% endif %}
                       {% endfor %}
