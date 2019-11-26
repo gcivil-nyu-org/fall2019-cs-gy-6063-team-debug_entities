@@ -33,17 +33,19 @@
           <input type="password" name="password2" class="form-control" placeholder="confirm password" id="password2">
         </div>
 
-        <button type="save" class="btn btn-block btn-primary shadow lift" method = "POST" onclick="validate()">Save</button>
-        <button type="cancel" class="btn btn-block btn-primary shadow lift" method = "POST">Cancel</button>
+        <button type="submit" name = "save_button" class="btn btn-block btn-primary shadow lift" onclick="make_required()" value="save">Save</button>
+        <button type="reset" class="btn btn-block btn-primary shadow lift">Cancel</button>
         </div>
     </div>
 </form>
 <script>
-function validate() {
+
+function make_required() {
     if(document.getElementById("password1").value != "" ){
         document.getElementById("password2").required = true;
     }
 }
+
 </script>
 {% endblock %}
              
