@@ -8,10 +8,10 @@
         <div class="col-7">
             <div class="card shadow">
                 <div class="card-body pl-8">
-                    <h3 style="position:relative; top:60px">{% trans "Your current profile picture:" %}</h3><br><br><br>
-                    <p class="text-center">
-                    {% avatar user 100 %}
-                    </p><br>
+                    <h3 style="position:relative; top:60px">{% trans "Your current profile picture:" %}</h3>
+                    <p class="text-center pr-13">
+                    {% avatar user %}
+                    </p>
                     <!-- {% if not avatars %}
                         <h4 class="pt-3">{% trans "You haven't uploaded an avatar yet. Please upload one now." %}</h4>
                     {% else %}
@@ -22,7 +22,7 @@
                             <p>{% csrf_token %}<input type="submit" class="btn btn-primary" value="{% trans "Set Profile Picture" %}"></p>
                         </form>
                     {% endif %} -->
-                    <form class="text-left" enctype="multipart/form-data" method="POST" action="{% url 'avatar_add' %}">
+                    <form enctype="multipart/form-data" method="POST" action="{% url 'avatar_add' %}">
                         {{ upload_avatar_form.as_p }}
                         <p>{% csrf_token %}<input type="submit" class="btn btn-primary" value="{% trans "Upload" %}" />
                         <!-- {% if avatars %}
