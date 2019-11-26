@@ -1,39 +1,40 @@
 {% extends "header.html" %}
 {% block content %}
-<div class="form-row">
-              <div class="col-12 col-lg">
+<form class="signup" method="POST" action="{% url 'account_signup' %}">
+    <div class="form-row">
+        <div class="col-12 col-lg">
 
-                <div class="form-group my-3">
-                  <input type="email" name="email" class="form-control" placeholder="email address">
-                </div>
+        <div class="form-group my-3">
+          <input type="email" name="email" class="form-control" placeholder="email address">
+        </div>
 
-                <div class="form-group my-3">
-                  <input type="text" name="first_name" class="form-control" maxlength="30" placeholder="first name">
-                </div>
+        <div class="form-group my-3">
+          <input type="text" name="first_name" class="form-control" maxlength="30" placeholder="first name">
+        </div>
 
-                <div class="form-group my-3">
-                  <input type="text" name="last_name" class="form-control" maxlength="150" placeholder="last name">
-                </div>
+        <div class="form-group my-3">
+          <input type="text" name="last_name" class="form-control" maxlength="150" placeholder="last name">
+        </div>
 
-                <div class="form-group my-3">
-                  <input type="date" name="date_of_birth" class="form-control" placeholder="date of birth">
-                </div>
+        <div class="form-group my-3">
+          <input type="date" name="date_of_birth" class="form-control" placeholder="date of birth">
+        </div>
 
-                <div class="form-group my-3">
-                  <input type="text" name="gender" class="form-control" maxlength="255" placeholder="gender">
-                </div>
+        <div class="form-group my-3">
+          <input type="text" name="gender" class="form-control" maxlength="255" placeholder="gender">
+        </div>
 
-                <div class="form-group my-3">
-                  <input type="password" name="password1" class="form-control" placeholder="password">
-                </div>
+        <div class="form-group my-3">
+          <input type="password" name="password1" class="form-control" placeholder="password">
+        </div>
 
-                <div class="form-group my-3">
-                  <input type="password" name="password2" class="form-control" placeholder="confirm password">
-                </div>
+        <div class="form-group my-3">
+          <input type="password" name="password2" class="form-control" placeholder="confirm password">
+        </div>
 
-                <button type="save" class="btn btn-block btn-primary shadow lift">Save</button>
-              </div>
-</div>
-
+        <button type="save" class="btn btn-block btn-primary shadow lift">Save</button>
+        </div>
+    </div>
+</form>
 {% endblock %}
              
