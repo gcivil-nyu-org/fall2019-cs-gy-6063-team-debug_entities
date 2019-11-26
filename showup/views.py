@@ -176,6 +176,41 @@ def edit_squad(request, id):
 
 @login_required
 def requests(request):
+    if request.method == "POST":
+        if "accept" in request.POST:
+            # Get my squad and their squad.
+            my_squad = request.user.squad
+            their_squad = Squad.objects.get(id=request.POST["their_sid"])
+
+            # Get the request.
+            r = Request.objects.get(requester=their_squad, requestee=my_squad)
+
+            # Join the squad that has a smaller id.
+            if their_squad.id < my_squad.id:
+                my_squad, their_squad = their_squad, my_squad
+
+            # Get their members.
+            their_members = CustomUser.objects.filter(squad=their_squad)
+
+            # Merge squads.
+            for member in their_members:
+                member.squad = my_squad
+                member.save()
+
+            # Delete their old squad.
+            Squad.objects.get(id=their_squad.id).delete()
+
+            # Delete the request.
+            r.delete()
+        elif "deny" in request.POST:
+            # Get the request.
+            r = Request.objects.filter(requester=their_squad, requestee=my_squad)
+
+            # Delete the request.
+            r.delete()
+        else:
+            raise PermissionDenied
+
     # Get all the squads that requested to join this squad.
     squads = Request.objects.filter(requestee=request.user.squad)
     squads = [x.requester for x in squads]
@@ -188,9 +223,7 @@ def requests(request):
     else:
         users = None
 
-    return render(
-        request, "requests.html", {"squads": squads, "users": users}
-    )
+    return render(request, "requests.html", {"squads": squads, "users": users})
 
 
 def get_stack(request, eid):
