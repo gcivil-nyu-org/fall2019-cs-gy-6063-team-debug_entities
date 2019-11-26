@@ -1,6 +1,6 @@
 import datetime
 
-from .models import Concert, CustomUser, Genre, Squad, Swipe
+from .models import Concert, CustomUser, Genre, Request, Squad, Swipe
 from allauth.account.admin import EmailAddress
 from django.test import Client, TestCase
 from django.urls import reverse
@@ -264,17 +264,6 @@ class EditSquadViewTests(TestCase):
             username=email, email=email, password=password, squad=squad
         )
 
-    def test_editsquad_basic(self):
-        # Create form data.
-        data = {"add": "", "email": "jfallon@example.com"}
-
-        # Send a POST request containing the form data.
-        self.client.post(reverse("edit_squad", kwargs={"id": 1}), data=data)
-
-        # Ensure the POST request was successful.
-        user = CustomUser.objects.get(username="jfallon@example.com")
-        self.assertEqual(user.squad.id, 1)
-
     def test_editsquad_already_in_squad(self):
         # Create form data.
         data = {"add": "", "email": "jspringer@example.com"}
@@ -298,25 +287,30 @@ class EditSquadViewTests(TestCase):
         self.assertEqual(users.count(), 1)
 
     def test_editsquad_add_leave(self):
-        # Create form data.
+        # jspringer@example.com requests jfallon@example.com to join their squad.
         data = {"add": "", "email": "jfallon@example.com"}
-
-        # Send a POST request containing the form data.
         self.client.post(reverse("edit_squad", kwargs={"id": 1}), data=data)
+        users = CustomUser.objects.filter(squad=1)
+        self.assertEqual(users.count(), 1)
 
-        # Ensure the POST request was successful.
+        # jfallon@example.com requests jspringer@example.com to join their squad.
+        requester = Squad.objects.get(id=2)
+        requestee = Squad.objects.get(id=1)
+        Request.objects.create(requester=requester, requestee=requestee)
+
+        # jspringer@example.com requests jfallon@example.com to join their squad.
+        data = {"add": "", "email": "jfallon@example.com"}
+        self.client.post(reverse("edit_squad", kwargs={"id": 1}), data=data)
         users = CustomUser.objects.filter(squad=1)
         self.assertEqual(users.count(), 2)
 
-        # Create form data.
+        # jspringer@example.com leaves their squad.
         data = {"leave": ""}
-
-        # Send a POST request containing the form data.
         self.client.post(reverse("edit_squad", kwargs={"id": 1}), data=data)
 
         # Ensure the POST request was successful.
-        users = CustomUser.objects.filter(squad=1)
-        self.assertEqual(users.count(), 1)
+        user = CustomUser.objects.get(squad=1)
+        self.assertEqual(user.email, "jfallon@example.com")
 
     def test_editsquad_leave_one(self):
         # Create form data.
@@ -399,6 +393,96 @@ class MatchesViewTests(TestCase):
             "https://showup-nyc-messaging.herokuapp.com/1-2",
         )  # test that the view correctly puts the smaller squad ID first
         self.assertEqual(self.response.status_code, 200)
+
+
+class RequestsViewTests(TestCase):
+    def setUp(self):
+        # Create and save user one.
+        email, password = "jspringer@example.com", "heyhey123"
+        squad_1 = Squad.objects.create(id=1)
+        user = CustomUser.objects.create_user(
+            username=email, email=email, password=password, squad=squad_1
+        )
+
+        # Create and save user two.
+        email, password = "jfallon@example.com", "heyhey123"
+        squad_2 = Squad.objects.create(id=2)
+        user = CustomUser.objects.create_user(
+            username=email, email=email, password=password, squad=squad_2
+        )
+
+        # Create and save user three.
+        email, password = "jkimmel@example.com", "heyhey123"
+        squad_3 = Squad.objects.create(id=3)
+        user = CustomUser.objects.create_user(
+            username=email, email=email, password=password, squad=squad_3
+        )
+
+        # Login user three.
+        EmailAddress.objects.create(id=3, user=user, verified=True)
+        self.client.login(username=email, password=password)
+
+    def test_requests_get(self):
+        self.response = self.client.get(reverse("requests"))
+        self.assertEqual(self.response.status_code, 200)
+
+    def test_requests_get_multiple(self):
+        # Create the request.
+        squad_1 = Squad.objects.get(id=1)
+        squad_3 = Squad.objects.get(id=3)
+        Request.objects.create(requester=squad_1, requestee=squad_3)
+
+        # Create the request.
+        squad_2 = Squad.objects.get(id=2)
+        Request.objects.create(requester=squad_2, requestee=squad_3)
+
+        self.response = self.client.get(reverse("requests"))
+        self.assertEqual(self.response.status_code, 200)
+
+    def test_requests_accept(self):
+        # Create the request.
+        squad_1 = Squad.objects.get(id=1)
+        squad_3 = Squad.objects.get(id=3)
+        Request.objects.create(requester=squad_1, requestee=squad_3)
+
+        # Create form data.
+        data = {"accept": "", "their_sid": 1}
+
+        # Send a POST request containing the form data.
+        self.client.post(reverse("requests"), data=data)
+
+        squad_size = CustomUser.objects.filter(squad=squad_1).count()
+        self.assertEqual(squad_size, 2)
+
+    def test_requests_deny(self):
+        # Create the request.
+        squad_1 = Squad.objects.get(id=1)
+        squad_3 = Squad.objects.get(id=3)
+        Request.objects.create(requester=squad_1, requestee=squad_3)
+
+        # Create form data.
+        data = {"deny": "", "their_sid": 1}
+
+        # Send a POST request containing the form data.
+        self.client.post(reverse("requests"), data=data)
+
+        squad_size = CustomUser.objects.filter(squad=squad_1).count()
+        self.assertEqual(squad_size, 1)
+
+    def test_requests_malformed(self):
+        # Create the request.
+        squad_1 = Squad.objects.get(id=1)
+        squad_3 = Squad.objects.get(id=3)
+        Request.objects.create(requester=squad_1, requestee=squad_3)
+
+        # Create form data.
+        data = {"malformed": "", "their_sid": 1}
+
+        # Send a POST request containing the form data.
+        self.client.post(reverse("requests"), data=data)
+
+        squad_size = CustomUser.objects.filter(squad=squad_1).count()
+        self.assertEqual(squad_size, 1)
 
 
 class AuthenticatedViewTests(TestCase):

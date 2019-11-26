@@ -83,3 +83,15 @@ class Swipe(models.Model):
             f"Event: {self.event.id}, "
             f"Direction: {self.direction}"
         )
+
+
+class Request(models.Model):
+    requester = models.ForeignKey(
+        Squad, on_delete=models.CASCADE, related_name="requester"
+    )
+    requestee = models.ForeignKey(
+        Squad, on_delete=models.CASCADE, related_name="requestee"
+    )
+
+    def __str__(self):
+        return f"requester: {self.requester.id} requestee: {self.requestee.id}"

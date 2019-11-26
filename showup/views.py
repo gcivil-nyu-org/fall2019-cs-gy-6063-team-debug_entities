@@ -1,5 +1,5 @@
 from .forms import CustomUserChangeForm, SquadForm
-from .models import Concert, CustomUser, Genre, Squad, Swipe
+from .models import Concert, CustomUser, Genre, Request, Squad, Swipe
 from allauth.account.admin import EmailAddress
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
@@ -116,8 +116,6 @@ def edit_squad(request, id):
                             {"form": form, "squad_size": squad_size},
                         )
 
-                    their_members = CustomUser.objects.filter(squad=their_squad)
-
                 except CustomUser.DoesNotExist:
                     # TODO: Output some sort of message.
                     return render(
@@ -126,13 +124,31 @@ def edit_squad(request, id):
                         {"form": form, "squad_size": squad_size},
                     )
 
-                # Merge squads.
-                for member in their_members:
-                    member.squad = my_squad
-                    member.save()
+                # Check to see if a request already exists.
+                request = Request.objects.filter(
+                    requester=their_squad, requestee=my_squad
+                )
+                if request.exists():
+                    # Join the squad that has a smaller id.
+                    if their_squad.id < my_squad.id:
+                        my_squad, their_squad = their_squad, my_squad
 
-                # Delete their old squad.
-                Squad.objects.get(id=their_squad.id).delete()
+                    # Get their members.
+                    their_members = CustomUser.objects.filter(squad=their_squad)
+
+                    # Merge squads.
+                    for member in their_members:
+                        member.squad = my_squad
+                        member.save()
+
+                    # Delete their old squad.
+                    Squad.objects.get(id=their_squad.id).delete()
+
+                    # Delete the request.
+                    request.delete()
+                else:
+                    # Create a request.
+                    Request.objects.create(requester=my_squad, requestee=their_squad)
 
                 return redirect(reverse("squad", kwargs={"id": my_squad.id}))
 
@@ -156,6 +172,58 @@ def edit_squad(request, id):
 
     else:
         raise PermissionDenied
+
+
+@login_required
+def requests(request):
+    if request.method == "POST":
+        # Get my squad and their squad.
+        my_squad = request.user.squad
+        their_squad = Squad.objects.get(id=request.POST["their_sid"])
+
+        if "accept" in request.POST:
+            # Get the request.
+            r = Request.objects.get(requester=their_squad, requestee=my_squad)
+
+            # Join the squad that has a smaller id.
+            if their_squad.id < my_squad.id:
+                my_squad, their_squad = their_squad, my_squad
+
+            # Get their members.
+            their_members = CustomUser.objects.filter(squad=their_squad)
+
+            # Merge squads.
+            for member in their_members:
+                member.squad = my_squad
+                member.save()
+
+            # Delete their old squad.
+            Squad.objects.get(id=their_squad.id).delete()
+
+            # Delete the request.
+            r.delete()
+        elif "deny" in request.POST:
+            # Get the request.
+            r = Request.objects.filter(requester=their_squad, requestee=my_squad)
+
+            # Delete the request.
+            r.delete()
+        else:
+            raise PermissionDenied
+
+    # Get all the squads that requested to join this squad.
+    squads = Request.objects.filter(requestee=request.user.squad)
+    squads = [x.requester for x in squads]
+
+    if squads:
+        # Get all the users of all the squads that requested to join this squad.
+        users = []
+        for squad in squads:
+            users += CustomUser.objects.filter(squad=squad)
+    else:
+        users = None
+
+    return render(request, "requests.html", {"squads": squads, "users": users})
 
 
 def get_stack(request, eid):

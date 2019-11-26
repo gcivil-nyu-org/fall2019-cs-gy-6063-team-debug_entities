@@ -6,37 +6,37 @@
 {% block content %}
 
 {% if squads %}
-{% with squads|first as swipee %}
-  <section class="py-14 bg-white bg-between" style="background-image: url({% static 'dancing match.png' %}); background-position: center; background-repeat: no-repeat; background-size:cover;">
-    <div class="container">
-      <div class="row justify-content-center">
+  {% with squads|first as swipee %}
+    <section class="py-14 bg-white bg-between" style="background-image: url({% static 'dancing match.png' %}); background-position: center; background-repeat: no-repeat; background-size:cover;">
+      <div class="container">
+        <div class="row justify-content-center">
           <div class="mr-1 lift col-12 col-md-10 col-lg-4 text-center" data-aos="fade-up">
-                <div class="row-8">
-                  {% for u in users %}
-                    {% if u.squad.id == swipee.id %}
-                    <div class="col">
-                  {% avatar u %} &nbsp <a href="{% url 'user' u.id %}">{{ u.first_name }}</a><br><br>
-                    </div>
-                  {% endif %}
-                {% endfor %}
-                </div>
-                <div>
-                <form action="#" method="POST">
-                  {% csrf_token %}
-                  <input type="hidden" name="their_sid" value="{{ squad.id }}">
-                  <button class="btn mr-1 lift" type="submit" name="match" value="False">
-                    <i class="far fa-thumbs-down fa-3x"></i>
-                  </button>
-                  <button class="btn mr-1 lift" type="submit" name="match" value="True">
-                    <i class="far fa-thumbs-up fa-3x"></i>
-                  </button>
-                </form>
+            <div class="row-8">
+              {% for u in users %}
+                {% if u.squad.id == swipee.id %}
+                  <div class="col">
+                    {% avatar u %} &nbsp <a href="{% url 'user' u.id %}">{{ u.first_name }}</a><br><br>
+                  </div>
+                {% endif %}
+              {% endfor %}
+            </div>
+            <div>
+              <form action="#" method="POST">
+                {% csrf_token %}
+                <input type="hidden" name="their_sid" value="{{ swipee.id }}">
+                <button class="btn mr-1 lift" type="submit" name="match" value="False">
+                  <i class="far fa-thumbs-down fa-3x"></i>
+                </button>
+                <button class="btn mr-1 lift" type="submit" name="match" value="True">
+                  <i class="far fa-thumbs-up fa-3x"></i>
+                </button>
+              </form>
+            </div>
           </div>
-        {% endwith %}
-
+        </div>
       </div>
-    </div>
-  </section>
+    </section>
+  {% endwith %}
 
 {% else %}
   <div class="col-12 mt-10 text-center">
@@ -52,13 +52,13 @@
           <h3 class="modal-title">Congratulations!</h3>
         </div>
         <div class="modal-body">
-          <h4>You matched with {{match.first_name}}.</h4>
+          <h4>You matched with this squad!</h4>
         </div>
         <div class="modal-footer">
-          {% if user.squad.id < match.squad.id %}
-            <a class="btn btn-primary" href="{% url 'messages' user.squad.id match.id %}">Message</a>
-          {% else %}
+          {% if user.squad.id < match.id %}
             <a class="btn btn-primary" href="{% url 'messages' match.id user.squad.id %}">Message</a>
+          {% else %}
+            <a class="btn btn-primary" href="{% url 'messages' user.squad.id match.id %}">Message</a>
           {% endif %}
           <button type="button" class="btn btn-secondary">Keep Swiping</button>
         </div>
