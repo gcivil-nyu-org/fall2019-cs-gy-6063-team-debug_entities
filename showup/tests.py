@@ -107,9 +107,7 @@ class RequestModelTests(TestCase):
         requestee = Squad.objects.create(id=2)
         r = Request.objects.create(requester=requester, requestee=requestee)
 
-        expected_output = (
-            f"requester: {requester.id} requestee: {requestee.id}"
-        )
+        expected_output = f"requester: {requester.id} requestee: {requestee.id}"
         self.assertEqual(r.__str__(), expected_output)
 
 
