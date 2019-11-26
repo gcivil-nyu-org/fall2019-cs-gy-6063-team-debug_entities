@@ -298,7 +298,9 @@ def event_stack(request, eid):
     else:
         users = None
 
-    return render(request, "match.html", {"squads": squads, "users": users, "match": match})
+    return render(
+        request, "match.html", {"squads": squads, "users": users, "match": match}
+    )
 
 
 @login_required
