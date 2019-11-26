@@ -395,6 +395,46 @@ class MatchesViewTests(TestCase):
         self.assertEqual(self.response.status_code, 200)
 
 
+class RequestsViewTests(TestCase):
+    def setUp(self):
+       # Create and save user one.
+        email, password = "jspringer@example.com", "heyhey123"
+        squad_1 = Squad.objects.create(id=1)
+        user = CustomUser.objects.create_user(
+            username=email, email=email, password=password, squad=squad_1
+        )
+
+        # Create and save user two.
+        email, password = "jfallon@example.com", "heyhey123"
+        squad_2 = Squad.objects.create(id=2)
+        user = CustomUser.objects.create_user(
+            username=email, email=email, password=password, squad=squad_2
+        )
+
+        # Login user two.
+        EmailAddress.objects.create(id=2, user=user, verified=True)
+        self.client.login(username=email, password=password)
+
+    def test_requests_get(self):
+        self.response = self.client.get(reverse("requests"))
+        self.assertEqual(self.response.status_code, 200)
+
+    def test_requests_accept(self):
+        # Create the request.
+        squad_1 = Squad.objects.get(id=1)
+        squad_2 = Squad.objects.get(id=2)
+        Request.objects.create(requester=squad_1, requestee=squad_2)
+
+        # Create form data.
+        data = {"accept": "", "their_sid": 1}
+
+        # Send a POST request containing the form data.
+        self.client.post(reverse("requests"), data=data)
+
+        squad_size = CustomUser.objects.filter(squad=squad_1).count()
+        self.assertEqual(squad_size, 2)
+
+
 class AuthenticatedViewTests(TestCase):
     def setUp(self):  # this logs in a test user for the subsequent test cases
         username = "testuser"

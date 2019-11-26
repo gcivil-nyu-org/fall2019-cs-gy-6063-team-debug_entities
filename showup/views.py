@@ -183,7 +183,7 @@ def requests(request):
             their_squad = Squad.objects.get(id=request.POST["their_sid"])
 
             # Get the request.
-            request = Request.objects.filter(requester=their_squad, requestee=my_squad)
+            r = Request.objects.get(requester=their_squad, requestee=my_squad)
 
             # Join the squad that has a smaller id.
             if their_squad.id < my_squad.id:
@@ -201,13 +201,13 @@ def requests(request):
             Squad.objects.get(id=their_squad.id).delete()
 
             # Delete the request.
-            request.delete()
+            r.delete()
         elif "deny" in request.POST:
             # Get the request.
-            request = Request.objects.filter(requester=their_squad, requestee=my_squad)
+            r = Request.objects.filter(requester=their_squad, requestee=my_squad)
 
             # Delete the request.
-            request.delete()
+            r.delete()
         else:
             raise PermissionDenied
 
