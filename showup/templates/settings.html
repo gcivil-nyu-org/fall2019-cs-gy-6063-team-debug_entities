@@ -1,6 +1,7 @@
 {% extends "header.html" %}
 {% block content %}
-<form class="signup" method="POST" action="{% url 'account_signup' %}">
+<form class="settings" method="POST" action="{% url 'settings' %}">
+    {% csrf_token %}
     <div class="form-row">
         <div class="col-12 col-lg">
 
