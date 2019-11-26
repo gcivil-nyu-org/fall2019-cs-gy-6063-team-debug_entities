@@ -48,7 +48,7 @@
                         {% for u in users %}
                           {% if u.squad.id == match.swipee.id %}
                         <div class="col">
-                          {% avatar match.swipee %} &nbsp {{ match.swipe.first_name }}
+                          {% avatar u %} &nbsp {{ u.first_name }}
                         </div>
                         {% endif %}
                       {% endfor %}
