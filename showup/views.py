@@ -213,3 +213,8 @@ def matches(request):
         uniq_events.add(match.event)
 
     return render(request, "matches.html", {"matches": matches, "events": uniq_events})
+
+
+@login_required
+def settings(request):
+    return render(request,"settings.html",{user:"user"})
