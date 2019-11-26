@@ -195,8 +195,8 @@ def get_stack(request, eid):
 def event_stack(request, eid):
     if request.method == "POST":
         # Create a Swipe object.
-        my_sid = request.squad.id
-        their_sid = request.POST["swipee_id"]
+        my_sid = request.user.squad.id
+        their_sid = request.POST["their_sid"]
         direction = True if request.POST["match"] == "True" else False
 
         my_swipe = Swipe.objects.create(
@@ -206,20 +206,31 @@ def event_stack(request, eid):
             direction=direction,
         )
 
-        # Check to see if their squad swiped on our squad.
-        their_swipe = Swipe.objects.filter(
-            swiper__id=their_sid, swipee__id=my_sid, event__id=eid
-        )
-        if their_swipe.exists():
+        try:
+            # Check to see if their squad swiped on our squad.
+            their_swipe = Swipe.objects.get(
+                swiper__id=their_sid, swipee__id=my_sid, event__id=eid
+            )
             if my_swipe.direction and their_swipe.direction:
                 match = Squad.objects.get(id=their_sid)
             else:
                 match = None
+        except Swipe.DoesNotExist:
+            match = None
     else:
         match = None
 
+    # Get squads and users.
     squads = get_stack(request, eid)
-    return render(request, "match.html", {"squads": squads, "match": match})
+    if squads:
+        # Get all the users of all the squads that are in the stack.
+        users = []
+        for squad in squads:
+            users += CustomUser.objects.filter(squad=squad)
+    else:
+        users = None
+
+    return render(request, "match.html", {"squads": squads, "users": users, "match": match})
 
 
 @login_required
