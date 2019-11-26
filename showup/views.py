@@ -217,4 +217,4 @@ def matches(request):
 
 @login_required
 def settings(request):
-    return render(request,"settings.html",{user:"user"})
+    return render(request, "settings.html", {user: "user"})
