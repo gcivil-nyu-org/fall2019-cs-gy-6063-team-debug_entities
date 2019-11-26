@@ -248,12 +248,22 @@ def matches(request):
 
     # The intersection of the above two.
     uniq_events = set()
+    uniq_sid = set()
+    users = []
     matches = [x for x in i_swiped_right if x.swipee in they_swiped_right]
     matches.sort(key=lambda x: x.event.id)
     for match in matches:
         uniq_events.add(match.event)
+        uniq_sid.add(match.swipee)
 
-    return render(request, "matches.html", {"matches": matches, "events": uniq_events})
+    for id in uniq_sid:
+        users += CustomUser.objects.filter(squad=id)
+
+    print(users)
+
+    print(uniq_sid)
+
+    return render(request, "matches.html", {"matches": matches, "events": uniq_events, "users": users})
 
 
 @login_required
