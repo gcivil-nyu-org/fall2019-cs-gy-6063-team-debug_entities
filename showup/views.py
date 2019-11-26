@@ -329,10 +329,6 @@ def matches(request):
     for id in uniq_sid:
         users += CustomUser.objects.filter(squad=id)
 
-    print(users)
-
-    print(uniq_sid)
-
     return render(
         request,
         "matches.html",
