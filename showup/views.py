@@ -263,8 +263,8 @@ def get_stack(request, eid):
 def event_stack(request, eid):
     if request.method == "POST":
         # Create a Swipe object.
-        my_sid = request.squad.id
-        their_sid = request.POST["swipee_id"]
+        my_sid = request.user.squad.id
+        their_sid = request.POST["their_sid"]
         direction = True if request.POST["match"] == "True" else False
 
         my_swipe = Swipe.objects.create(

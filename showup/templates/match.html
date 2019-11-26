@@ -1,50 +1,50 @@
 {% extends 'header.html' %}
+
 {% load avatar_tags %}
 {% load static %}
+
 {% block content %}
 
-
-{% if users %}
-{% with users|first as swipee %}
-<section class="py-14 bg-white bg-between" style="background-image: url({% static 'dancing match.png' %}); background-position: center; background-repeat: no-repeat; background-size:cover;">
-  <div class="container">
-    <div class="row justify-content-center">
-      <div class="mr-1 lift col-12 col-md-10 col-lg-4 text-center" data-aos="fade-up">
-
-        <div class="my-5">
-          {% avatar swipee %}
-        </div>
-
-        <!-- Heading -->
-        <h1 class="display-2 font-weight-bold"><a href="{% url 'user' swipee.id %}">{{ swipee.first_name }}</a></h1>
-
-        <!-- Text -->
-        <p class="font-size-lg text-muted mb-6 mb-md-8">{{ swipee.bio }}</p>
-
-        <form action="#" method="POST">
-          {% csrf_token %}
-          <input type="hidden" name="swipee_id" value="{{ swipee.id }}">
-          <button class="btn mr-1 lift" type="submit" name="match" value="False">
-            <i class="far fa-thumbs-down fa-3x"></i>
-          </button>
-          <button class="btn mr-1 lift" type="submit" name="match" value="True">
-              <i class="far fa-thumbs-up fa-3x"></i>
-            </button>
-        </form>
+{% if squads %}
+{% with squads|first as swipee %}
+  <section class="py-14 bg-white bg-between" style="background-image: url({% static 'dancing match.png' %}); background-position: center; background-repeat: no-repeat; background-size:cover;">
+    <div class="container">
+      <div class="row justify-content-center">
+          <div class="mr-1 lift col-12 col-md-10 col-lg-4 text-center" data-aos="fade-up">
+                <div class="row-8">
+                  {% for u in users %}
+                    {% if u.squad.id == swipee.id %}
+                    <div class="col">
+                  {% avatar u %} &nbsp <a href="{% url 'user' u.id %}">{{ u.first_name }}</a><br><br>
+                    </div>
+                  {% endif %}
+                {% endfor %}
+                </div>
+                <div>
+                <form action="#" method="POST">
+                  {% csrf_token %}
+                  <input type="hidden" name="their_sid" value="{{ squad.id }}">
+                  <button class="btn mr-1 lift" type="submit" name="match" value="False">
+                    <i class="far fa-thumbs-down fa-3x"></i>
+                  </button>
+                  <button class="btn mr-1 lift" type="submit" name="match" value="True">
+                    <i class="far fa-thumbs-up fa-3x"></i>
+                  </button>
+                </form>
+          </div>
+        {% endwith %}
 
       </div>
-    </div> <!-- / .row -->
-  </div> <!-- / .container -->
-</section>
-{% endwith %}
-  {% else %}
+    </div>
+  </section>
+
+{% else %}
   <div class="col-12 mt-10 text-center">
     <img src="{% static 'lonely.jpg' %}">
   </div>
-  {% endif %}
+{% endif %}
 
-<!-- Pop-up Logic -->
-{% if popup == 1 %}
+{% if match %}
   <div class="modal" id="myModal" data-toggle="modal" data-target="#myModal">
     <div class="modal-dialog modal-lg">
       <div class="modal-content">
@@ -52,10 +52,14 @@
           <h3 class="modal-title">Congratulations!</h3>
         </div>
         <div class="modal-body">
-          <h4>You matched with {{match.first_name}}.</h4>
+          <h4>You matched with this squad!</h4>
         </div>
         <div class="modal-footer">
-          <a class="btn btn-primary" href="{% url 'messages' user.squad.id match.squad.id %}">Message</a>
+          {% if user.squad.id < match.id %}
+            <a class="btn btn-primary" href="{% url 'messages' user.squad.id match.id %}">Message</a>
+          {% else %}
+            <a class="btn btn-primary" href="{% url 'messages' match.id user.squad.id %}">Message</a>
+          {% endif %}
           <button type="button" class="btn btn-secondary">Keep Swiping</button>
         </div>
       </div>
@@ -63,10 +67,11 @@
   </div>
 {% endif %}
 
-  <script>
-      $(document).ready(function(){
-            $('.modal').modal({dismissible: false,});
-            $('.modal').modal('open');
-      });
-  </script>
+<script>
+  $(document).ready(function(){
+    $('.modal').modal({dismissible: false,});
+    $('.modal').modal('open');
+  });
+</script>
+
 {% endblock %}
