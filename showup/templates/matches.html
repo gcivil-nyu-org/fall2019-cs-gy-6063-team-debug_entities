@@ -3,7 +3,7 @@
 {% load static %}
 {% block content %}
 <div class="text-center pt-7">
-<h2>Let's talk, shall we?</h2>
+<h2>Hey {{ user.first_name }} Let's talk, shall we?</h2>
 </div>
 <section class="pt-6 pt-md-5 pb-8 mb-md-8">
   <div class="container">
@@ -68,7 +68,7 @@
                 </div>
                 {% endfor %}
               {% else %}
-                <center><h3>No matches. Let's get swiping!</h3></center>
+                <center><h3>You have no matches. Let's get swiping!</h3></center>
               {% endif %}
             </div>
           </div>
