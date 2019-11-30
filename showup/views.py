@@ -1,4 +1,4 @@
-from .forms import CustomUserChangeForm, SquadForm
+from .forms import CustomUserChangeForm, SquadForm, CustomUserForm
 from .models import Concert, CustomUser, Genre, Squad, Swipe
 from allauth.account.admin import EmailAddress
 from django.contrib.auth.decorators import login_required
@@ -217,6 +217,13 @@ def matches(request):
 
 @login_required
 def settings(request):
-    user = CustomUser.objects.get(id=request.user.id)
-    print(str(user))
-    return render(request, "settings.html", {"user": user})
+    if request.POST.get("save_button") == "save":
+        form = CustomUserForm(request.POST or None, instance=request.user)
+        if form.is_valid():
+            try:
+                form.save(request)
+            except Exception as ex:
+                print("hit exception")
+                print(ex)
+
+    return render(request, "settings.html", {"user": request.user})
