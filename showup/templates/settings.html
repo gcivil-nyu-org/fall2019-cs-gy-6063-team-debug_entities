@@ -34,10 +34,6 @@
                         </div>
 
                         <div class="form-group my-3">
-                          <input type="email" name="email" class="form-control" placeholder="email address" value={{user.email}}>
-                        </div>
-
-                        <div class="form-group my-3">
                           <input type="text" name="first_name" class="form-control" maxlength="30" placeholder="first name" value = {{user.first_name}}>
                         </div>
 
@@ -53,9 +49,10 @@
                           <input type="text" name="gender" class="form-control" maxlength="255" placeholder="gender" value = {{user.gender}}>
                         </div>
 
-                        <a class="nav-link" href="{% url 'account_reset_password' %}">Change password?</a>
+                         <u><a class="nav-link" href="{% url 'account_email' %}">Change Email?</a></u>
+                        <u><a class="nav-link" href="{% url 'account_reset_password' %}">Change password?</a></u>
                         <button type="submit" name = "save_button" class="btn btn-sm shadow btn-primary" onclick="make_required()" value="save">Save</button>
-                        <button type="reset" class="btn btn-sm shadow">Reset</button>
+                        <button type="reset" class="btn btn-sm shadow">Cancel</button>
                         </div>
                     </div>
                 </form>

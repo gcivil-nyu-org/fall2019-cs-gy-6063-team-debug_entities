@@ -7,6 +7,7 @@ from django.core.exceptions import PermissionDenied
 from django.shortcuts import redirect, render, reverse
 from .filters import ConcertFilter
 
+
 def home(request):
     return render(request, "home.html")
 
@@ -255,7 +256,6 @@ def settings(request):
         if form.is_valid():
             form.save(request)
             msg.success(request, "Settings changed successfully!")
-
     return render(request, "settings.html", {"user": request.user})
 
 
