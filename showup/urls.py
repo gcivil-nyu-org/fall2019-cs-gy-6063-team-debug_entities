@@ -16,6 +16,7 @@ urlpatterns = [
     path("<int:eid>/match", views.event_stack, name="event_stack"),
     path("avatar/", include("avatar.urls")),
     path("settings", views.settings, name="settings"),
+    path("messages/<int:squad1>-<int:squad2>", views.messages, name="messages"),
 ]
 
 if settings.DEBUG:
