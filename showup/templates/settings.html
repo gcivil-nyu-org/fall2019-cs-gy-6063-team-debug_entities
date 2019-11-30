@@ -15,12 +15,23 @@
 
             </div>
             <div class="col-5 col-md-5 py-10 order-md-1">
-              
+
 
                 <form class="settings" method="POST" action="{% url 'settings' %}">
                     {% csrf_token %}
                     <div class="form-row">
+
                         <div class="col-12 col-lg">
+
+                        <div class="form-group my-3">
+                        {% if messages %}
+                            <ul class="messages">
+                            {% for message in messages %}
+                                <li  {% if message.tags %} class=" {{ message.tags }} " {% endif %}> {{ message }} </li>
+                            {% endfor %}
+                            </ul>
+                        {% endif %}
+                        </div>
 
                         <div class="form-group my-3">
                           <input type="email" name="email" class="form-control" placeholder="email address" value={{user.email}}>
@@ -42,14 +53,7 @@
                           <input type="text" name="gender" class="form-control" maxlength="255" placeholder="gender" value = {{user.gender}}>
                         </div>
 
-                        <div class="form-group my-3">
-                          <input type="password" name="password1" class="form-control" placeholder="password" id="password1">
-                        </div>
-
-                        <div class="form-group my-3">
-                          <input type="password" name="password2" class="form-control" placeholder="confirm password" id="password2">
-                        </div>
-
+                        <a class="nav-link" href="{% url 'account_reset_password' %}">Change password?</a>
                         <button type="submit" name = "save_button" class="btn btn-sm shadow btn-primary" onclick="make_required()" value="save">Save</button>
                         <button type="reset" class="btn btn-sm shadow">Reset</button>
                         </div>
@@ -59,15 +63,4 @@
         </div> <!-- / .row -->
     </div> <!-- / .container -->
 </section>
-<script>
-
-function make_required() {
-    if(document.getElementById("password1").value != "" ){
-        if (! document.getElementById("password2").required) {
-            document.getElementById("password2").required = true;
-        }
-    }
-}
-
-</script>
 {% endblock %}

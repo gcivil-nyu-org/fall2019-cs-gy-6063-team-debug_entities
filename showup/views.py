@@ -2,10 +2,10 @@ from .forms import CustomUserChangeForm, SquadForm, CustomUserForm
 from .models import Concert, CustomUser, Genre, Squad, Swipe
 from allauth.account.admin import EmailAddress
 from django.contrib.auth.decorators import login_required
+from django.contrib import messages as msg
 from django.core.exceptions import PermissionDenied
 from django.shortcuts import redirect, render, reverse
 from .filters import ConcertFilter
-
 
 def home(request):
     return render(request, "home.html")
@@ -253,11 +253,8 @@ def settings(request):
     if request.POST.get("save_button") == "save":
         form = CustomUserForm(request.POST or None, instance=request.user)
         if form.is_valid():
-            try:
-                form.save(request)
-            except Exception as ex:
-                print("hit exception")
-                print(ex)
+            form.save(request)
+            msg.success(request, "Settings changed successfully!")
 
     return render(request, "settings.html", {"user": request.user})
 
