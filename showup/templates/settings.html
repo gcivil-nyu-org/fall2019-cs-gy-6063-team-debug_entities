@@ -1,51 +1,73 @@
 {% extends "header.html" %}
 {% block content %}
-<form class="settings" method="POST" action="{% url 'settings' %}">
-    {% csrf_token %}
-    <div class="form-row">
-        <div class="col-12 col-lg">
 
-        <div class="form-group my-3">
-          <input type="email" name="email" class="form-control" placeholder="email address" value={{user.email}}>
-        </div>
+<section>
+    <div class="container">
+        <div class="row align-items-stretch">
+            <div class="col-12 col-md-6 offset-md-1 order-md-2">
+                <div class="position-relative h-100 vw-50 d-none d-md-block">
+                    <!-- Picture -->
+                    {% load static %}
+                    <div class="h-100 w-100">
+                      <div class="w-100 h-100 bg-cover" style="background-image: url({% static 'old lady dancing.jpg' %});"></div>
+                    </div>
+                </div>
 
-        <div class="form-group my-3">
-          <input type="text" name="first_name" class="form-control" maxlength="30" placeholder="first name" value = {{user.first_name}}>
-        </div>
+            </div>
+            <div class="col-5 col-md-5 py-10 order-md-1">
+              
 
-        <div class="form-group my-3">
-          <input type="text" name="last_name" class="form-control" maxlength="150" placeholder="last name" value = {{user.last_name}}>
-        </div>
+                <form class="settings" method="POST" action="{% url 'settings' %}">
+                    {% csrf_token %}
+                    <div class="form-row">
+                        <div class="col-12 col-lg">
 
-        <div class="form-group my-3">
-          <input type="date" name="date_of_birth" class="form-control" placeholder="date of birth"  value = {{user.date_of_birth|date:"Y-m-d"}}>
-        </div>
+                        <div class="form-group my-3">
+                          <input type="email" name="email" class="form-control" placeholder="email address" value={{user.email}}>
+                        </div>
 
-        <div class="form-group my-3">
-          <input type="text" name="gender" class="form-control" maxlength="255" placeholder="gender" value = {{user.gender}}>
-        </div>
+                        <div class="form-group my-3">
+                          <input type="text" name="first_name" class="form-control" maxlength="30" placeholder="first name" value = {{user.first_name}}>
+                        </div>
 
-        <div class="form-group my-3">
-          <input type="password" name="password1" class="form-control" placeholder="password" id="password1">
-        </div>
+                        <div class="form-group my-3">
+                          <input type="text" name="last_name" class="form-control" maxlength="150" placeholder="last name" value = {{user.last_name}}>
+                        </div>
 
-        <div class="form-group my-3">
-          <input type="password" name="password2" class="form-control" placeholder="confirm password" id="password2">
-        </div>
+                        <div class="form-group my-3">
+                          <input type="date" name="date_of_birth" class="form-control" placeholder="date of birth"  value = {{user.date_of_birth|date:"Y-m-d"}}>
+                        </div>
 
-        <button type="submit" name = "save_button" class="btn btn-block btn-primary shadow lift" onclick="make_required()" value="save">Save</button>
-        <button type="reset" class="btn btn-block btn-primary shadow lift">Cancel</button>
-        </div>
-    </div>
-</form>
+                        <div class="form-group my-3">
+                          <input type="text" name="gender" class="form-control" maxlength="255" placeholder="gender" value = {{user.gender}}>
+                        </div>
+
+                        <div class="form-group my-3">
+                          <input type="password" name="password1" class="form-control" placeholder="password" id="password1">
+                        </div>
+
+                        <div class="form-group my-3">
+                          <input type="password" name="password2" class="form-control" placeholder="confirm password" id="password2">
+                        </div>
+
+                        <button type="submit" name = "save_button" class="btn btn-sm shadow btn-primary" onclick="make_required()" value="save">Save</button>
+                        <button type="reset" class="btn btn-sm shadow">Reset</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div> <!-- / .row -->
+    </div> <!-- / .container -->
+</section>
 <script>
 
 function make_required() {
     if(document.getElementById("password1").value != "" ){
-        document.getElementById("password2").required = true;
+        if (! document.getElementById("password2").required) {
+            document.getElementById("password2").required = true;
+        }
     }
 }
 
 </script>
 {% endblock %}
-             
