@@ -38,7 +38,7 @@ class SquadForm(forms.Form):
 class CustomUserForm(UserChangeForm):
     class Meta:
         model = CustomUser
-        fields = ("first_name", "last_name", "date_of_birth", "gender", "email")
+        fields = ("first_name", "last_name", "date_of_birth", "gender")
 
     def save(self, request):
         user = super(CustomUserForm, self).save(request)
