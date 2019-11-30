@@ -289,4 +289,3 @@ def messages(request, squad1, squad2):
         return render(
             request, "messages.html", {"iframe_url": f"{base_url}{squad1}-{squad2}"}
         )
-
