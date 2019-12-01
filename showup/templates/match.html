@@ -6,7 +6,8 @@
 {% block content %}
 
 <div class="text-center pt-8">
-  <h2>{{ event }}</h2>
+  <h2>{{ event.performer_names }}</h2>
+  <h4 class="text-gray-700">{{event.venue_name}} on {{event.datetime}}</h4>
 </div>
 
 {% if squads %}
