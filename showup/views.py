@@ -251,7 +251,7 @@ def matches(request):
 
 @login_required
 def settings(request):
-    if request.POST.get("save_button") == "save":
+    if request.POST:
         form = CustomUserForm(request.POST or None, instance=request.user)
         if form.is_valid():
             form.save(request)
