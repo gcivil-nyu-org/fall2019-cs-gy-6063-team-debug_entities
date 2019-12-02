@@ -58,10 +58,10 @@
         <div class="container">
           <div class="row">
             <div class="col-12">
-              
+
               <div class="row mb-6 mb-md-8">
                 <div class="col-auto">
-                  
+
                   <!-- Edit Image link only if its your account  -->
                   {% if user.id == requested_user.id %}
                   <div class="container">
@@ -85,12 +85,12 @@
                 </div>
 
                 <div class="col ml-n4">
-                  
+
                   <!-- Heading -->
                   <h2 class="font-weight-bold mb-0">
                     {{ requested_user.first_name }}
                   </h2>
-  
+
                   <!-- Text -->
                   <p class="font-size-lg text-gray-700 mb-6">
                     {{ requested_user.bio }}
@@ -109,26 +109,26 @@
                   {% if user.id == requested_user.id %}
                   <a class="btn btn-primary" href="{% url 'edit_profile' user.id %}">Edit Your Profile</a>
                   {% endif %}
-  
+
                 </div>
               </div> <!-- / .row -->
-  
+
               <!-- Card for interested -->
               <div class="card shadow-light-lg accordion mb-5 mb-md-6" id="helpAccordionOne">
                 <div class="list-group">
                   <div class="list-group-item">
-                    
+
                     <!-- Header -->
                     <div class="d-flex align-items-center">
                       <div class="mr-auto">
                         <h2 class="font-weight-bold mb-0">
-                          {{ requested_user.first_name }} is interested in {{ requested_user.interested.count }} concerts.
+                          {{ requested_user.first_name }} is interested in {{ requested_user.squad.interested.count }} concerts.
                         </h2>
                       </div>
                     </div>
                   </div>
 
-                  {% for interested in requested_user.interested.all %}
+                  {% for interested in requested_user.squad.interested.all %}
                   <div class="list-group-item">
                     <a class="d-flex align-items-center text-reset text-decoration-none" data-toggle="collapse" href="#id{{ interested.id }}" role="button">
                       <span class="mr-4">
@@ -143,44 +143,44 @@
                         </span>
                       </div>
                     </a>
-                    
+
                     <!-- Collapse -->
                     <div class="collapse" id="id{{ interested.id }}" data-parent="#helpAccordionOne">
                       <div class="py-5">
-  
+
                         <!-- Text -->
                         <p class="text-gray-700">
                           Date: {{ interested.datetime }} <br>
                           Venue: {{ interested.venue_name }} <br>
                           Borough: {{ interested.get_borough_display }}
-                          
+
                         </p>
                       </div>
-                      
+
                     </div>
-  
+
                   </div>
                 {% endfor %}
-  
+
                 </div>
               </div>
-  
+
               <!-- Card for going -->
               <div class="card shadow-light-lg accordion mb-5 mb-md-6" id="helpAccordionTwo">
                   <div class="list-group">
                     <div class="list-group-item">
-                      
+
                       <!-- Header -->
                       <div class="d-flex align-items-center">
                         <div class="mr-auto">
                           <h2 class="font-weight-bold mb-0">
-                            {{ requested_user.first_name }} is going to {{ requested_user.going.count }} concerts.
+                            {{ requested_user.first_name }} is going to {{ requested_user.squad.going.count }} concerts.
                           </h2>
                         </div>
                       </div>
                     </div>
 
-                    {% for going in requested_user.going.all %}
+                    {% for going in requested_user.squad.going.all %}
                     <div class="list-group-item">
                       <a class="d-flex align-items-center text-reset text-decoration-none" data-toggle="collapse" href="#id{{ going.id }}" role="button">
                         <span class="mr-4">
@@ -195,7 +195,7 @@
                           </span>
                         </div>
                       </a>
-                      
+
                       <!-- Collapse -->
                       <div class="collapse" id="id{{ going.id }}" data-parent="#helpAccordionTwo">
                         <div class="py-5">
@@ -205,10 +205,10 @@
                             Date: {{ going.datetime }} <br>
                             Venue: {{ going.venue_name }} <br>
                             Borough: {{ going.get_borough_display }}
-                            
+
                           </p>
                         </div>
-                        
+
                       </div>
 
                     </div>
