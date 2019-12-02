@@ -524,8 +524,3 @@ class UnauthenticatedViewTests(TestCase):
     def test_unauthed_user_cannot_edit_profile(self):
         self.response = self.client.get(reverse("edit_profile", args=(1,)))
         self.assertEqual(self.response.status_code, 302)
-
-
-class FormTests(TestCase):
-    def test_valid_form(self):
-        pass
