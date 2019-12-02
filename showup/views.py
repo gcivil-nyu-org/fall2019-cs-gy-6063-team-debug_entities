@@ -288,10 +288,11 @@ def event_stack(request, eid):
     else:
         match = None
 
+    # Get event details.
+    event = Concert.objects.get(id=eid)
+
     # Get squads and users.
     squads = get_stack(request, eid)
-    # Get event details.
-    event_info = Concert.objects.get(id=eid)
     if squads:
         # Get all the users of all the squads that are in the stack.
         users = []
@@ -303,7 +304,7 @@ def event_stack(request, eid):
     return render(
         request,
         "match.html",
-        {"squads": squads, "users": users, "match": match, "event": event_info},
+        {"event": event, "squads": squads, "users": users, "match": match},
     )
 
 
