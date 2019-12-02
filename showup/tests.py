@@ -1,7 +1,6 @@
 import datetime
 
 from .models import Concert, CustomUser, Genre, Request, Squad, Swipe
-from .forms import CustomUserForm
 from allauth.account.admin import EmailAddress
 from django.test import Client, TestCase
 from django.urls import reverse
