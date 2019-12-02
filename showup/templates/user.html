@@ -1,6 +1,59 @@
 {% extends 'header.html' %}
 {% load avatar_tags %}
+{% load static %}
 {% block content %}
+
+<style>
+
+.image {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.overlay {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 100%;
+  width: 100%;
+  opacity: 0;
+  transition: .5s ease;
+  background-color: #008CBA;
+}
+
+.container:hover .overlay {
+  opacity: 1;
+}
+
+.text {
+  color: white;
+  font-size: 20px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  -webkit-transform: translate(-50%, -50%);
+  -ms-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+  text-align: center;
+}
+
+</style>
+
+<div class="container">
+  <img src={% static "default-performer-image.jpg" %} alt="Avatar" class="image"
+  height="200" width="200">
+  <div class="overlay">
+    <div class="text">Hello World</div>
+  </div>
+</div>
+
+
+
+
+
     <section class="pt-6 pt-md-8 pb-8 mb-md-8">
         <div class="container">
           <div class="row">
@@ -11,8 +64,16 @@
                   
                   <!-- Edit Image link only if its your account  -->
                   {% if user.id == requested_user.id %}
-                  <div>
-                    <a href="{% url 'avatar_change' %}"><img src="{% avatar_url requested_user 190 %}"></a>
+                  <div class="container">
+                    <a href="{% url 'avatar_change' %}">
+                      <img src="{% avatar_url requested_user 190 %}" alt="Avatar" class="image">
+                    </a>
+                      <div class="overlay">
+                        <div class="text">
+                          <a href="{% url 'avatar_change' %}" style="color: #FFFFFF">Update Image</a>
+                        </div>
+                      </div>
+
                   </div>
 
                   <!-- If its not your profile, cannot edit avatar -->
