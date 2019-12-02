@@ -232,9 +232,8 @@ def get_stack(request, eid):
 
     # Get the squads interested in or going to the event.
     squads = (
-        Squad.objects.filter(interested__id=eid).distinct()
-        | Squad.objects.filter(going__id=eid).distinct()
-    )
+        Squad.objects.filter(interested__id=eid) | Squad.objects.filter(going__id=eid)
+    ).distinct()
 
     # These are the squads that swiped left on my squad.
     swiped_left = [
