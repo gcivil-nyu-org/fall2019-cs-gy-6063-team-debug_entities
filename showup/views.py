@@ -30,15 +30,15 @@ def events(request):
     }
 
     # User clicked "Interested" button.
-    if "interested" in request.GET:
+    if "interested" in request.POST:
         insert_to_list_exclusively(
-            request.GET.get("interested"), squad.interested, squad.going
+            request.POST.get("interested"), squad.interested, squad.going
         )
 
     # User clicked "Going" button.
-    if "going" in request.GET:
+    if "going" in request.POST:
         insert_to_list_exclusively(
-            request.GET.get("going"), squad.going, squad.interested
+            request.POST.get("going"), squad.going, squad.interested
         )
 
     return render(request, "events.html", context=context)
