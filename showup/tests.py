@@ -6,7 +6,6 @@ from allauth.account.admin import EmailAddress
 from django.test import Client, TestCase
 from django.urls import reverse
 from django.utils.timezone import make_aware, utc
-import sys
 
 
 class ConcertModelTests(TestCase):
