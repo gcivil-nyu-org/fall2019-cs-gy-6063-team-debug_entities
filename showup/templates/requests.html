@@ -1,0 +1,48 @@
+{% extends 'header.html' %}
+
+{% load avatar_tags %}
+{% load static %}
+
+{% block content %}
+
+<div class="text-center pt-7">
+  <h2>Squad Requests</h2>
+</div>
+
+<section class="pt-6 pt-md-5 pb-8 mb-md-8">
+  <div class="container">
+    <div class="row">
+      <div class="col-12">
+        <div class="card shadow-light-lg accordion mb-5 mb-md-6" id="helpAccordionOne">
+          <div class="list-group">
+              {% if squads|length > 0 %}
+                {% for squad in squads %}
+                <div class="list-group-item">
+                <div class="row">
+                  <div class="col-8 text-left">
+                  {% for user in users %}
+                    {% if user.squad.id == squad.id %}
+                        {% avatar user %} &nbsp <a href="{% url 'user' user.id %}">{{ user.first_name }}</a><br><br>
+                    {% endif %}
+                  {% endfor %}
+                      </div>
+                      <form class="col-4 align-self-center" action="" method="post">
+                        {% csrf_token %}
+                        <input type="hidden" name="their_sid" value="{{ squad.id }}">
+                        <button class="btn btn-primary" type="submit" name="accept">Accept</button>
+                        <button class="btn btn-primary" type="submit" name="deny">Deny</button>
+                      </form>
+                      </div>
+                      </div><br>
+                {% endfor %}
+              {% else %}
+                <center><h3>No squad requests.</h3></center>
+              {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% endblock %}
