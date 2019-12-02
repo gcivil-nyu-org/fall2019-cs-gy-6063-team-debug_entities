@@ -11,7 +11,6 @@
       <div class="col-12">
         <div class="card shadow-light-lg accordion mb-5 mb-md-6" id="helpAccordionOne">
           <div class="list-group">
-            <div class="list-group-item">
               {% if events|length > 0 %}
                 {% for event in events %}
                 <div class="list-group-item">
@@ -24,7 +23,8 @@
                       Performer: {{ event.performer_names }} <br>
                       Date: {{ event.datetime }} <br>
                       Venue: {{ event.venue_name }} <br>
-                      Borough: {{ event.get_borough_display }}
+                      Borough: {{ event.get_borough_display }} <br>
+                      <a target="_blank" href="{{ interested.event_url }}">SeatGeek link</a>
                     </p>
                     </span>
                     <div class="text-muted ml-auto">
@@ -63,9 +63,6 @@
                     {% endif %}
                     {% endfor %}
                   </div>
-
-
-                </div>
                 {% endfor %}
               {% else %}
                 <center><h3>No matches. Let's get swiping!</h3></center>
@@ -75,7 +72,6 @@
         </div>
       </div>
     </div>
-  </div>
 </section>
 
 
