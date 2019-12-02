@@ -7,6 +7,9 @@ from django.shortcuts import redirect, render, reverse
 from .filters import ConcertFilter
 
 
+from django.contrib import messages as mess
+from django.http import HttpResponse, HttpResponseRedirect
+
 def home(request):
     return render(request, "home.html")
 
@@ -118,11 +121,13 @@ def edit_squad(request, id):
 
                 except CustomUser.DoesNotExist:
                     # TODO: Output some sort of message.
-                    return render(
-                        request,
-                        "edit_squad.html",
-                        {"form": form, "squad_size": squad_size},
-                    )
+                    # return render(
+                    #     request,
+                    #     "edit_squad.html",
+                    #     {"form": form, "squad_size": squad_size},
+                    # )
+                    # return HttpResponse("User DNE")
+                    mess.error(request, "Error")
 
                 # Check to see if a request already exists.
                 request = Request.objects.filter(

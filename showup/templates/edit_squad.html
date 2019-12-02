@@ -1,5 +1,13 @@
 {% extends 'header.html' %}
 
+        <script>
+            {% if messages %}
+                {% for message in messages %}
+                    alert(message);
+                {% endfor %}
+            {% endif %}
+        </script>
+
 {% block content %}
 
 <div style="position:relative; top:20px">
@@ -30,5 +38,7 @@
     </div>
   </div>
 </section>
+
+
 
 {% endblock %}
