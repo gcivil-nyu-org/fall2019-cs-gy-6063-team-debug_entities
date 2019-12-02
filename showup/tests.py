@@ -147,6 +147,25 @@ class EventsViewTests(TestCase):
         response = self.client.get(reverse("events") + get)
         self.assertEqual(response.status_code, 200)
 
+    def test_events_interested_going(self):
+        # if you're going to an event, and then mark that you're interested in
+        # that event, the interested will overwrite the going
+        self.client.post(reverse("events"), data={"going": 1})
+        self.client.post(reverse("events"), data={"interested": 1})
+        num_interested = CustomUser.objects.get(id=1).squad.interested.count()
+        num_going = CustomUser.objects.get(id=1).squad.going.count()
+        self.assertEqual(num_interested, 1)
+        self.assertEqual(num_going, 0)
+
+    def test_events_going_not_going(self):
+        # if you mark yourself as going twice, you won't be going to the
+        # event because the second one undoes the first one
+        self.client.post(reverse("events"), data={"going": 1})
+        self.client.post(reverse("events"), data={"going": 1})
+        num_going = CustomUser.objects.get(id=1).squad.going.count()
+        self.assertEqual(num_going, 0)
+
+
 
 class UserViewTests(TestCase):
     def setUp(self):
