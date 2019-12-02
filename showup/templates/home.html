@@ -3,16 +3,20 @@
 {% block content %}
 
 {% if user.is_authenticated %}
-<div class="text-center pt-7">
-<h2 class="font-weight-bold mb-0">
-  Howdy, {{ user.first_name }}.
-</h2>
 
-<!-- Text -->
-<h4 class="font-size-lg text-gray-700 mb-0">
-  Let's get you dancing ASAP.
-</h4>
+<div class="text-center pt-7">
+  <h2 class="font-weight-bold mb-0">
+    Howdy, {{ user.first_name }}.
+  </h2>
+  <h4 class="font-size-lg text-gray-700 mb-0">
+    {% if user.squad.interested.count == 0 and user.squad.going.count == 0 %}
+      Head over to <a href="{% url 'events' %}">Events</a> to find shows you may be interested in.
+    {% else %}
+      Let's get you dancing ASAP.
+    {% endif %}
+  </h4>
 </div>
+
     <section class="pt-6 pt-md-5 pb-8 mb-md-8">
         <div class="container">
           <div class="row">
