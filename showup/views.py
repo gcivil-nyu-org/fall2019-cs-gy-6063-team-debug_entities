@@ -288,6 +288,9 @@ def event_stack(request, eid):
     else:
         match = None
 
+    # Get event details.
+    event = Concert.objects.get(id=eid)
+
     # Get squads and users.
     squads = get_stack(request, eid)
     if squads:
@@ -299,7 +302,9 @@ def event_stack(request, eid):
         users = None
 
     return render(
-        request, "match.html", {"squads": squads, "users": users, "match": match}
+        request,
+        "match.html",
+        {"event": event, "squads": squads, "users": users, "match": match},
     )
 
 
