@@ -5,10 +5,7 @@ from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
 from django.shortcuts import redirect, render, reverse
 from .filters import ConcertFilter
-
-
 from django.contrib import messages as mess
-from django.http import HttpResponse, HttpResponseRedirect
 
 def home(request):
     return render(request, "home.html")
@@ -110,6 +107,7 @@ def edit_squad(request, id):
                         email=request.POST["email"]
                     ).squad
 
+
                     # We are already in the same squad.
                     if my_squad.id == their_squad.id:
                         # TODO: Output some sort of message.
@@ -119,6 +117,34 @@ def edit_squad(request, id):
                             {"form": form, "squad_size": squad_size},
                         )
 
+                        # Check to see if a request already exists.
+                    request = Request.objects.filter(
+                        requester=their_squad, requestee=my_squad
+                    )
+                    if request.exists():
+                        # Join the squad that has a smaller id.
+                        if their_squad.id < my_squad.id:
+                            my_squad, their_squad = their_squad, my_squad
+
+                        # Get their members.
+                        their_members = CustomUser.objects.filter(squad=their_squad)
+
+                        # Merge squads.
+                        for member in their_members:
+                            member.squad = my_squad
+                            member.save()
+
+                        # Delete their old squad.
+                        Squad.objects.get(id=their_squad.id).delete()
+
+                        # Delete the request.
+                        request.delete()
+                    else:
+                        # Create a request.
+                        Request.objects.create(requester=my_squad, requestee=their_squad)
+
+                    return redirect(reverse("squad", kwargs={"id": my_squad.id}))
+
                 except CustomUser.DoesNotExist:
                     # TODO: Output some sort of message.
                     # return render(
@@ -126,36 +152,8 @@ def edit_squad(request, id):
                     #     "edit_squad.html",
                     #     {"form": form, "squad_size": squad_size},
                     # )
-                    # return HttpResponse("User DNE")
                     mess.error(request, "Error")
-
-                # Check to see if a request already exists.
-                request = Request.objects.filter(
-                    requester=their_squad, requestee=my_squad
-                )
-                if request.exists():
-                    # Join the squad that has a smaller id.
-                    if their_squad.id < my_squad.id:
-                        my_squad, their_squad = their_squad, my_squad
-
-                    # Get their members.
-                    their_members = CustomUser.objects.filter(squad=their_squad)
-
-                    # Merge squads.
-                    for member in their_members:
-                        member.squad = my_squad
-                        member.save()
-
-                    # Delete their old squad.
-                    Squad.objects.get(id=their_squad.id).delete()
-
-                    # Delete the request.
-                    request.delete()
-                else:
-                    # Create a request.
-                    Request.objects.create(requester=my_squad, requestee=their_squad)
-
-                return redirect(reverse("squad", kwargs={"id": my_squad.id}))
+                    print("monkey business")
 
             elif "leave" in request.POST:
                 # You can only leave a squad if you're not the only one in it.
