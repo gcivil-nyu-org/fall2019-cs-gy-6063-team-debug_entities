@@ -166,7 +166,6 @@ class EventsViewTests(TestCase):
         self.assertEqual(num_going, 0)
 
 
-
 class UserViewTests(TestCase):
     def setUp(self):
         # Create and save user.
