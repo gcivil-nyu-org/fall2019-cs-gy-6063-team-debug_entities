@@ -1,4 +1,5 @@
 gunicorn
+Django==2.2
 django-heroku
 requests
 django-allauth
