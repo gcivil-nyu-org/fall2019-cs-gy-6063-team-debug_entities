@@ -91,8 +91,8 @@
                         <p class="text-gray-700">
                           Date: {{ interested.datetime }} <br>
                           Venue: {{ interested.venue_name }} <br>
-                          Borough: {{ interested.get_borough_display }}
-
+                          Borough: {{ interested.get_borough_display }} <br>
+                          <a target="_blank" href="{{ interested.event_url }}">SeatGeek link</a>
                         </p>
                       </div>
 
@@ -143,8 +143,8 @@
                           <p class="text-gray-700">
                             Date: {{ going.datetime }} <br>
                             Venue: {{ going.venue_name }} <br>
-                            Borough: {{ going.get_borough_display }}
-
+                            Borough: {{ going.get_borough_display }} <br>
+                            <a target="_blank" href="{{ going.event_url }}">SeatGeek link</a>
                           </p>
                         </div>
 
