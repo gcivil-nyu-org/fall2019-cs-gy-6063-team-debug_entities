@@ -93,6 +93,8 @@ def squad(request, id):
 @login_required
 def edit_squad(request, id):
     # You can only edit your own squad.
+    email_does_not_exist = 0
+
     if id == request.user.squad.id:
         # Get my squad.
         my_squad = request.user.squad
@@ -116,41 +118,38 @@ def edit_squad(request, id):
                             {"form": form, "squad_size": squad_size},
                         )
 
-                except CustomUser.DoesNotExist:
-                    # TODO: Output some sort of message.
-                    return render(
-                        request,
-                        "edit_squad.html",
-                        {"form": form, "squad_size": squad_size},
+                        # Check to see if a request already exists.
+                    request = Request.objects.filter(
+                        requester=their_squad, requestee=my_squad
                     )
+                    if request.exists():
+                        # Join the squad that has a smaller id.
+                        if their_squad.id < my_squad.id:
+                            my_squad, their_squad = their_squad, my_squad
 
-                # Check to see if a request already exists.
-                request = Request.objects.filter(
-                    requester=their_squad, requestee=my_squad
-                )
-                if request.exists():
-                    # Join the squad that has a smaller id.
-                    if their_squad.id < my_squad.id:
-                        my_squad, their_squad = their_squad, my_squad
+                        # Get their members.
+                        their_members = CustomUser.objects.filter(squad=their_squad)
 
-                    # Get their members.
-                    their_members = CustomUser.objects.filter(squad=their_squad)
+                        # Merge squads.
+                        for member in their_members:
+                            member.squad = my_squad
+                            member.save()
 
-                    # Merge squads.
-                    for member in their_members:
-                        member.squad = my_squad
-                        member.save()
+                        # Delete their old squad.
+                        Squad.objects.get(id=their_squad.id).delete()
 
-                    # Delete their old squad.
-                    Squad.objects.get(id=their_squad.id).delete()
+                        # Delete the request.
+                        request.delete()
+                    else:
+                        # Create a request.
+                        Request.objects.create(
+                            requester=my_squad, requestee=their_squad
+                        )
 
-                    # Delete the request.
-                    request.delete()
-                else:
-                    # Create a request.
-                    Request.objects.create(requester=my_squad, requestee=their_squad)
+                    return redirect(reverse("squad", kwargs={"id": my_squad.id}))
 
-                return redirect(reverse("squad", kwargs={"id": my_squad.id}))
+                except CustomUser.DoesNotExist:
+                    email_does_not_exist = 1
 
             elif "leave" in request.POST:
                 # You can only leave a squad if you're not the only one in it.
@@ -167,7 +166,14 @@ def edit_squad(request, id):
                 raise PermissionDenied
 
         return render(
-            request, "edit_squad.html", {"form": form, "squad_size": squad_size}
+            request,
+            "edit_squad.html",
+            {
+                "form": form,
+                "squad_size": squad_size,
+                "email_does_not_exist": email_does_not_exist,
+                "email_entered": request.POST,
+            },
         )
 
     else:
