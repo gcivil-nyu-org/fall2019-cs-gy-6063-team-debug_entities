@@ -10,8 +10,4 @@ django-heroku
 django-session-timeout
 flake8
 gunicorn
-<<<<<<< HEAD
 requests
-=======
-requests
->>>>>>> develop
