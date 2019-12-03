@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
+from datetime import date
 
 
 class Genre(models.Model):
@@ -57,6 +58,16 @@ class CustomUser(AbstractUser):
 
     def __str__(self):
         return self.email
+
+    def get_age(self):
+        today = date.today()
+        if self.date_of_birth is None:
+            return -1
+        else:
+            bday = self.date_of_birth
+            return (
+                today.year - bday.year - ((today.month, today.day) < (bday.month, bday.day))
+            )
 
 
 class Swipe(models.Model):
