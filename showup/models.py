@@ -66,7 +66,9 @@ class CustomUser(AbstractUser):
         else:
             bday = self.date_of_birth
             return (
-                today.year - bday.year - ((today.month, today.day) < (bday.month, bday.day))
+                today.year
+                - bday.year
+                - ((today.month, today.day) < (bday.month, bday.day))
             )
 
 
