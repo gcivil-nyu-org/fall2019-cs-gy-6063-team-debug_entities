@@ -18,73 +18,75 @@
     </h4>
   </div>
 
-  <section class="pt-6 pt-md-5 pb-8 mb-md-8">
-    <div class="container">
-      <div class="row">
-        <div class="col-12">
-          <!-- Card for interested -->
-          <div class="card shadow-light-lg accordion mb-5 mb-md-6">
-            <div class="list-group">
-              <div class="list-group-item">
-                <!-- Header -->
-                <div class="d-flex align-items-center">
-                  <div class="mr-auto">
-                    <h2 class="font-weight-bold mb-0">
-                      These are the {{ user.squad.interested.count }} concerts I'm interested in.
-                    </h2>
+  {% if user.squad.interested.count != 0 or user.squad.going.count != 0 %}
+    <section class="pt-6 pt-md-5 pb-8 mb-md-8">
+      <div class="container">
+        <div class="row">
+          <div class="col-12">
+            <!-- Card for interested -->
+            <div class="card shadow-light-lg accordion mb-5 mb-md-6">
+              <div class="list-group">
+                <div class="list-group-item">
+                  <!-- Header -->
+                  <div class="d-flex align-items-center">
+                    <div class="mr-auto">
+                      <h2 class="font-weight-bold mb-0">
+                        These are the {{ user.squad.interested.count }} concerts I'm interested in.
+                      </h2>
+                    </div>
                   </div>
                 </div>
-              </div>
 
-              {% for interested in user.squad.interested.all %}
-                <div class="list-group-item pt-1">
-                  <a class="btn btn-primary" style = "position:relative; left:700px; top:85px" href="{% url 'event_stack' interested.id %}">Matching Stack</a>
-                  <div class="mr-4">
-                    <a target="_blank" href="{{ interested.event_url }}">{{ interested.performer_names }}</a><br>
-                    <p class="text-gray-700">
-                      Date: {{ interested.datetime }} <br>
-                      Venue: {{ interested.venue_name }} <br>
-                      Borough: {{ interested.get_borough_display }}
-                    </p>
+                {% for interested in user.squad.interested.all %}
+                  <div class="list-group-item pt-1">
+                    <a class="btn btn-primary" style = "position:relative; left:700px; top:85px" href="{% url 'event_stack' interested.id %}">Matching Stack</a>
+                    <div class="mr-4">
+                      <a target="_blank" href="{{ interested.event_url }}">{{ interested.performer_names }}</a><br>
+                      <p class="text-gray-700">
+                        Date: {{ interested.datetime }} <br>
+                        Venue: {{ interested.venue_name }} <br>
+                        Borough: {{ interested.get_borough_display }}
+                      </p>
+                    </div>
                   </div>
-                </div>
-              {% endfor %}
+                {% endfor %}
+              </div>
             </div>
-          </div>
 
-          <!-- Card for going -->
-          <div class="card shadow-light-lg accordion mb-5 mb-md-6">
-            <div class="list-group">
-              <div class="list-group-item">
-                <!-- Header -->
-                <div class="d-flex align-items-center">
-                  <div class="mr-auto">
-                    <h2 class="font-weight-bold mb-0">
-                      These are the {{ user.squad.going.count }} concerts I'm going to.
-                    </h2>
+            <!-- Card for going -->
+            <div class="card shadow-light-lg accordion mb-5 mb-md-6">
+              <div class="list-group">
+                <div class="list-group-item">
+                  <!-- Header -->
+                  <div class="d-flex align-items-center">
+                    <div class="mr-auto">
+                      <h2 class="font-weight-bold mb-0">
+                        These are the {{ user.squad.going.count }} concerts I'm going to.
+                      </h2>
+                    </div>
                   </div>
                 </div>
+
+                {% for going in user.squad.going.all %}
+                  <div class="list-group-item pt-1">
+                    <a class="btn btn-primary" style = "position:relative; left:700px; top:85px" href="{% url 'event_stack' going.id %}">Matching Stack</a>
+                    <div class="mr-4">
+                      <a target="_blank" href="{{ going.event_url }}">{{ going.performer_names }}</a><br>
+                      <p class="text-gray-700">
+                        Date: {{ going.datetime }} <br>
+                        Venue: {{ going.venue_name }} <br>
+                        Borough: {{ going.get_borough_display }}
+                      </p>
+                    </div>
+                  </div>
+                {% endfor %}
               </div>
-
-              {% for going in user.squad.going.all %}
-                <div class="list-group-item pt-1">
-                  <a class="btn btn-primary" style = "position:relative; left:700px; top:85px" href="{% url 'event_stack' going.id %}">Matching Stack</a>
-                  <div class="mr-4">
-                    <a target="_blank" href="{{ going.event_url }}">{{ going.performer_names }}</a><br>
-                    <p class="text-gray-700">
-                      Date: {{ going.datetime }} <br>
-                      Venue: {{ going.venue_name }} <br>
-                      Borough: {{ going.get_borough_display }}
-                    </p>
-                  </div>
-                </div>
-              {% endfor %}
             </div>
           </div>
         </div>
       </div>
-    </div>
-  </section>
+    </section>
+  {% endif %}
 
 {% else %}
   <!-- WELCOME -->
