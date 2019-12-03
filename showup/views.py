@@ -172,6 +172,7 @@ def edit_squad(request, id):
                 "form": form,
                 "squad_size": squad_size,
                 "email_does_not_exist": email_does_not_exist,
+                "email_entered": request.POST,
             },
         )
 
