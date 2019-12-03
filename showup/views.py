@@ -162,7 +162,9 @@ def edit_squad(request, id):
                         request.delete()
                     else:
                         # Create a request.
-                        Request.objects.create(requester=my_squad, requestee=their_squad)
+                        Request.objects.create(
+                            requester=my_squad, requestee=their_squad
+                        )
 
                     return redirect(reverse("squad", kwargs={"id": my_squad.id}))
 
