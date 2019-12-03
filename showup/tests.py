@@ -59,7 +59,7 @@ class CustomUserModelTests(TestCase):
         # Ensure the POST request was successful.
         user = CustomUser.objects.get(email="jspringer@example.com")
         self.assertEqual(user.last_name, "Springer")
-    
+
     def test_get_age_function_for_blank_birthday(self):
         blank_bday_user = CustomUser()
         self.assertEqual(blank_bday_user.get_age(), -1)
