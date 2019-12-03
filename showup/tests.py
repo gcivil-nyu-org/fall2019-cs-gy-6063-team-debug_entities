@@ -1,4 +1,5 @@
 import datetime
+from dateutil.relativedelta import relativedelta
 
 from .models import Concert, CustomUser, Genre, Request, Squad, Swipe
 from allauth.account.admin import EmailAddress
@@ -58,6 +59,15 @@ class CustomUserModelTests(TestCase):
         # Ensure the POST request was successful.
         user = CustomUser.objects.get(email="jspringer@example.com")
         self.assertEqual(user.last_name, "Springer")
+    
+    def test_get_age_function_for_blank_birthday(self):
+        blank_bday_user = CustomUser()
+        self.assertEqual(blank_bday_user.get_age(), -1)
+
+    def test_get_age_function_for_real_birthday(self):
+        hundred_years_ago = datetime.datetime.now() - relativedelta(years=100)
+        real_bday_user = CustomUser(date_of_birth=hundred_years_ago)
+        self.assertEqual(real_bday_user.get_age(), 100)
 
 
 class SwipeModelTests(TestCase):
