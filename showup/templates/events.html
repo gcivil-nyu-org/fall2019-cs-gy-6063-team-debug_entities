@@ -95,7 +95,7 @@
                                     <img class="card-img-top" src={{ event.performer_image_url }}>
                                 {% endif %}
                                 <div class="card-body">
-                                    <h3 class="card-title text-center">{% if event.id in interested_list or event.id in going_list %}<a href="{% url 'event_stack' event.id %}">{% endif %}{{event.performer_names}}</a></h3>
+                                    <h3 class="card-title text-center"><a target="_blank" href="{{ event.event_url }}">{{ event.performer_names }}</a></h3>
                                     <p class="card-text">{{event.venue_name}} on {{event.datetime}}</p>
                                     <div class="text-center">
                                         <form action="" method="post">
