@@ -23,7 +23,7 @@
   <body>
     <!-- NAVBAR -->
     <nav class="navbar navbar-expand-lg navbar-light bg-white">
-      <div class="container">
+      <div class="container-fluid">
 
         <!-- Brand -->
         <a class="navbar-brand" href="{% url 'home' %}" font-family: 'Katibeh'>
@@ -36,7 +36,7 @@
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>
-    
+
         <!-- Collapse -->
         <div class="collapse navbar-collapse" id="navbarCollapse">
 
@@ -68,7 +68,7 @@
           </ul>
 
           <!-- Log in button -->
-          <a class="navbar-btn btn btn-sm lift ml-auto" href="{% url 'account_logout' %}">Log out</a>
+          <a class="navbar-btn btn btn-sm lift ml-auto" href="{% url 'account_logout' %}">Log out ({{user.first_name}})</a>
         </div>
         {% endif %}
       </div>
