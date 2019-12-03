@@ -344,6 +344,7 @@ def matches(request):
 
 @login_required
 def settings(request):
+    msg.get_messages(request).used = True
     if request.POST:
         form = CustomUserForm(request.POST or None, instance=request.user)
         if form.is_valid():
