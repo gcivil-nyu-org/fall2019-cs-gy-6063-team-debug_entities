@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from datetime import date
+from dateutil.relativedelta import relativedelta
 
 
 class Genre(models.Model):
@@ -60,16 +61,7 @@ class CustomUser(AbstractUser):
         return self.email
 
     def get_age(self):
-        today = date.today()
-        if self.date_of_birth is None:
-            return -1
-        else:
-            bday = self.date_of_birth
-            return (
-                today.year
-                - bday.year
-                - ((today.month, today.day) < (bday.month, bday.day))
-            )
+        return relativedelta(date.today(), self.date_of_birth).years
 
 
 class Swipe(models.Model):

@@ -62,10 +62,12 @@ class CustomUserModelTests(TestCase):
 
     def test_get_age_function_for_blank_birthday(self):
         blank_bday_user = CustomUser()
-        self.assertEqual(blank_bday_user.get_age(), -1)
+        self.assertEqual(blank_bday_user.get_age(), 0)
 
     def test_get_age_function_for_real_birthday(self):
-        hundred_years_ago = datetime.datetime.now() - relativedelta(years=100)
+        hundred_years_ago = (
+            datetime.datetime.now() - relativedelta(years=100) - relativedelta(days=5)
+        )
         real_bday_user = CustomUser(date_of_birth=hundred_years_ago)
         self.assertEqual(real_bday_user.get_age(), 100)
 
