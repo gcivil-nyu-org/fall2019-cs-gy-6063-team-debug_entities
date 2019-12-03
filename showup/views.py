@@ -5,7 +5,7 @@ from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
 from django.shortcuts import redirect, render, reverse
 from .filters import ConcertFilter
-from django.contrib import messages as mess
+
 
 def home(request):
     return render(request, "home.html")
@@ -93,6 +93,8 @@ def squad(request, id):
 @login_required
 def edit_squad(request, id):
     # You can only edit your own squad.
+    email_does_not_exist = 0
+
     if id == request.user.squad.id:
         # Get my squad.
         my_squad = request.user.squad
@@ -106,7 +108,6 @@ def edit_squad(request, id):
                     their_squad = CustomUser.objects.get(
                         email=request.POST["email"]
                     ).squad
-
 
                     # We are already in the same squad.
                     if my_squad.id == their_squad.id:
@@ -141,19 +142,14 @@ def edit_squad(request, id):
                         request.delete()
                     else:
                         # Create a request.
-                        Request.objects.create(requester=my_squad, requestee=their_squad)
+                        Request.objects.create(
+                            requester=my_squad, requestee=their_squad
+                        )
 
                     return redirect(reverse("squad", kwargs={"id": my_squad.id}))
 
                 except CustomUser.DoesNotExist:
-                    # TODO: Output some sort of message.
-                    # return render(
-                    #     request,
-                    #     "edit_squad.html",
-                    #     {"form": form, "squad_size": squad_size},
-                    # )
-                    mess.error(request, "Error")
-                    print("monkey business")
+                    email_does_not_exist = 1
 
             elif "leave" in request.POST:
                 # You can only leave a squad if you're not the only one in it.
@@ -170,7 +166,13 @@ def edit_squad(request, id):
                 raise PermissionDenied
 
         return render(
-            request, "edit_squad.html", {"form": form, "squad_size": squad_size}
+            request,
+            "edit_squad.html",
+            {
+                "form": form,
+                "squad_size": squad_size,
+                "email_does_not_exist": email_does_not_exist,
+            },
         )
 
     else:

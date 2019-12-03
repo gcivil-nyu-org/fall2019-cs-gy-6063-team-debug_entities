@@ -1,14 +1,4 @@
 {% extends 'header.html' %}
-<head>
-  <script>
-      {% if mess %}
-          {% for message in mess %}
-              alert(message);
-          {% endfor %}
-      {% endif %}
-  </script>
-</head>
-
 {% block content %}
 
 <div style="position:relative; top:20px">
@@ -40,7 +30,30 @@
   </div>
 </section>
 
+<!-- Popup if email does not exist -->
+{% if email_does_not_exist == 1 %}
+  <div class="modal" id="myModal" data-toggle="modal" data-target="#myModal">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3 class="modal-title">Alert!</h3>
+        </div>
+        <div class="modal-body">
+          <h4>User does not exist</h4>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" data-dismiss="myModal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endif %}
 
-
+<script>
+$(document).ready(function(){
+  $('.modal').modal({dismissible: false,});
+  $('.modal').modal('open');
+});
+</script>
 
 {% endblock %}
