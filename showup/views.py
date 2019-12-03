@@ -145,7 +145,10 @@ def edit_squad(request, id):
                     for event in their_squad.interested.all():
                         # If event is in interested then leave it in interested.
                         # If event is in going then leave it in going.
-                        if event not in my_squad.interested and event not in my_squad.going:
+                        if (
+                            event not in my_squad.interested
+                            and event not in my_squad.going
+                        ):
                             my_squad.interested.add(event)
 
                     # Add their going events.
