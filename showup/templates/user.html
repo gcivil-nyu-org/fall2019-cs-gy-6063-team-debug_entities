@@ -24,7 +24,7 @@
   background-color: #008CBA;
 }
 
-.container:hover .overlay {
+.cont:hover .overlay {
   opacity: 1;
 }
 
@@ -42,18 +42,6 @@
 
 </style>
 
-<div class="container">
-  <img src={% static "default-performer-image.jpg" %} alt="Avatar" class="image"
-  height="200" width="200">
-  <div class="overlay">
-    <div class="text">Hello World</div>
-  </div>
-</div>
-
-
-
-
-
     <section class="pt-6 pt-md-8 pb-8 mb-md-8">
         <div class="container">
           <div class="row">
@@ -64,16 +52,17 @@
 
                   <!-- Edit Image link only if its your account  -->
                   {% if user.id == requested_user.id %}
-                  <div class="container">
+                  <div class="cont">
                     <a href="{% url 'avatar_change' %}">
                       <img src="{% avatar_url requested_user 190 %}" alt="Avatar" class="image">
                     </a>
+                    <a href="{% url 'avatar_change' %}" style="color: #FFFFFF">
                       <div class="overlay">
                         <div class="text">
-                          <a href="{% url 'avatar_change' %}" style="color: #FFFFFF">Update Image</a>
+                         <p>Update Image</p>
                         </div>
                       </div>
-
+                    </a>
                   </div>
 
                   <!-- If its not your profile, cannot edit avatar -->
