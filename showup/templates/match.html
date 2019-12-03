@@ -5,9 +5,14 @@
 
 {% block content %}
 
+<div class="text-center pt-8">
+  <h2>{{ event.performer_names }}</h2>
+  <h4 class="text-gray-700">{{ event.venue_name }} on {{ event.datetime }}</h4>
+</div>
+
 {% if squads %}
   {% with squads|first as swipee %}
-    <section class="py-14 bg-white bg-between" style="background-image: url({% static 'dancing match.png' %}); background-position: center; background-repeat: no-repeat; background-size:cover;">
+    <section class="py-14 bg-white bg-between" style="background-image: url({% static 'dancing-match.png' %}); background-position: center; background-repeat: no-repeat; background-size:cover;">
       <div class="container">
         <div class="row justify-content-center">
           <div class="mr-1 lift col-12 col-md-10 col-lg-4 text-center" data-aos="fade-up">

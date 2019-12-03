@@ -17,23 +17,6 @@
         <div class="container">
           <div class="row">
             <div class="col-12">
-
-              <div class="row mb-6 mb-md-8 text-center">
-                <div class="col ml-n4">
-
-                  <!-- Heading -->
-                  <!-- <h2 class="font-weight-bold mb-0">
-                    Howdy, {{ user.first_name }}.
-                  </h2>
-
-                  <!-- Text -->
-                  <!-- <h4 class="font-size-lg text-gray-700 mb-0">
-                    Let's get you dancing ASAP.
-                  </h4> -->
-
-                </div>
-              </div> <!-- / .row -->
-
               <!-- Card for interested -->
               <div class="card shadow-light-lg accordion mb-5 mb-md-6">
                 <div class="list-group">
@@ -53,7 +36,7 @@
                   <div class="list-group-item pt-1">
                       <a class="btn btn-primary" style = "position:relative; left:700px; top:85px" href="{% url 'event_stack' interested.id %}">Matching Stack</a>
                       <div class="mr-4">
-                        {{ interested.performer_names }}<br>
+                        <a target="_blank" href="{{ interested.event_url }}">{{ interested.performer_names }}</a><br>
                         <p class="text-gray-700">
                           Date: {{ interested.datetime }} <br>
                           Venue: {{ interested.venue_name }} <br>
@@ -85,7 +68,7 @@
                     <div class="list-group-item pt-1">
                         <a class="btn btn-primary" style = "position:relative; left:700px; top:85px" href="{% url 'event_stack' going.id %}">Matching Stack</a>
                         <div class="mr-4">
-                          {{ going.performer_names }}<br>
+                          <a target="_blank" href="{{ going.event_url }}">{{ going.performer_names }}</a><br>
                           <p class="text-gray-700">
                             Date: {{ going.datetime }} <br>
                             Venue: {{ going.venue_name }} <br>
