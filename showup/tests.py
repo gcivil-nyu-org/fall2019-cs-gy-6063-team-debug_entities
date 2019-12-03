@@ -147,31 +147,23 @@ class EventsViewTests(TestCase):
         response = self.client.get(reverse("events") + get)
         self.assertEqual(response.status_code, 200)
 
-    def test_events_interested(self):
-        get = "?interested=1"
-        response = self.client.get(reverse("events") + get)
-        self.assertEqual(response.status_code, 200)
-
-    def test_events_going(self):
-        get = "?going=1"
-        response = self.client.get(reverse("events") + get)
-        self.assertEqual(response.status_code, 200)
-
     def test_events_interested_going(self):
-        get = "?going=1"
-        response = self.client.get(reverse("events") + get)
-        self.assertEqual(response.status_code, 200)
-        get = "?interested=1"
-        response = self.client.get(reverse("events") + get)
-        self.assertEqual(response.status_code, 200)
+        # if you're going to an event, and then mark that you're interested in
+        # that event, the interested will overwrite the going
+        self.client.post(reverse("events"), data={"going": 1})
+        self.client.post(reverse("events"), data={"interested": 1})
+        num_interested = CustomUser.objects.get(id=1).squad.interested.count()
+        num_going = CustomUser.objects.get(id=1).squad.going.count()
+        self.assertEqual(num_interested, 1)
+        self.assertEqual(num_going, 0)
 
     def test_events_going_not_going(self):
-        get = "?going=1"
-        response = self.client.get(reverse("events") + get)
-        self.assertEqual(response.status_code, 200)
-        get = "?going=1"
-        response = self.client.get(reverse("events") + get)
-        self.assertEqual(response.status_code, 200)
+        # if you mark yourself as going twice, you won't be going to the
+        # event because the second one undoes the first one
+        self.client.post(reverse("events"), data={"going": 1})
+        self.client.post(reverse("events"), data={"going": 1})
+        num_going = CustomUser.objects.get(id=1).squad.going.count()
+        self.assertEqual(num_going, 0)
 
 
 class UserViewTests(TestCase):
@@ -557,15 +549,21 @@ class AuthenticatedViewTests(TestCase):
         self.response = self.client.get(reverse("event_stack", args=(1,)))
         self.assertEqual(self.response.status_code, 200)
 
+    def test_authed_user_can_swipe_on_matching_stack(self):
+        data = {"their_sid": 1, "match": "True"}
+        self.client.post(reverse("event_stack", args=(1,)), data=data)
+        num_swipes = Swipe.objects.count()
+        self.assertEqual(num_swipes, 1)
+
     def test_authed_user_can_mark_interested_to_events(self):
-        get = "?interested=1#"
-        self.response = self.client.get(reverse("events") + get)
-        self.assertEqual(self.response.status_code, 200)
+        self.client.post(reverse("events"), data={"interested": 1})
+        num_interested = CustomUser.objects.get(id=1).squad.interested.count()
+        self.assertEqual(num_interested, 1)
 
     def test_authed_user_can_mark_going_to_events(self):
-        get = "?going=1#"
-        self.response = self.client.get(reverse("events") + get)
-        self.assertEqual(self.response.status_code, 200)
+        self.client.post(reverse("events"), data={"going": 1})
+        num_going = CustomUser.objects.get(id=1).squad.going.count()
+        self.assertEqual(num_going, 1)
 
     def test_authed_user_cannot_see_messages_page_with_different_squad_id(self):
         self.response = self.client.get(reverse("messages", args=(25, 1)))
