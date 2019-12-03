@@ -146,19 +146,19 @@ def edit_squad(request, id):
                         # If event is in interested then leave it in interested.
                         # If event is in going then leave it in going.
                         if (
-                            event not in my_squad.interested
-                            and event not in my_squad.going
+                            event not in my_squad.interested.all()
+                            and event not in my_squad.going.all()
                         ):
                             my_squad.interested.add(event)
 
                     # Add their going events.
                     for event in their_squad.going.all():
                         # If event is in interested then put it in going.
-                        if event in my_squad.interested:
+                        if event in my_squad.interested.all():
                             my_squad.interested.remove(event)
                             my_squad.going.add(event)
                         # If event is not in going then put it in going.
-                        if event not in my_squad.going:
+                        if event not in my_squad.going.all():
                             my_squad.going.add(event)
 
                     # Delete their old squad.
@@ -221,17 +221,20 @@ def requests(request):
             for event in their_squad.interested.all():
                 # If event is in interested then leave it in interested.
                 # If event is in going then leave it in going.
-                if event not in my_squad.interested and event not in my_squad.going:
+                if (
+                    event not in my_squad.interested.all()
+                    and event not in my_squad.going.all()
+                ):
                     my_squad.interested.add(event)
 
             # Add their going events.
             for event in their_squad.going.all():
                 # If event is in interested then put it in going.
-                if event in my_squad.interested:
+                if event in my_squad.interested.all():
                     my_squad.interested.remove(event)
                     my_squad.going.add(event)
                 # If event is not in going then put it in going.
-                if event not in my_squad.going:
+                if event not in my_squad.going.all():
                     my_squad.going.add(event)
 
             # Delete their old squad.
