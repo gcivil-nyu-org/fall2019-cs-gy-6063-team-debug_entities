@@ -30,8 +30,8 @@
   </div>
 </section>
 
-<!-- Popup if email does not exist -->
-{% if email_does_not_exist == 1 %}
+<!-- Popup if email does not exist or user is already in squad -->
+{% if email_does_not_exist == 1 or email_does_not_exist == 2 %}
   <div class="modal" id="myModal" data-toggle="modal" data-target="#myModal">
     <div class="modal-dialog modal-lg">
       <div class="modal-content">
@@ -39,7 +39,15 @@
           <h3 class="modal-title">Alert!</h3>
         </div>
         <div class="modal-body">
+        <!-- User is not registered -->
+        {% if email_does_not_exist == 1 %}  
           <h4>{{email_entered.email}} is not registered with ShowUp.</h4>
+        
+        <!-- User is already in squad-->
+        {% elif email_does_not_exist == 2 %}
+          <h4>{{email_entered.email}} is already in your squad!</h4>
+
+        {% endif %}
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-primary" data-dismiss="myModal">Close</button>
