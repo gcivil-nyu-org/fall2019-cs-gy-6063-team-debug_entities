@@ -1,6 +1,47 @@
 {% extends 'header.html' %}
 {% load avatar_tags %}
+{% load static %}
 {% block content %}
+
+<style>
+
+.image {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.overlay {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 100%;
+  width: 100%;
+  opacity: 0;
+  transition: .5s ease;
+  background-color: #008CBA;
+}
+
+.cont:hover .overlay {
+  opacity: 1;
+}
+
+.text {
+  color: white;
+  font-size: 20px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  -webkit-transform: translate(-50%, -50%);
+  -ms-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+  text-align: center;
+}
+
+</style>
+
     <section class="pt-6 pt-md-8 pb-8 mb-md-8">
         <div class="container">
           <div class="row">
@@ -11,8 +52,17 @@
 
                   <!-- Edit Image link only if its your account  -->
                   {% if user.id == requested_user.id %}
-                  <div>
-                    <a href="{% url 'avatar_change' %}"><img src="{% avatar_url requested_user 190 %}"></a>
+                  <div class="cont">
+                    <a href="{% url 'avatar_change' %}">
+                      <img src="{% avatar_url requested_user 190 %}" alt="Avatar" class="image">
+                    </a>
+                    <a href="{% url 'avatar_change' %}" style="color: #FFFFFF">
+                      <div class="overlay">
+                        <div class="text">
+                         <p>Update Image</p>
+                        </div>
+                      </div>
+                    </a>
                   </div>
 
                   <!-- If its not your profile, cannot edit avatar -->
@@ -92,7 +142,7 @@
                           Date: {{ interested.datetime }} <br>
                           Venue: {{ interested.venue_name }} <br>
                           Borough: {{ interested.get_borough_display }} <br>
-                          <a target="_blank" href="{{ interested.event_url }}">SeatGeek</a>
+                          <a target="_blank" href="{{ interested.event_url }}">More Information</a>
                         </p>
                       </div>
 
@@ -144,7 +194,7 @@
                             Date: {{ going.datetime }} <br>
                             Venue: {{ going.venue_name }} <br>
                             Borough: {{ going.get_borough_display }} <br>
-                            <a target="_blank" href="{{ going.event_url }}">SeatGeek link</a>
+                            <a target="_blank" href="{{ going.event_url }}">More Information</a>
                           </p>
                         </div>
 

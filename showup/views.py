@@ -93,6 +93,8 @@ def squad(request, id):
 @login_required
 def edit_squad(request, id):
     # You can only edit your own squad.
+    email_does_not_exist = 0
+
     if id == request.user.squad.id:
         # Get my squad.
         my_squad = request.user.squad
@@ -106,22 +108,31 @@ def edit_squad(request, id):
                     their_squad = CustomUser.objects.get(
                         email=request.POST["email"]
                     ).squad
-
-                    # We are already in the same squad.
-                    if my_squad.id == their_squad.id:
-                        # TODO: Output some sort of message.
-                        return render(
-                            request,
-                            "edit_squad.html",
-                            {"form": form, "squad_size": squad_size},
-                        )
-
                 except CustomUser.DoesNotExist:
-                    # TODO: Output some sort of message.
+                    email_does_not_exist = 1
                     return render(
                         request,
                         "edit_squad.html",
-                        {"form": form, "squad_size": squad_size},
+                        {
+                            "form": form,
+                            "squad_size": squad_size,
+                            "email_does_not_exist": email_does_not_exist,
+                            "email_entered": request.POST,
+                        },
+                    )
+
+                # We are already in the same squad.
+                if my_squad.id == their_squad.id:
+                    email_does_not_exist = 2
+                    return render(
+                        request,
+                        "edit_squad.html",
+                        {
+                            "form": form,
+                            "squad_size": squad_size,
+                            "email_does_not_exist": email_does_not_exist,
+                            "email_entered": request.POST,
+                        },
                     )
 
                 # Check to see if a request already exists.
@@ -141,6 +152,26 @@ def edit_squad(request, id):
                         member.squad = my_squad
                         member.save()
 
+                    # Add their interested events.
+                    for event in their_squad.interested.all():
+                        # If event is in interested then leave it in interested.
+                        # If event is in going then leave it in going.
+                        if (
+                            event not in my_squad.interested.all()
+                            and event not in my_squad.going.all()
+                        ):
+                            my_squad.interested.add(event)
+
+                    # Add their going events.
+                    for event in their_squad.going.all():
+                        # If event is in interested then put it in going.
+                        if event in my_squad.interested.all():
+                            my_squad.interested.remove(event)
+                            my_squad.going.add(event)
+                        # If event is not in going then put it in going.
+                        if event not in my_squad.going.all():
+                            my_squad.going.add(event)
+
                     # Delete their old squad.
                     Squad.objects.get(id=their_squad.id).delete()
 
@@ -159,7 +190,6 @@ def edit_squad(request, id):
                     me.squad = Squad.objects.create()
                     me.save()
                     return redirect(reverse("squad", kwargs={"id": me.squad.id}))
-
                 else:
                     raise PermissionDenied
 
@@ -167,7 +197,14 @@ def edit_squad(request, id):
                 raise PermissionDenied
 
         return render(
-            request, "edit_squad.html", {"form": form, "squad_size": squad_size}
+            request,
+            "edit_squad.html",
+            {
+                "form": form,
+                "squad_size": squad_size,
+                "email_does_not_exist": email_does_not_exist,
+                "email_entered": request.POST,
+            },
         )
 
     else:
@@ -196,6 +233,26 @@ def requests(request):
             for member in their_members:
                 member.squad = my_squad
                 member.save()
+
+            # Add their interested events.
+            for event in their_squad.interested.all():
+                # If event is in interested then leave it in interested.
+                # If event is in going then leave it in going.
+                if (
+                    event not in my_squad.interested.all()
+                    and event not in my_squad.going.all()
+                ):
+                    my_squad.interested.add(event)
+
+            # Add their going events.
+            for event in their_squad.going.all():
+                # If event is in interested then put it in going.
+                if event in my_squad.interested.all():
+                    my_squad.interested.remove(event)
+                    my_squad.going.add(event)
+                # If event is not in going then put it in going.
+                if event not in my_squad.going.all():
+                    my_squad.going.add(event)
 
             # Delete their old squad.
             Squad.objects.get(id=their_squad.id).delete()
