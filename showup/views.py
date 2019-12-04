@@ -59,8 +59,8 @@ def user(request, id):
         requested_user = CustomUser.objects.get(id=id)
     except CustomUser.DoesNotExist:
         raise PermissionDenied
-
-    if not EmailAddress.objects.get(id=id).verified:
+    
+    if not EmailAddress.objects.get(email=requested_user.email).verified:
         raise PermissionDenied
 
     return render(request, "user.html", context={"requested_user": requested_user})
