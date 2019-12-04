@@ -111,12 +111,6 @@ def edit_squad(request, id):
 
                     # We are already in the same squad.
                     if my_squad.id == their_squad.id:
-                        # TODO: Output some sort of message.
-                        # return render(
-                        #     request,
-                        #     "edit_squad.html",
-                        #     {"form": form, "squad_size": squad_size},
-                        # )
                         email_does_not_exist = 2
                         return render(
                             request,
