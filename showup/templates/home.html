@@ -1,173 +1,169 @@
 {% extends 'header.html' %}
+
 {% load avatar_tags %}
+
 {% block content %}
 
 {% if user.is_authenticated %}
-<div class="text-center pt-7">
-<h2 class="font-weight-bold mb-0">
-  Howdy, {{ user.first_name }}.
-</h2>
+  <div class="text-center pt-7">
+    <h2 class="font-weight-bold mb-0">
+      Howdy, {{ user.first_name }}.
+    </h2>
+    <h4 class="font-size-lg text-gray-700 mb-0">
+      {% if user.squad.interested.count == 0 and user.squad.going.count == 0 %}
+        Head over to <a href="{% url 'events' %}">Events</a> to find shows you may be interested in.
+      {% else %}
+        Let's get you dancing ASAP.
+      {% endif %}
+    </h4>
+  </div>
 
-<!-- Text -->
-<h4 class="font-size-lg text-gray-700 mb-0">
-  Let's get you dancing ASAP.
-</h4>
-</div>
+  {% if user.squad.interested.count != 0 or user.squad.going.count != 0 %}
     <section class="pt-6 pt-md-5 pb-8 mb-md-8">
-        <div class="container">
-          <div class="row">
-            <div class="col-12">
-              <!-- Card for interested -->
-              <div class="card shadow-light-lg accordion mb-5 mb-md-6">
-                <div class="list-group">
-                  <div class="list-group-item">
-
-                    <!-- Header -->
-                    <div class="d-flex align-items-center">
-                      <div class="mr-auto">
-                        <h2 class="font-weight-bold mb-0">
-                          These are the {{ user.squad.interested.count }} concerts I'm interested in.
-                        </h2>
-                      </div>
+      <div class="container">
+        <div class="row">
+          <div class="col-12">
+            <!-- Card for interested -->
+            <div class="card shadow-light-lg accordion mb-5 mb-md-6">
+              <div class="list-group">
+                <div class="list-group-item">
+                  <!-- Header -->
+                  <div class="d-flex align-items-center">
+                    <div class="mr-auto">
+                      <h2 class="font-weight-bold mb-0">
+                        These are the {{ user.squad.interested.count }} concerts I'm interested in.
+                      </h2>
                     </div>
                   </div>
+                </div>
 
-                  {% for interested in user.squad.interested.all %}
+                {% for interested in user.squad.interested.all %}
                   <div class="list-group-item pt-1">
-                      <a class="btn btn-primary" style = "position:relative; left:700px; top:85px" href="{% url 'event_stack' interested.id %}">Matching Stack</a>
-                      <div class="mr-4">
-                        <a target="_blank" href="{{ interested.event_url }}">{{ interested.performer_names }}</a><br>
-                        <p class="text-gray-700">
-                          Date: {{ interested.datetime }} <br>
-                          Venue: {{ interested.venue_name }} <br>
-                          Borough: {{ interested.get_borough_display }}
-                        </p>
-                      </div>
+                    <a class="btn btn-primary" style = "position:relative; left:700px; top:85px" href="{% url 'event_stack' interested.id %}">Matching Stack</a>
+                    <div class="mr-4">
+                      <a target="_blank" href="{{ interested.event_url }}">{{ interested.performer_names }}</a><br>
+                      <p class="text-gray-700">
+                        Date: {{ interested.datetime }} <br>
+                        Venue: {{ interested.venue_name }} <br>
+                        Borough: {{ interested.get_borough_display }}
+                      </p>
+                    </div>
                   </div>
                 {% endfor %}
-
-                </div>
               </div>
+            </div>
 
-              <!-- Card for going -->
-              <div class="card shadow-light-lg accordion mb-5 mb-md-6">
-                  <div class="list-group">
-                    <div class="list-group-item">
-
-                      <!-- Header -->
-                      <div class="d-flex align-items-center">
-                        <div class="mr-auto">
-                          <h2 class="font-weight-bold mb-0">
-                            These are the {{ user.squad.going.count }} concerts I'm going to.
-                          </h2>
-                        </div>
-                      </div>
+            <!-- Card for going -->
+            <div class="card shadow-light-lg accordion mb-5 mb-md-6">
+              <div class="list-group">
+                <div class="list-group-item">
+                  <!-- Header -->
+                  <div class="d-flex align-items-center">
+                    <div class="mr-auto">
+                      <h2 class="font-weight-bold mb-0">
+                        These are the {{ user.squad.going.count }} concerts I'm going to.
+                      </h2>
                     </div>
-
-                    {% for going in user.squad.going.all %}
-                    <div class="list-group-item pt-1">
-                        <a class="btn btn-primary" style = "position:relative; left:700px; top:85px" href="{% url 'event_stack' going.id %}">Matching Stack</a>
-                        <div class="mr-4">
-                          <a target="_blank" href="{{ going.event_url }}">{{ going.performer_names }}</a><br>
-                          <p class="text-gray-700">
-                            Date: {{ going.datetime }} <br>
-                            Venue: {{ going.venue_name }} <br>
-                            Borough: {{ going.get_borough_display }}
-                          </p>
-                        </div>
-                    </div>
-                  {% endfor %}
-
                   </div>
                 </div>
-      </section>
+
+                {% for going in user.squad.going.all %}
+                  <div class="list-group-item pt-1">
+                    <a class="btn btn-primary" style = "position:relative; left:700px; top:85px" href="{% url 'event_stack' going.id %}">Matching Stack</a>
+                    <div class="mr-4">
+                      <a target="_blank" href="{{ going.event_url }}">{{ going.performer_names }}</a><br>
+                      <p class="text-gray-700">
+                        Date: {{ going.datetime }} <br>
+                        Venue: {{ going.venue_name }} <br>
+                        Borough: {{ going.get_borough_display }}
+                      </p>
+                    </div>
+                  </div>
+                {% endfor %}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  {% endif %}
 
 {% else %}
-    <!-- WELCOME -->
-    <section class="pt-4 pt-md-10">
-        <div class="container">
-          <div class="row align-items-center">
-            <div class="col-12 col-md-5 col-lg-6 order-md-2">
+  <!-- WELCOME -->
+  <section class="pt-4 pt-md-10">
+    <div class="container">
+      <div class="row align-items-center">
+        <!-- Image -->
+        <div class="col-12 col-md-5 col-lg-6 order-md-2">
+          {% load static %}
+          <img src="{% static 'dancing.png' %}" class="img-fluid mw-md-150 mw-lg-130 mb-6 mb-md-0" alt="..." data-aos="fade-up" data-aos-delay="100">
+        </div>
 
-              <!-- Image -->
-              {% load static %}
-              <img src="{% static 'dancing.png' %}" class="img-fluid mw-md-150 mw-lg-130 mb-6 mb-md-0" alt="..." data-aos="fade-up" data-aos-delay="100">
+        <div class="col-12 col-md-7 col-lg-6 order-md-1" data-aos="fade-up">
+          <!-- Heading -->
+          <h1 class="display-3 text-center text-md-left">
+            Welcome to <span class="text-primary">ShowUp</span>.
+            Find concert buddies.
+          </h1>
 
-            </div>
-            <div class="col-12 col-md-7 col-lg-6 order-md-1" data-aos="fade-up">
+          <!-- Text -->
+          <p class="lead text-center text-md-left text-muted mb-6 mb-lg-8">
+            Find people in your area who want to go to concerts with you.
+          </p>
 
-              <!-- Heading -->
-              <h1 class="display-3 text-center text-md-left">
-                Welcome to <span class="text-primary">ShowUp</span>.
-                Find concert buddies.
-              </h1>
+          <!-- Buttons -->
+          <div class="text-center text-md-left">
+            <a href="{% url 'account_login' %}" class="btn btn-primary shadow lift mr-1">
+              Log in <i class="fas fa-heart d-none d-md-inline ml-3"></i>
+            </a>
+            <a href="{% url 'account_signup' %}" class="btn btn-primary-soft lift">
+              Sign up
+            </a>
+          </div>
+        </div>
+      </div> <!-- / .row -->
+    </div> <!-- / .container -->
+  </section>
 
-              <!-- Text -->
-              <p class="lead text-center text-md-left text-muted mb-6 mb-lg-8">
-                Find people in your area who want to go to concerts with you.
-              </p>
+  <!-- FEATURES -->
+  <section class="py-8 py-md-11 border-bottom">
+    <div class="container">
+      <div class="row">
+        <!-- Find concert buddies -->
+        <div class="col-12 col-md-4" data-aos="fade-up">
+          <div class="icon text-primary mb-3">
+            <span class="fas fa-podcast fa-5x"></span>
+          </div>
+          <h3>Find concert buddies</h3>
+          <p class="text-muted mb-6 mb-md-0">
+            ShowUp will help you find people to go with you to concerts.
+          </p>
+        </div>
 
-              <!-- Buttons -->
-              <div class="text-center text-md-left">
-                <a href="{% url 'account_login' %}" class="btn btn-primary shadow lift mr-1">
-                  Log in <i class="fas fa-heart d-none d-md-inline ml-3"></i>
-                </a>
-                <a href="{% url 'account_signup' %}" class="btn btn-primary-soft lift">
-                  Sign up
-                </a>
-              </div>
+        <!-- Join a squad -->
+        <div class="col-12 col-md-4" data-aos="fade-up">
+          <div class="icon text-primary mb-3">
+            <span class="fas fa-user-friends fa-5x"></span>
+          </div>
+          <h3>Join a squad</h3>
+          <p class="text-muted mb-6 mb-md-0">
+            Find a group of people who like the music you like.
+          </p>
+        </div>
 
-            </div>
-          </div> <!-- / .row -->
-        </div> <!-- / .container -->
-      </section>
-
-      <!-- FEATURES -->
-      <section class="py-8 py-md-11 border-bottom">
-        <div class="container">
-          <div class="row">
-            <!-- Find concert buddies -->
-            <div class="col-12 col-md-4" data-aos="fade-up">
-              <div class="icon text-primary mb-3">
-                <span class="fas fa-podcast fa-5x"></span>
-              </div>
-
-              <h3>Find concert buddies</h3>
-
-              <p class="text-muted mb-6 mb-md-0">
-                ShowUp will help you find people to go with you to concerts.
-              </p>
-            </div>
-
-            <!-- Join a squad -->
-            <div class="col-12 col-md-4" data-aos="fade-up">
-              <div class="icon text-primary mb-3">
-                <span class="fas fa-user-friends fa-5x"></span>
-              </div>
-
-              <h3>Join a squad</h3>
-
-              <p class="text-muted mb-6 mb-md-0">
-                Find a group of people who like the music you like.
-              </p>
-            </div>
-
-            <!-- Have some fun -->
-            <div class="col-12 col-md-4" data-aos="fade-up">
-              <div class="icon text-primary mb-3">
-                <span class="fas fa-user-astronaut fa-5x"></span>
-              </div>
-
-              <h3>Have some fun</h3>
-
-              <p class="text-muted mb-6 mb-md-0">
-                Bring your squad to see your favorite artists perform.
-              </p>
-            </div>
-
-          </div> <!-- / .row -->
-        </div> <!-- / .container -->
-      </section>
+        <!-- Have some fun -->
+        <div class="col-12 col-md-4" data-aos="fade-up">
+          <div class="icon text-primary mb-3">
+            <span class="fas fa-user-astronaut fa-5x"></span>
+          </div>
+          <h3>Have some fun</h3>
+          <p class="text-muted mb-6 mb-md-0">
+            Bring your squad to see your favorite artists perform.
+          </p>
+        </div>
+      </div> <!-- / .row -->
+    </div> <!-- / .container -->
+  </section>
 {% endif %}
 
 {% endblock %}
