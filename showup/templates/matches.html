@@ -20,7 +20,7 @@
                     {{ match.event.performer_names }}
                     </h3>
                     <p class="font-size-lg text-gray-700 mb-0">
-                      Performer: {{ event.performer_names }} <br>
+                      {{ event.performer_names }} <br>
                       Date: {{ event.datetime }} <br>
                       Venue: {{ event.venue_name }} <br>
                       Borough: {{ event.get_borough_display }} <br>
@@ -39,7 +39,7 @@
                   <!-- Collapse -->
                   <div class="collapse" id="id{{ event.id }}" data-parent="#helpAccordionOne">
                     <div class="text-left pt-2">
-                      <a target="_blank" href="{{ event.event_url }}">SeatGeek</a>
+                      <a target="_blank" href="{{ event.event_url }}">More Information</a>
                     </div><hr>
                     {% for match in matches %}
                     {% if match.event.id == event.id %}
