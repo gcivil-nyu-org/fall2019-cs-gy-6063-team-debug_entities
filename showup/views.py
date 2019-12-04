@@ -2,7 +2,6 @@ from .forms import CustomUserChangeForm, SquadForm, CustomUserForm
 from .models import Concert, CustomUser, Genre, Request, Squad, Swipe
 from allauth.account.admin import EmailAddress
 from django.contrib.auth.decorators import login_required
-from django.contrib import messages as msg
 from django.core.exceptions import PermissionDenied
 from django.shortcuts import redirect, render, reverse
 from .filters import ConcertFilter
@@ -344,16 +343,13 @@ def matches(request):
 
 @login_required
 def settings(request):
-    # delete all unused transaction messages
-    storage = msg.get_messages(request)
-    for i in range(0, len(storage._loaded_messages)):
-        del storage._loaded_messages[i]
+    msg = ""
     if request.POST:
         form = CustomUserForm(request.POST or None, instance=request.user)
         if form.is_valid():
             form.save(request)
-            msg.success(request, "Settings changed successfully!")
-    return render(request, "settings.html", {"user": request.user})
+            msg = "Settings changed successfully!"
+    return render(request, "settings.html", {"user": request.user, "message": msg})
 
 
 @login_required
