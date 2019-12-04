@@ -24,7 +24,6 @@
                       Date: {{ event.datetime }} <br>
                       Venue: {{ event.venue_name }} <br>
                       Borough: {{ event.get_borough_display }} <br>
-                      <a target="_blank" href="{{ event.event_url }}">SeatGeek</a>
                     </p>
                     </span>
                     <div class="text-muted ml-auto">
@@ -39,29 +38,31 @@
 
                   <!-- Collapse -->
                   <div class="collapse" id="id{{ event.id }}" data-parent="#helpAccordionOne">
+                    <div class="text-left pt-2">
+                      <a target="_blank" href="{{ event.event_url }}">SeatGeek</a>
+                    </div><hr>
                     {% for match in matches %}
                     {% if match.event.id == event.id %}
                     <div class="py-5">
 
                       <!-- Text -->
                       <div class="text-gray-700 row">
+                        <div class="col">
                         {% for u in users %}
                           {% if u.squad.id == match.swipee.id %}
-                        <div class="col">
-                          {% avatar u %} &nbsp <a href="{% url 'user' u.id %}">{{ u.first_name }}</a>
-                        </div>
+                          {% avatar u %} <a href="{% url 'user' u.id %}">{{ u.first_name }}</a> &nbsp
                         {% endif %}
                       {% endfor %}
                       </div>
-                        <div class="col text-right">
-                          <a style = "position:relative; top:26px" href="{% url 'messages' user.squad.id match.swipee.id %}">Message</a> &nbsp &nbsp &nbsp
-                          <a style = "position:relative; top:26px" href="{% url 'squad' match.swipee.id %}">View Profile</a>
-                        </div>
+                      <div class="col text-right pt-5">
+                        <a class="btn btn-primary" href="{% url 'messages' user.squad.id match.swipee.id %}">Message</a> &nbsp
+                        <a class="btn btn-primary" href="{% url 'squad' match.swipee.id %}">View Squad</a>
                       </div>
-
+                      </div>
+                      </div><hr>
+                      {% endif %}
+                      {% endfor %}
                     </div>
-                    {% endif %}
-                    {% endfor %}
                   </div>
                 {% endfor %}
               {% else %}
