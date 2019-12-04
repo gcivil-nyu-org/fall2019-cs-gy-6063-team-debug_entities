@@ -265,38 +265,38 @@ class EditSquadViewTests(TestCase):
     def setUp(self):
         # Create and save user one.
         email, password = "jspringer@example.com", "heyhey123"
-        squad = Squad.objects.create(id=1)
+        squad_1 = Squad.objects.create(id=1)
         user = CustomUser.objects.create_user(
-            username=email, email=email, password=password, squad=squad
+            username=email, email=email, password=password, squad=squad_1
         )
-
-        # Login user one.
-        EmailAddress.objects.create(id=1, user=user, verified=True)
-        self.client.login(username=email, password=password)
 
         # Create and save user two.
         email, password = "jfallon@example.com", "heyhey123"
-        squad = Squad.objects.create(id=2)
+        squad_2 = Squad.objects.create(id=2)
         user = CustomUser.objects.create_user(
-            username=email, email=email, password=password, squad=squad
+            username=email, email=email, password=password, squad=squad_2
         )
 
         # Create and save user three.
         email, password = "jkimmel@example.com", "heyhey123"
-        squad = Squad.objects.create(id=3)
+        squad_3 = Squad.objects.create(id=3)
         user = CustomUser.objects.create_user(
-            username=email, email=email, password=password, squad=squad
+            username=email, email=email, password=password, squad=squad_3
         )
+
+        # Login user three.
+        EmailAddress.objects.create(id=3, user=user, verified=True)
+        self.client.login(username=email, password=password)
 
     def test_editsquad_already_in_squad(self):
         # Create form data.
-        data = {"add": "", "email": "jspringer@example.com"}
+        data = {"add": "", "email": "jkimmel@example.com"}
 
         # Send a POST request containing the form data.
-        self.client.post(reverse("edit_squad", kwargs={"id": 1}), data=data)
+        self.client.post(reverse("edit_squad", kwargs={"id": 3}), data=data)
 
         # Ensure the POST request was successful.
-        users = CustomUser.objects.filter(squad=1)
+        users = CustomUser.objects.filter(squad=3)
         self.assertEqual(users.count(), 1)
 
     def test_editsquad_email_does_not_exist(self):
@@ -304,36 +304,36 @@ class EditSquadViewTests(TestCase):
         data = {"add": "", "email": "jseinfeld@example.com"}
 
         # Send a POST request containing the form data.
-        self.client.post(reverse("edit_squad", kwargs={"id": 1}), data=data)
+        self.client.post(reverse("edit_squad", kwargs={"id": 3}), data=data)
 
         # Ensure the POST request was successful.
-        users = CustomUser.objects.filter(squad=1)
+        users = CustomUser.objects.filter(squad=3)
         self.assertEqual(users.count(), 1)
 
     def test_editsquad_add_leave(self):
-        # jspringer@example.com requests jfallon@example.com to join their squad.
+        # jkimmel@example.com requests jfallon@example.com to join their squad.
         data = {"add": "", "email": "jfallon@example.com"}
-        self.client.post(reverse("edit_squad", kwargs={"id": 1}), data=data)
-        users = CustomUser.objects.filter(squad=1)
+        self.client.post(reverse("edit_squad", kwargs={"id": 3}), data=data)
+        users = CustomUser.objects.filter(squad=3)
         self.assertEqual(users.count(), 1)
 
-        # jfallon@example.com requests jspringer@example.com to join their squad.
+        # jfallon@example.com requests jkimmel@example.com to join their squad.
         requester = Squad.objects.get(id=2)
-        requestee = Squad.objects.get(id=1)
+        requestee = Squad.objects.get(id=3)
         Request.objects.create(requester=requester, requestee=requestee)
 
-        # jspringer@example.com requests jfallon@example.com to join their squad.
+        # jkimmel@example.com requests jfallon@example.com to join their squad.
         data = {"add": "", "email": "jfallon@example.com"}
-        self.client.post(reverse("edit_squad", kwargs={"id": 1}), data=data)
-        users = CustomUser.objects.filter(squad=1)
+        self.client.post(reverse("edit_squad", kwargs={"id": 3}), data=data)
+        users = CustomUser.objects.filter(squad=2)
         self.assertEqual(users.count(), 2)
 
-        # jspringer@example.com leaves their squad.
+        # jkimmel@example.com leaves their squad.
         data = {"leave": ""}
-        self.client.post(reverse("edit_squad", kwargs={"id": 1}), data=data)
+        self.client.post(reverse("edit_squad", kwargs={"id": 2}), data=data)
 
         # Ensure the POST request was successful.
-        user = CustomUser.objects.get(squad=1)
+        user = CustomUser.objects.get(squad=2)
         self.assertEqual(user.email, "jfallon@example.com")
 
     def test_editsquad_leave_one(self):
@@ -341,7 +341,7 @@ class EditSquadViewTests(TestCase):
         data = {"leave": ""}
 
         # Send a POST request containing the form data.
-        response = self.client.post(reverse("edit_squad", kwargs={"id": 1}), data=data)
+        response = self.client.post(reverse("edit_squad", kwargs={"id": 3}), data=data)
 
         # Ensure the POST request returns PermissionDenied.
         self.assertEqual(response.status_code, 403)
@@ -351,27 +351,76 @@ class EditSquadViewTests(TestCase):
         data = {"remove": ""}
 
         # Send a POST request containing the form data.
-        response = self.client.post(reverse("edit_squad", kwargs={"id": 1}), data=data)
+        response = self.client.post(reverse("edit_squad", kwargs={"id": 3}), data=data)
 
         # Ensure the POST request returns PermissionDenied.
         self.assertEqual(response.status_code, 403)
 
     def test_editsquad_get(self):
         # Send a GET request.
-        response = self.client.get(reverse("edit_squad", kwargs={"id": 1}))
+        response = self.client.get(reverse("edit_squad", kwargs={"id": 3}))
 
         # Ensure the POST request was successful.
         self.assertEqual(response.status_code, 200)
 
     def test_editsquad_edit_other_squad(self):
         # Create form data.
-        data = {"add": "", "email": "jfallon@example.com"}
+        data = {"add": "", "email": "jspringer@example.com"}
 
         # Send a POST request containing the form data.
         response = self.client.post(reverse("edit_squad", kwargs={"id": 2}), data=data)
 
         # Ensure the POST request returns PermissionDenied.
         self.assertEqual(response.status_code, 403)
+
+    def test_editsquad_add_interested(self):
+        # Create a request.
+        squad_1 = Squad.objects.get(id=1)
+        squad_3 = Squad.objects.get(id=3)
+        Request.objects.create(requester=squad_1, requestee=squad_3)
+
+        # Have bigger squad be interested in an event that smaller squad is
+        # neither interested in or going to.
+        event = Concert.objects.create(id=1, datetime=datetime.datetime.now(tz=utc))
+        squad_3.interested.add(event)
+        squad_3.save()
+
+        # Accept the request via editsquad.
+        data = {"add": "", "email": "jspringer@example.com"}
+        self.client.post(reverse("edit_squad", kwargs={"id": 3}), data=data)
+
+        # Little squad should be interested in one event.
+        # Remember that the squad with the larger id is deleted!
+        squad_1 = Squad.objects.get(id=1)
+        self.assertEqual(len(squad_1.interested.all()), 1)
+
+    def test_editsquad_add_going(self):
+        # Create a request.
+        squad_1 = Squad.objects.get(id=1)
+        squad_3 = Squad.objects.get(id=3)
+        Request.objects.create(requester=squad_1, requestee=squad_3)
+
+        # Have smaller squad be interested in an event that bigger squad is going to.
+        event = Concert.objects.create(id=1, datetime=datetime.datetime.now(tz=utc))
+        squad_1.interested.add(event)
+        squad_1.save()
+        squad_3.going.add(event)
+        squad_3.save()
+
+        # Have bigger squad be going to an event that smaller squad is neither
+        # interested in or going to.
+        event = Concert.objects.create(id=2, datetime=datetime.datetime.now(tz=utc))
+        squad_3.going.add(event)
+        squad_3.save()
+
+        # Accept the request via editsquad.
+        data = {"add": "", "email": "jspringer@example.com"}
+        self.client.post(reverse("edit_squad", kwargs={"id": 3}), data=data)
+
+        # Little squad should be going to two events.
+        # Remember that the squad with the larger id is deleted!
+        squad_1 = Squad.objects.get(id=1)
+        self.assertEqual(len(squad_1.going.all()), 2)
 
 
 class MatchesViewTests(TestCase):
@@ -507,6 +556,55 @@ class RequestsViewTests(TestCase):
 
         squad_size = CustomUser.objects.filter(squad=squad_1).count()
         self.assertEqual(squad_size, 1)
+
+    def test_requests_add_interested(self):
+        # Create a request.
+        squad_1 = Squad.objects.get(id=1)
+        squad_3 = Squad.objects.get(id=3)
+        Request.objects.create(requester=squad_1, requestee=squad_3)
+
+        # Have bigger squad be interested in an event that smaller squad is
+        # neither interested in or going to.
+        event = Concert.objects.create(id=1, datetime=datetime.datetime.now(tz=utc))
+        squad_3.interested.add(event)
+        squad_3.save()
+
+        # Accept the request.
+        data = {"accept": "", "their_sid": 1}
+        self.client.post(reverse("requests"), data=data)
+
+        # Little squad should be interested in one event.
+        # Remember that the squad with the larger id is deleted!
+        squad_1 = Squad.objects.get(id=1)
+        self.assertEqual(len(squad_1.interested.all()), 1)
+
+    def test_requests_add_going(self):
+        # Create a request.
+        squad_1 = Squad.objects.get(id=1)
+        squad_3 = Squad.objects.get(id=3)
+        Request.objects.create(requester=squad_1, requestee=squad_3)
+
+        # Have smaller squad be interested in an event that bigger squad is going to.
+        event = Concert.objects.create(id=1, datetime=datetime.datetime.now(tz=utc))
+        squad_1.interested.add(event)
+        squad_1.save()
+        squad_3.going.add(event)
+        squad_3.save()
+
+        # Have bigger squad be going to an event that smaller squad is neither
+        # interested in or going to.
+        event = Concert.objects.create(id=2, datetime=datetime.datetime.now(tz=utc))
+        squad_3.going.add(event)
+        squad_3.save()
+
+        # Accept the request.
+        data = {"accept": "", "their_sid": 1}
+        self.client.post(reverse("requests"), data=data)
+
+        # Little squad should be going to two events.
+        # Remember that the squad with the larger id is deleted!
+        squad_1 = Squad.objects.get(id=1)
+        self.assertEqual(len(squad_1.going.all()), 2)
 
 
 class AuthenticatedViewTests(TestCase):
