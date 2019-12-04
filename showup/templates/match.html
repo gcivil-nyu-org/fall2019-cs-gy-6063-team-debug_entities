@@ -20,7 +20,7 @@
               {% for u in users %}
                 {% if u.squad.id == swipee.id %}
                   <div class="col">
-                    {% avatar u %} &nbsp <a href="{% url 'user' u.id %}">{{ u.first_name }}</a><br><br>
+                    {% avatar u %} &nbsp <a href="{% url 'user' u.id %}">{{ u.first_name }}{% if u.get_age > 0 %}, {{ u.get_age }}{% endif %}</a><br><br>
                   </div>
                 {% endif %}
               {% endfor %}
