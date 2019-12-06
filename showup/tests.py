@@ -468,6 +468,44 @@ class MatchesViewTests(TestCase):
         self.assertEqual(self.response.status_code, 200)
 
 
+class SettingsViewTests(TestCase):
+    def setUp(self):
+        # Create and save user.
+        username, password = "tom.hanks@hollywood.com", "TomHanks123"
+        squad = Squad()
+        squad.save()
+        user = CustomUser.objects.create_user(
+            username=username, password=password, squad=squad
+        )
+        user.save()
+        EmailAddress.objects.get_or_create(id=1, user=user, verified=True)
+
+        # Login user.
+        self.client.login(username=username, password=password)
+
+        # Create and save event.
+        event = Concert(id=1, datetime=datetime.datetime.now(tz=utc), borough="BK")
+        event.save()
+
+    def test_save_form(self):
+        # check if the user has first_name, last_name as empty string
+        user = CustomUser.objects.get(id=1)
+        self.assertEqual(user.first_name, "")
+        self.assertEqual(user.last_name, "")
+        data = {
+            "first_name": "Tom",
+            "last_name": "Hanks",
+            "email": "tom.hanks@hollywood.com",
+        }
+        # Send a POST request containing the first_name, last_name
+        response = self.client.post(reverse("settings"), data)
+        self.assertEqual(response.status_code, 200)
+        # Ensure the POST request was successful.
+        user = CustomUser.objects.get(id=1)
+        self.assertEqual(user.first_name, "Tom")
+        self.assertEqual(user.last_name, "Hanks")
+
+
 class RequestsViewTests(TestCase):
     def setUp(self):
         # Create and save user one.
