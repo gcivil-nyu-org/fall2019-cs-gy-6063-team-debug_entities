@@ -12,3 +12,4 @@ flake8
 gunicorn
 python-dateutil
 requests
+whitenoise
