@@ -1,8 +1,8 @@
-language:
-  - python
-
 os:
   - linux
+
+language:
+  - python
   
 python:
   - 3.6
