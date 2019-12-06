@@ -180,3 +180,5 @@ SESSION_EXPIRE_AFTER_LAST_ACTIVITY = True
 
 # Crispy forms settings
 CRISPY_TEMPLATE_PACK = "bootstrap4"
+
+NOSE_ARGS = ["--nocapture", "--nologcapture"]

@@ -1,3 +1,4 @@
+from .forms import CustomUserForm
 from .models import Concert, CustomUser, Genre, Request, Squad, Swipe
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
@@ -33,6 +34,7 @@ class CustomUserAdmin(UserAdmin):
 
     class Meta:
         model = CustomUser
+        add_form = CustomUserForm
 
 
 class GenreAdmin(admin.ModelAdmin):
