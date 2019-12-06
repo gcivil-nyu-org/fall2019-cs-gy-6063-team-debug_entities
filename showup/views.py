@@ -1,4 +1,4 @@
-from .forms import CustomUserChangeForm, SquadForm
+from .forms import CustomUserChangeForm, SquadForm, CustomUserForm
 from .models import Concert, CustomUser, Genre, Request, Squad, Swipe
 from allauth.account.admin import EmailAddress
 from django.contrib.auth.decorators import login_required
@@ -55,15 +55,17 @@ def insert_to_list_exclusively(event_id, add_list, remove_list):
 
 @login_required
 def user(request, id):
-    try:  # check if given id exists
-        requested_user = CustomUser.objects.get(id=id)
+    # See if this user exists.
+    try:
+        user = CustomUser.objects.get(id=id)
     except CustomUser.DoesNotExist:
         raise PermissionDenied
 
-    if not EmailAddress.objects.get(id=id).verified:
+    # Ensure this user verified their email address.
+    if not EmailAddress.objects.get(email=user.email).verified:
         raise PermissionDenied
 
-    return render(request, "user.html", context={"requested_user": requested_user})
+    return render(request, "user.html", context={"requested_user": user})
 
 
 @login_required
@@ -396,6 +398,17 @@ def matches(request):
         "matches.html",
         {"matches": matches, "events": uniq_events, "users": users},
     )
+
+
+@login_required
+def settings(request):
+    msg = ""
+    if request.POST:
+        form = CustomUserForm(request.POST or None, instance=request.user)
+        if form.is_valid():
+            form.save(request)
+            msg = "Settings changed successfully!"
+    return render(request, "settings.html", {"user": request.user, "message": msg})
 
 
 @login_required

@@ -33,3 +33,16 @@ class CustomUserChangeForm(UserChangeForm):
 
 class SquadForm(forms.Form):
     email = forms.EmailField(required=False)
+
+
+class CustomUserForm(UserChangeForm):
+    class Meta:
+        model = CustomUser
+        fields = ("first_name", "last_name", "date_of_birth", "gender")
+
+    def save(self, request):
+        user = super(CustomUserForm, self).save(request)
+        user.date_of_birth = self.cleaned_data["date_of_birth"]
+        user.gender = self.cleaned_data["gender"]
+        user.save()
+        return user
