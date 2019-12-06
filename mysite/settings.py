@@ -26,7 +26,7 @@ SECRET_KEY = "+!t#2po!65g4kr&=3sjqkd@at0!(3t=y#ojn%5$$ui)p735=8@"
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["127.0.0.1", "showup-nyc-develop.herokuapp.com"]
 
 
 # Application definition
@@ -127,7 +127,7 @@ USE_TZ = True
 STATIC_URL = "/static/"
 STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
 
-STATICFILES_DIRS = (os.path.join(BASE_DIR, "static"),)
+STATICFILES_DIRS = (os.path.join(BASE_DIR, "showup", "static"),)
 
 # Media Files
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
