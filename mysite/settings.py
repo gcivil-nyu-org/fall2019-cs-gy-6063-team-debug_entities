@@ -27,9 +27,9 @@ SECRET_KEY = "+!t#2po!65g4kr&=3sjqkd@at0!(3t=y#ojn%5$$ui)p735=8@"
 DEBUG = False
 
 ALLOWED_HOSTS = ["127.0.0.1", "showup-nyc-develop.herokuapp.com"]
-ADMINS = (
+ADMINS = [
     ("Vik", "vm1564@nyu.edu")
-)
+]
 
 
 # Application definition
