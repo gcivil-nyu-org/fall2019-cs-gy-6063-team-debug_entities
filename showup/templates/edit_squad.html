@@ -1,4 +1,5 @@
 {% extends 'header.html' %}
+
 {% block content %}
 
 <div style="position:relative; top:20px">
@@ -12,7 +13,6 @@
     <div class="row">
       <div class="col-12">
         <p>Enter a user's email address to send them a request to join squads. If they accept, you will join squads.</p>
-
         <form method='POST'>
           {% csrf_token %}
 
@@ -21,6 +21,7 @@
           </div>
 
           <button type="submit" name="add" class="btn btn-block btn-primary shadow lift">Add User</button>
+
           {% if squad_size > 1 %}
             <button type="submit" name="leave" class="btn btn-block btn-primary shadow lift">Leave Squad</button>
           {% endif %}
@@ -30,8 +31,7 @@
   </div>
 </section>
 
-<!-- Popup if email does not exist or user is already in squad -->
-{% if email_does_not_exist == 1 or email_does_not_exist == 2 %}
+{% if msg %}
   <div class="modal" id="myModal" data-toggle="modal" data-target="#myModal">
     <div class="modal-dialog modal-lg">
       <div class="modal-content">
@@ -39,13 +39,7 @@
           <h3 class="modal-title">Alert!</h3>
         </div>
         <div class="modal-body">
-          <!-- User is not registered -->
-          {% if email_does_not_exist == 1 %}
-            <h4>{{email_entered.email}} is not registered with ShowUp.</h4>
-          <!-- User is already in squad-->
-          {% elif email_does_not_exist == 2 %}
-            <h4>{{email_entered.email}} is already in your squad!</h4>
-          {% endif %}
+          <h4>{{ msg }}</h4>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-primary" data-dismiss="myModal">Close</button>
@@ -56,10 +50,10 @@
 {% endif %}
 
 <script>
-$(document).ready(function(){
-  $('.modal').modal({dismissible: false,});
-  $('.modal').modal('open');
-});
+  $(document).ready(function(){
+    $('.modal').modal({dismissible: false,});
+    $('.modal').modal('open');
+  });
 </script>
 
 {% endblock %}

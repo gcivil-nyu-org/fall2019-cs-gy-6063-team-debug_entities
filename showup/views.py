@@ -93,11 +93,9 @@ def squad(request, id):
 
 
 @login_required
-def edit_squad(request, id):
+def edit_squad(request, sid):
     # You can only edit your own squad.
-    email_does_not_exist = 0
-
-    if id == request.user.squad.id:
+    if sid == request.user.squad.id:
         # Get my squad.
         my_squad = request.user.squad
         squad_size = CustomUser.objects.filter(squad=my_squad).count()
@@ -106,42 +104,40 @@ def edit_squad(request, id):
         if request.method == "POST" and form.is_valid():
             if "add" in request.POST:
                 try:
-                    # Get their squad and their members.
+                    # Get their squad.
                     their_squad = CustomUser.objects.get(
                         email=request.POST["email"]
                     ).squad
                 except CustomUser.DoesNotExist:
-                    email_does_not_exist = 1
+                    msg = "{} is not registered with ShowUp.".format(request.POST["email"])
                     return render(
                         request,
                         "edit_squad.html",
                         {
                             "form": form,
+                            "msg": msg,
                             "squad_size": squad_size,
-                            "email_does_not_exist": email_does_not_exist,
-                            "email_entered": request.POST,
                         },
                     )
 
                 # We are already in the same squad.
                 if my_squad.id == their_squad.id:
-                    email_does_not_exist = 2
+                    msg = "{} is already in your squad!".format(request.POST["email"])
                     return render(
                         request,
                         "edit_squad.html",
                         {
                             "form": form,
+                            "msg": msg,
                             "squad_size": squad_size,
-                            "email_does_not_exist": email_does_not_exist,
-                            "email_entered": request.POST,
                         },
                     )
 
                 # Check to see if a request already exists.
-                request = Request.objects.filter(
+                r = Request.objects.filter(
                     requester=their_squad, requestee=my_squad
                 )
-                if request.exists():
+                if r.exists():
                     # Join the squad that has a smaller id.
                     if their_squad.id < my_squad.id:
                         my_squad, their_squad = their_squad, my_squad
@@ -178,12 +174,32 @@ def edit_squad(request, id):
                     Squad.objects.get(id=their_squad.id).delete()
 
                     # Delete the request.
-                    request.delete()
+                    r.delete()
+
+                    msg = "You have merged squads with {}!".format(request.POST["email"])
+                    return render(
+                        request,
+                        "edit_squad.html",
+                        {
+                            "form": form,
+                            "msg": msg,
+                            "squad_size": squad_size,
+                        },
+                    )
                 else:
                     # Create a request.
                     Request.objects.create(requester=my_squad, requestee=their_squad)
 
-                return redirect(reverse("squad", kwargs={"id": my_squad.id}))
+                    msg = "A request has been sent to {}. If they accept, your squads will merge.".format(request.POST["email"])
+                    return render(
+                        request,
+                        "edit_squad.html",
+                        {
+                            "form": form,
+                            "msg": msg,
+                            "squad_size": squad_size,
+                        },
+                    )
 
             elif "leave" in request.POST:
                 # You can only leave a squad if you're not the only one in it.
@@ -203,9 +219,8 @@ def edit_squad(request, id):
             "edit_squad.html",
             {
                 "form": form,
+                "msg": "",
                 "squad_size": squad_size,
-                "email_does_not_exist": email_does_not_exist,
-                "email_entered": request.POST,
             },
         )
 
