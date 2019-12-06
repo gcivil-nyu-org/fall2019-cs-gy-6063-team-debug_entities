@@ -55,14 +55,17 @@ def insert_to_list_exclusively(event_id, add_list, remove_list):
 
 @login_required
 def user(request, id):
-    try:  # check if given id exists
-        requested_user = CustomUser.objects.get(id=id)
+    # See if this user exists.
+    try:
+        user = CustomUser.objects.get(id=id)
     except CustomUser.DoesNotExist:
         raise PermissionDenied
-    if not EmailAddress.objects.get(email=requested_user.email).verified:
+
+    # Ensure this user verified their email address.
+    if not EmailAddress.objects.get(email=user.email).verified:
         raise PermissionDenied
 
-    return render(request, "user.html", context={"requested_user": requested_user})
+    return render(request, "user.html", context={"requested_user": user})
 
 
 @login_required
