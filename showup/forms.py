@@ -2,6 +2,8 @@ from .models import CustomUser, Squad
 from allauth.account.forms import SignupForm
 from django import forms
 from django.contrib.auth.forms import UserChangeForm
+from datetime import datetime
+from django.core.exceptions import ValidationError
 
 
 class CustomSignupForm(SignupForm):
@@ -36,6 +38,12 @@ class SquadForm(forms.Form):
 
 
 class CustomUserForm(UserChangeForm):
+    def clean_date_of_birth(self):
+        date_of_birth = self.cleaned_data["date_of_birth"]
+        if date_of_birth is not None and date_of_birth > datetime.today().date():
+            raise ValidationError("Please enter a valid date of birth")
+        return date_of_birth
+
     class Meta:
         model = CustomUser
         fields = ("first_name", "last_name", "date_of_birth", "gender")
