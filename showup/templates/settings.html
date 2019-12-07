@@ -28,6 +28,13 @@
                                 <li>{{ message }}</li>
                             {% endif %}
                         </div>
+                        <div class="form-group my-3">
+                            {% if form_errors %}
+                                {% for form_error in form_errors %}
+                                    <li>{{ form_error }}</li>
+                                {% endfor %}
+                            {% endif %}
+                        </div>
 
                         <div class="form-group my-3">
                           <input type="text" name="first_name" class="form-control" maxlength="30" placeholder="first name" value = {{user.first_name}}>
