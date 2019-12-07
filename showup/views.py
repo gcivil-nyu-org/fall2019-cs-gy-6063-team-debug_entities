@@ -180,8 +180,9 @@ def edit_squad(request, sid):
                     # Create a request.
                     Request.objects.create(requester=my_squad, requestee=their_squad)
 
-                    msg = "A request has been sent to {}. If they accept, your squads will merge.".format(
-                        request.POST["email"]
+                    msg = (
+                        "A request has been sent to {}. If they accept, your "
+                        "squads will merge.".format(request.POST["email"])
                     )
                     return render(
                         request,
