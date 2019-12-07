@@ -63,7 +63,14 @@
               <a class="nav-link" href="{% url 'matches' %}">Matches</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="{% url 'requests' %}">Requests</a>
+              {% if requests %}
+                <a class="nav-link" href="{% url 'requests' %}">
+                  Requests
+                  <span class="badge badge-pill badge-danger" style="font-size: 7px; position:relative; left: -10px; top:-5px; vertical-align: top">{{ requests }}</span>
+                </a>
+              {% else %}
+                <a class="nav-link" href="{% url 'requests' %}">Requests</a>
+              {% endif %}
             </li>
             <li class="nav-item">
               <a class="nav-link" href="{% url 'settings' %}">Settings</a>
