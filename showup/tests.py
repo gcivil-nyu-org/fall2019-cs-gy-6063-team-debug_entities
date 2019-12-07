@@ -1,6 +1,5 @@
 import datetime
 from dateutil.relativedelta import relativedelta
-from django.core.exceptions import ValidationError
 from .models import Concert, CustomUser, Genre, Request, Squad, Swipe
 from allauth.account.admin import EmailAddress
 from django.test import Client, TestCase
@@ -507,20 +506,6 @@ class SettingsViewTests(TestCase):
         user = CustomUser.objects.get(id=1)
         self.assertEqual(user.first_name, "Tom")
         self.assertEqual(user.last_name, "Hanks")
-
-    def test_date_of_birth_validation(self):
-        user = CustomUser.objects.get(id=1)
-        self.assertEqual(user.date_of_birth, "1954-04-29")
-        data = {
-            "date_of_birth": datetime.today().date - relativedelta(days=5),
-            "email": "tom.hanks@hollywood.com",
-        }
-        # Send a POST request containing the first_name, last_name
-        response = self.client.post(reverse("settings"), data)
-        self.assertEqual(response.status_code, 200)
-        # Ensure the POST request was successful.
-        user = CustomUser.objects.get(id=1)
-        self.assertEqual(user.date_of_birth, "1954-04-29")
 
 
 class RequestsViewTests(TestCase):
