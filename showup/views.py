@@ -109,15 +109,13 @@ def edit_squad(request, sid):
                         email=request.POST["email"]
                     ).squad
                 except CustomUser.DoesNotExist:
-                    msg = "{} is not registered with ShowUp.".format(request.POST["email"])
+                    msg = "{} is not registered with ShowUp.".format(
+                        request.POST["email"]
+                    )
                     return render(
                         request,
                         "edit_squad.html",
-                        {
-                            "form": form,
-                            "msg": msg,
-                            "squad_size": squad_size,
-                        },
+                        {"form": form, "msg": msg, "squad_size": squad_size},
                     )
 
                 # We are already in the same squad.
@@ -126,17 +124,11 @@ def edit_squad(request, sid):
                     return render(
                         request,
                         "edit_squad.html",
-                        {
-                            "form": form,
-                            "msg": msg,
-                            "squad_size": squad_size,
-                        },
+                        {"form": form, "msg": msg, "squad_size": squad_size},
                     )
 
                 # Check to see if a request already exists.
-                r = Request.objects.filter(
-                    requester=their_squad, requestee=my_squad
-                )
+                r = Request.objects.filter(requester=their_squad, requestee=my_squad)
                 if r.exists():
                     # Join the squad that has a smaller id.
                     if their_squad.id < my_squad.id:
@@ -176,29 +168,25 @@ def edit_squad(request, sid):
                     # Delete the request.
                     r.delete()
 
-                    msg = "You have merged squads with {}!".format(request.POST["email"])
+                    msg = "You have merged squads with {}!".format(
+                        request.POST["email"]
+                    )
                     return render(
                         request,
                         "edit_squad.html",
-                        {
-                            "form": form,
-                            "msg": msg,
-                            "squad_size": squad_size,
-                        },
+                        {"form": form, "msg": msg, "squad_size": squad_size},
                     )
                 else:
                     # Create a request.
                     Request.objects.create(requester=my_squad, requestee=their_squad)
 
-                    msg = "A request has been sent to {}. If they accept, your squads will merge.".format(request.POST["email"])
+                    msg = "A request has been sent to {}. If they accept, your squads will merge.".format(
+                        request.POST["email"]
+                    )
                     return render(
                         request,
                         "edit_squad.html",
-                        {
-                            "form": form,
-                            "msg": msg,
-                            "squad_size": squad_size,
-                        },
+                        {"form": form, "msg": msg, "squad_size": squad_size},
                     )
 
             elif "leave" in request.POST:
@@ -217,11 +205,7 @@ def edit_squad(request, sid):
         return render(
             request,
             "edit_squad.html",
-            {
-                "form": form,
-                "msg": "",
-                "squad_size": squad_size,
-            },
+            {"form": form, "msg": "", "squad_size": squad_size},
         )
 
     else:
