@@ -4,6 +4,8 @@
 
 {% block content %}
 
+{% load static %}
+
 {% if user.is_authenticated %}
   <div class="text-center pt-7">
     <h2 class="font-weight-bold mb-0">
@@ -18,6 +20,7 @@
     </h4>
   </div>
 
+  {% if user.squad.interested.count != 0 or user.squad.going.count != 0 %}
     <section class="pt-6 pt-md-5 pb-8 mb-md-8">
       <div class="container">
         <div class="row">
@@ -85,6 +88,11 @@
         </div>
       </div>
     </section>
+    {% else %}
+      <div class="col-12 mt-10 text-center">
+        <img src="{% static 'homepic.jpg' %}">
+      </div>
+  {% endif %}
 
 {% else %}
   <!-- WELCOME -->
