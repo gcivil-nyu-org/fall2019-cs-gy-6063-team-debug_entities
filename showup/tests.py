@@ -293,7 +293,7 @@ class EditSquadViewTests(TestCase):
         data = {"add": "", "email": "jkimmel@example.com"}
 
         # Send a POST request containing the form data.
-        self.client.post(reverse("edit_squad", kwargs={"id": 3}), data=data)
+        self.client.post(reverse("edit_squad", kwargs={"sid": 3}), data=data)
 
         # Ensure the POST request was successful.
         users = CustomUser.objects.filter(squad=3)
@@ -304,7 +304,7 @@ class EditSquadViewTests(TestCase):
         data = {"add": "", "email": "jseinfeld@example.com"}
 
         # Send a POST request containing the form data.
-        self.client.post(reverse("edit_squad", kwargs={"id": 3}), data=data)
+        self.client.post(reverse("edit_squad", kwargs={"sid": 3}), data=data)
 
         # Ensure the POST request was successful.
         users = CustomUser.objects.filter(squad=3)
@@ -313,7 +313,7 @@ class EditSquadViewTests(TestCase):
     def test_editsquad_add_leave(self):
         # jkimmel@example.com requests jfallon@example.com to join their squad.
         data = {"add": "", "email": "jfallon@example.com"}
-        self.client.post(reverse("edit_squad", kwargs={"id": 3}), data=data)
+        self.client.post(reverse("edit_squad", kwargs={"sid": 3}), data=data)
         users = CustomUser.objects.filter(squad=3)
         self.assertEqual(users.count(), 1)
 
@@ -324,13 +324,13 @@ class EditSquadViewTests(TestCase):
 
         # jkimmel@example.com requests jfallon@example.com to join their squad.
         data = {"add": "", "email": "jfallon@example.com"}
-        self.client.post(reverse("edit_squad", kwargs={"id": 3}), data=data)
+        self.client.post(reverse("edit_squad", kwargs={"sid": 3}), data=data)
         users = CustomUser.objects.filter(squad=2)
         self.assertEqual(users.count(), 2)
 
         # jkimmel@example.com leaves their squad.
         data = {"leave": ""}
-        self.client.post(reverse("edit_squad", kwargs={"id": 2}), data=data)
+        self.client.post(reverse("edit_squad", kwargs={"sid": 2}), data=data)
 
         # Ensure the POST request was successful.
         user = CustomUser.objects.get(squad=2)
@@ -341,7 +341,7 @@ class EditSquadViewTests(TestCase):
         data = {"leave": ""}
 
         # Send a POST request containing the form data.
-        response = self.client.post(reverse("edit_squad", kwargs={"id": 3}), data=data)
+        response = self.client.post(reverse("edit_squad", kwargs={"sid": 3}), data=data)
 
         # Ensure the POST request returns PermissionDenied.
         self.assertEqual(response.status_code, 403)
@@ -351,14 +351,14 @@ class EditSquadViewTests(TestCase):
         data = {"remove": ""}
 
         # Send a POST request containing the form data.
-        response = self.client.post(reverse("edit_squad", kwargs={"id": 3}), data=data)
+        response = self.client.post(reverse("edit_squad", kwargs={"sid": 3}), data=data)
 
         # Ensure the POST request returns PermissionDenied.
         self.assertEqual(response.status_code, 403)
 
     def test_editsquad_get(self):
         # Send a GET request.
-        response = self.client.get(reverse("edit_squad", kwargs={"id": 3}))
+        response = self.client.get(reverse("edit_squad", kwargs={"sid": 3}))
 
         # Ensure the POST request was successful.
         self.assertEqual(response.status_code, 200)
@@ -368,7 +368,7 @@ class EditSquadViewTests(TestCase):
         data = {"add": "", "email": "jspringer@example.com"}
 
         # Send a POST request containing the form data.
-        response = self.client.post(reverse("edit_squad", kwargs={"id": 2}), data=data)
+        response = self.client.post(reverse("edit_squad", kwargs={"sid": 2}), data=data)
 
         # Ensure the POST request returns PermissionDenied.
         self.assertEqual(response.status_code, 403)
@@ -387,7 +387,7 @@ class EditSquadViewTests(TestCase):
 
         # Accept the request via editsquad.
         data = {"add": "", "email": "jspringer@example.com"}
-        self.client.post(reverse("edit_squad", kwargs={"id": 3}), data=data)
+        self.client.post(reverse("edit_squad", kwargs={"sid": 3}), data=data)
 
         # Little squad should be interested in one event.
         # Remember that the squad with the larger id is deleted!
@@ -415,7 +415,7 @@ class EditSquadViewTests(TestCase):
 
         # Accept the request via editsquad.
         data = {"add": "", "email": "jspringer@example.com"}
-        self.client.post(reverse("edit_squad", kwargs={"id": 3}), data=data)
+        self.client.post(reverse("edit_squad", kwargs={"sid": 3}), data=data)
 
         # Little squad should be going to two events.
         # Remember that the squad with the larger id is deleted!
