@@ -20,12 +20,19 @@
           <h1 class="display-3">
             Let's get you <span class="text-success">signed up.</span>
           </h1>
-
           <form class="signup" method="POST" action="{% url 'account_signup' %}">
             {% csrf_token %}
             <div class="form-row">
               <div class="col-12 col-lg">
-
+                <div class="form-group my-3">
+                    {% for field in form %}
+                      {% if field.errors %}
+                        {% for error in field.errors %}
+                          <li>{{ error|escape }}</li>
+                        {% endfor %}
+                      {% endif %}
+                    {% endfor %}
+                </div>
                 <div class="form-group my-3">
                   <input type="email" name="email" class="form-control" placeholder="email address" required>
                 </div>
