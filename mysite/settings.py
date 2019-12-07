@@ -31,7 +31,7 @@ ALLOWED_HOSTS = [
     "showup-nyc-develop.herokuapp.com",
     "showup-nyc.herokuapp.com",
 ]
-ADMINS = [("Vik", "vm1564@nyu.edu")]
+ADMINS = [("Mel", "mksavic@nyu.edu"), ("Vik", "vm1564@nyu.edu")]
 
 
 # Application definition
