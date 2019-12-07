@@ -13,6 +13,12 @@ class CustomSignupForm(SignupForm):
     gender = forms.CharField(max_length=255)
     email = forms.EmailField()
 
+    def clean_date_of_birth(self):
+        date_of_birth = self.cleaned_data["date_of_birth"]
+        if date_of_birth is not None and date_of_birth > datetime.today().date():
+            raise ValidationError("Please enter a valid date of birth")
+        return date_of_birth
+
     def save(self, request):
         user = super(CustomSignupForm, self).save(request)
         user.date_of_birth = self.cleaned_data["date_of_birth"]
