@@ -2,9 +2,10 @@ from .forms import CustomUserChangeForm, SquadForm, CustomUserForm
 from .models import Concert, CustomUser, Genre, Request, Squad, Swipe
 from allauth.account.admin import EmailAddress
 from django.contrib.auth.decorators import login_required
-from django.core.exceptions import PermissionDenied
+from django.core.exceptions import PermissionDenied, ValidationError
 from django.shortcuts import redirect, render, reverse
 from .filters import ConcertFilter
+import json
 
 
 def home(request):
@@ -403,12 +404,21 @@ def matches(request):
 @login_required
 def settings(request):
     msg = ""
+    form_errors = []
     if request.POST:
         form = CustomUserForm(request.POST or None, instance=request.user)
         if form.is_valid():
             form.save(request)
             msg = "Settings changed successfully!"
-    return render(request, "settings.html", {"user": request.user, "message": msg})
+        else:
+            errors = json.loads(form.errors.as_json())
+            for error in errors:
+                form_errors.append(str(errors[error][0]["message"]))
+    return render(
+        request,
+        "settings.html",
+        {"user": request.user, "message": msg, "form_errors": form_errors},
+    )
 
 
 @login_required
