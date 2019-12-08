@@ -75,7 +75,6 @@ def user(request, id):
         e_id = request.POST.get("unmark_going")
         squad.going.remove(e_id)
 
-
     return render(request, "user.html", context={"requested_user": user})
 
 
