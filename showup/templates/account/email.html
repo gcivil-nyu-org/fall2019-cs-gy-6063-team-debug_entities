@@ -10,19 +10,8 @@
 
 <section>
     <div class="text-center container">
-        <div class="row align-items-stretch">
-            <div class="col-12 col-md-6 offset-md-1 order-md-2">
-                <div class="position-relative h-100 vw-50 d-none d-md-block">
-                    <!-- Picture -->
-                    {% load static %}
-                    <div class="h-100 w-100">
-                      <div class="w-100 h-100 bg-cover" style="background-image: url({% static 'old-lady.jpg' %});"></div>
-                    </div>
-                </div>
-
-            </div>
-            <div class="col-5 col-md-10 py-10 order-md-1">
-
+        <div class="row align-items-stretch text-center">
+            <div class="pt-10 pb-10 card shadow">
                 <h1>{% trans "E-mail Addresses" %}</h1>
                 {% if user.emailaddress_set.all %}
                 <p>{% trans 'The following e-mail addresses are associated with your accounts:' %}</p>
