@@ -68,7 +68,7 @@
                   <!-- If its not your profile, cannot edit avatar -->
                   {% else %}
                   <div>
-                    <img src="{% avatar_url requested_user %}">
+                    <img src="{% avatar_url requested_user 190 %}">
                   </div>
                   {% endif %}
                 </div>
@@ -146,12 +146,14 @@
                           <a target="_blank" href="{{ interested.event_url }}">More Information</a>
                         </p>
                         </div>
+                        {% if user.id == requested_user.id %}
                           <div class="col text-right pt-8">
                             <form action="" method="post">
                                 {% csrf_token %}
                                 <button class="btn btn-sm btn-primary" type="submit" name="unmark_interested" value={{interested.id}}>Unmark</button>
                             </form>
                           </div>
+                        {% endif %}
                           </div>
                       </div>
 
@@ -207,12 +209,14 @@
                             <a target="_blank" href="{{ going.event_url }}">More Information</a>
                           </p>
                           </div>
+                          {% if user.id == requested_user.id %}
                             <div class="col text-right pt-8">
                               <form action="" method="post">
                                   {% csrf_token %}
                                   <button class="btn btn-sm btn-primary" type="submit" name="unmark_going" value={{going.id}}>Unmark</button>
                               </form>
                             </div>
+                            {% endif %}
                             </div>
                         </div>
 
