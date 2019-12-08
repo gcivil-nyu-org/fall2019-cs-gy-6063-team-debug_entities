@@ -55,6 +55,8 @@ def insert_to_list_exclusively(event_id, add_list, remove_list):
 
 @login_required
 def user(request, id):
+
+    squad = request.user.squad
     # See if this user exists.
     try:
         user = CustomUser.objects.get(id=id)
@@ -64,6 +66,15 @@ def user(request, id):
     # Ensure this user verified their email address.
     if not EmailAddress.objects.get(email=user.email).verified:
         raise PermissionDenied
+
+    if "unmark_interested" in request.POST:
+        e_id = request.POST.get("unmark_interested")
+        squad.interested.remove(e_id)
+
+    if "unmark_going" in request.POST:
+        e_id = request.POST.get("unmark_going")
+        squad.going.remove(e_id)
+
 
     return render(request, "user.html", context={"requested_user": user})
 
