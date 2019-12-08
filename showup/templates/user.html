@@ -136,7 +136,8 @@
                     <!-- Collapse -->
                     <div class="collapse" id="id{{ interested.id }}" data-parent="#helpAccordionOne">
                       <div class="py-5">
-
+                        <div class="row">
+                        <div class="col">
                         <!-- Text -->
                         <p class="text-gray-700">
                           Date: {{ interested.datetime }} <br>
@@ -144,6 +145,14 @@
                           Borough: {{ interested.get_borough_display }} <br>
                           <a target="_blank" href="{{ interested.event_url }}">More Information</a>
                         </p>
+                        </div>
+                          <div class="col text-right pt-5">
+                            <form action="" method="post">
+                                {% csrf_token %}
+                                <button class="btn btn-sm shadow" type="submit" name="unmark_interested" value={{interested.id}}>Unmark</button>
+                            </form>
+                          </div>
+                          </div>
                       </div>
 
                     </div>
@@ -171,6 +180,10 @@
 
                     {% for going in requested_user.squad.going.all %}
                     <div class="list-group-item">
+                      <form action="" method="post">
+                          {% csrf_token %}
+                          <button class="btn btn-sm shadow" type="submit" name="unmark_going" value={{going.id}}>Unmark</button>
+                      </form>
                       <a class="d-flex align-items-center text-reset text-decoration-none" data-toggle="collapse" href="#id{{ going.id }}" role="button">
                         <span class="mr-4">
                           {{ going.performer_names }}
@@ -188,6 +201,8 @@
                       <!-- Collapse -->
                       <div class="collapse" id="id{{ going.id }}" data-parent="#helpAccordionTwo">
                         <div class="py-5">
+                          <div class="row">
+                          <div class="col">
 
                           <!-- Text -->
                           <p class="text-gray-700">
@@ -196,6 +211,13 @@
                             Borough: {{ going.get_borough_display }} <br>
                             <a target="_blank" href="{{ going.event_url }}">More Information</a>
                           </p>
+                        </div>
+                        <div class="col text-right pt-5">
+                          <form action="" method="post">
+                              {% csrf_token %}
+                              <button class="btn btn-sm shadow" type="submit" name="unmark_going" value={{going.id}}>Unmark</button>
+                          </form>
+                        </div>
                         </div>
 
                       </div>
