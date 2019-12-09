@@ -1,12 +1,10 @@
 import datetime
-from datetime import timedelta
 from dateutil.relativedelta import relativedelta
 from .models import Concert, CustomUser, Genre, Request, Squad, Swipe
 from allauth.account.admin import EmailAddress
 from django.test import Client, TestCase
 from django.urls import reverse
 from django.utils.timezone import make_aware, utc
-from django.core.exceptions import ValidationError
 from .forms import CustomUserForm
 
 
