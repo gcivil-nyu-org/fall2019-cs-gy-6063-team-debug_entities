@@ -143,46 +143,11 @@ def edit_squad(request, sid):
                 # Check to see if their squad sent a request to our squad.
                 r = Request.objects.filter(requester=their_squad, requestee=my_squad)
                 if r.exists():
-                    # Join the squad that has a smaller id.
-                    if their_squad.id < my_squad.id:
-                        my_squad, their_squad = their_squad, my_squad
-
-                    # Get their members.
-                    their_members = CustomUser.objects.filter(squad=their_squad)
-
-                    # Merge squads.
-                    for member in their_members:
-                        member.squad = my_squad
-                        member.save()
-
-                    # Add their interested events.
-                    for event in their_squad.interested.all():
-                        # If event is in interested then leave it in interested.
-                        # If event is in going then leave it in going.
-                        if (
-                            event not in my_squad.interested.all()
-                            and event not in my_squad.going.all()
-                        ):
-                            my_squad.interested.add(event)
-
-                    # Add their going events.
-                    for event in their_squad.going.all():
-                        # If event is in interested then put it in going.
-                        if event in my_squad.interested.all():
-                            my_squad.interested.remove(event)
-                            my_squad.going.add(event)
-                        # If event is not in going then put it in going.
-                        if event not in my_squad.going.all():
-                            my_squad.going.add(event)
-
-                    # Delete their old squad.
-                    Squad.objects.get(id=their_squad.id).delete()
-
-                    # Delete the request.
-                    r.delete()
-
-                    msg = "You have merged squads with {}!".format(
-                        request.POST["email"]
+                    msg = (
+                        "You already have a pending squad request from {}. "
+                        "Head over to Requests to approve it.".format(
+                            request.POST["email"]
+                        )
                     )
                     return render(
                         request,

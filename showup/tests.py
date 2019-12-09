@@ -318,9 +318,9 @@ class EditSquadViewTests(TestCase):
         users = CustomUser.objects.filter(squad=2)
         self.assertEqual(users.count(), 1)
 
-        # jkimmel@example.com requests jfallon@example.com to join their squad.
-        data = {"add": "", "email": "jfallon@example.com"}
-        self.client.post(reverse("edit_squad", kwargs={"sid": 3}), data=data)
+        # jkimmel@example.com accepts the request.
+        data = {"accept": "", "their_sid": 2}
+        self.client.post(reverse("requests"), data=data)
         users = CustomUser.objects.filter(squad=2)
         self.assertEqual(users.count(), 2)
 
@@ -381,55 +381,6 @@ class EditSquadViewTests(TestCase):
 
         # Ensure the POST request returns PermissionDenied.
         self.assertEqual(response.status_code, 403)
-
-    def test_editsquad_add_interested(self):
-        # Create a request.
-        squad_1 = Squad.objects.get(id=1)
-        squad_3 = Squad.objects.get(id=3)
-        Request.objects.create(requester=squad_1, requestee=squad_3)
-
-        # Have bigger squad be interested in an event that smaller squad is
-        # neither interested in or going to.
-        event = Concert.objects.create(id=1, datetime=datetime.datetime.now(tz=utc))
-        squad_3.interested.add(event)
-        squad_3.save()
-
-        # Accept the request via editsquad.
-        data = {"add": "", "email": "jspringer@example.com"}
-        self.client.post(reverse("edit_squad", kwargs={"sid": 3}), data=data)
-
-        # Little squad should be interested in one event.
-        # Remember that the squad with the larger id is deleted!
-        squad_1 = Squad.objects.get(id=1)
-        self.assertEqual(len(squad_1.interested.all()), 1)
-
-    def test_editsquad_add_going(self):
-        # Create a request.
-        squad_1 = Squad.objects.get(id=1)
-        squad_3 = Squad.objects.get(id=3)
-        Request.objects.create(requester=squad_1, requestee=squad_3)
-
-        # Have smaller squad be interested in an event that bigger squad is going to.
-        event = Concert.objects.create(id=1, datetime=datetime.datetime.now(tz=utc))
-        squad_1.interested.add(event)
-        squad_1.save()
-        squad_3.going.add(event)
-        squad_3.save()
-
-        # Have bigger squad be going to an event that smaller squad is neither
-        # interested in or going to.
-        event = Concert.objects.create(id=2, datetime=datetime.datetime.now(tz=utc))
-        squad_3.going.add(event)
-        squad_3.save()
-
-        # Accept the request via editsquad.
-        data = {"add": "", "email": "jspringer@example.com"}
-        self.client.post(reverse("edit_squad", kwargs={"sid": 3}), data=data)
-
-        # Little squad should be going to two events.
-        # Remember that the squad with the larger id is deleted!
-        squad_1 = Squad.objects.get(id=1)
-        self.assertEqual(len(squad_1.going.all()), 2)
 
 
 class MatchesViewTests(TestCase):
