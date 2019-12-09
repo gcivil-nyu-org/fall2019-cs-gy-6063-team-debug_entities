@@ -130,7 +130,10 @@ def edit_squad(request, sid):
                 # Check to see if our squad sent a request to their squad.
                 r = Request.objects.filter(requester=my_squad, requestee=their_squad)
                 if r.exists():
-                    msg = "A squad request has already been sent to {}. Please wait for them to accept it.".format(request.POST["email"])
+                    msg = (
+                        "A squad request has already been sent to {}. Please "
+                        "wait for them to accept it.".format(request.POST["email"])
+                    )
                     return render(
                         request,
                         "edit_squad.html",
