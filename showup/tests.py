@@ -1,5 +1,6 @@
 import datetime
 from dateutil.relativedelta import relativedelta
+
 from .models import Concert, CustomUser, Genre, Request, Squad, Swipe
 from allauth.account.admin import EmailAddress
 from django.test import Client, TestCase
@@ -492,6 +493,7 @@ class SettingsViewTests(TestCase):
         event.save()
 
     def test_save_form(self):
+        # check if the user has first_name, last_name as empty string
         user = CustomUser.objects.get(id=1)
         self.assertEqual(user.first_name, "")
         self.assertEqual(user.last_name, "")

@@ -403,17 +403,12 @@ def matches(request):
 @login_required
 def settings(request):
     msg = ""
-    form_errors = []
     if request.POST:
         form = CustomUserForm(request.POST or None, instance=request.user)
         if form.is_valid():
             form.save(request)
             msg = "Settings changed successfully!"
-    return render(
-        request,
-        "settings.html",
-        {"user": request.user, "message": msg, "form_errors": form_errors},
-    )
+    return render(request, "settings.html", {"user": request.user, "message": msg})
 
 
 @login_required
