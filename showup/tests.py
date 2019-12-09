@@ -311,16 +311,18 @@ class EditSquadViewTests(TestCase):
         self.assertEqual(users.count(), 1)
 
     def test_editsquad_add_leave(self):
-        # jkimmel@example.com requests jfallon@example.com to join their squad.
-        data = {"add": "", "email": "jfallon@example.com"}
-        self.client.post(reverse("edit_squad", kwargs={"sid": 3}), data=data)
-        users = CustomUser.objects.filter(squad=3)
-        self.assertEqual(users.count(), 1)
-
         # jfallon@example.com requests jkimmel@example.com to join their squad.
         requester = Squad.objects.get(id=2)
         requestee = Squad.objects.get(id=3)
         Request.objects.create(requester=requester, requestee=requestee)
+        users = CustomUser.objects.filter(squad=2)
+        self.assertEqual(users.count(), 1)
+
+        # jkimmel@example.com requests jfallon@example.com to join their squad.
+        data = {"add": "", "email": "jfallon@example.com"}
+        self.client.post(reverse("edit_squad", kwargs={"sid": 3}), data=data)
+        users = CustomUser.objects.filter(squad=2)
+        self.assertEqual(users.count(), 2)
 
         # jkimmel@example.com leaves their squad.
         data = {"leave": ""}
