@@ -1,10 +1,13 @@
 import datetime
+from datetime import timedelta
 from dateutil.relativedelta import relativedelta
 from .models import Concert, CustomUser, Genre, Request, Squad, Swipe
 from allauth.account.admin import EmailAddress
 from django.test import Client, TestCase
 from django.urls import reverse
 from django.utils.timezone import make_aware, utc
+from django.core.exceptions import ValidationError
+from .forms import CustomUserForm
 
 
 class ConcertModelTests(TestCase):
@@ -734,3 +737,15 @@ class UnauthenticatedViewTests(TestCase):
     def test_unauthed_user_cannot_edit_profile(self):
         self.response = self.client.get(reverse("edit_profile", args=(1,)))
         self.assertEqual(self.response.status_code, 302)
+
+
+class CustomUserFormTests(TestCase):
+    def test_valid_data(self):
+        data = {
+            "first_name": "tom",
+            "last_name": "hanks",
+            "date_of_birth": "2019-01-01",
+            "email": "tom.hanks@hollywood.com",
+        }
+        form = CustomUserForm(data=data)
+        self.assertTrue(form.is_valid())

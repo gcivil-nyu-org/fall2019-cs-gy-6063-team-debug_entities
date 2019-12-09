@@ -410,10 +410,6 @@ def settings(request):
         if form.is_valid():
             form.save(request)
             msg = "Settings changed successfully!"
-        else:
-            errors = json.loads(form.errors.as_json())
-            for error in errors:
-                form_errors.append(str(errors[error][0]["message"]))
     return render(
         request,
         "settings.html",
