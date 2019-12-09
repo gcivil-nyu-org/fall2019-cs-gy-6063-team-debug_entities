@@ -322,12 +322,6 @@ class EditSquadViewTests(TestCase):
         requestee = Squad.objects.get(id=3)
         Request.objects.create(requester=requester, requestee=requestee)
 
-        # jkimmel@example.com requests jfallon@example.com to join their squad.
-        data = {"add": "", "email": "jfallon@example.com"}
-        self.client.post(reverse("edit_squad", kwargs={"sid": 3}), data=data)
-        users = CustomUser.objects.filter(squad=2)
-        self.assertEqual(users.count(), 2)
-
         # jkimmel@example.com leaves their squad.
         data = {"leave": ""}
         self.client.post(reverse("edit_squad", kwargs={"sid": 2}), data=data)
@@ -335,6 +329,19 @@ class EditSquadViewTests(TestCase):
         # Ensure the POST request was successful.
         user = CustomUser.objects.get(squad=2)
         self.assertEqual(user.email, "jfallon@example.com")
+
+    def test_editsquad_add_twice(self):
+        # jkimmel@example.com requests jfallon@example.com to join their squad.
+        data = {"add": "", "email": "jfallon@example.com"}
+        self.client.post(reverse("edit_squad", kwargs={"sid": 3}), data=data)
+
+        # jkimmel@example.com requests jfallon@example.com to join their squad.
+        data = {"add": "", "email": "jfallon@example.com"}
+        self.client.post(reverse("edit_squad", kwargs={"sid": 3}), data=data)
+
+        # Ensure the POST request was successful.
+        user = CustomUser.objects.get(squad=3)
+        self.assertEqual(user.email, "jkimmel@example.com")
 
     def test_editsquad_leave_one(self):
         # Create form data.
