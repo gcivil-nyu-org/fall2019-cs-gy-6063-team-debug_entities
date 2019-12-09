@@ -127,7 +127,17 @@ def edit_squad(request, sid):
                         {"form": form, "msg": msg, "squad_size": squad_size},
                     )
 
-                # Check to see if a request already exists.
+                # Check to see if our squad sent a request to their squad.
+                r = Request.objects.filter(requester=my_squad, requestee=their_squad)
+                if r.exists():
+                    msg = "A squad request has already been sent to {}. Please wait for them to accept it.".format(request.POST["email"])
+                    return render(
+                        request,
+                        "edit_squad.html",
+                        {"form": form, "msg": msg, "squad_size": squad_size},
+                    )
+
+                # Check to see if their squad sent a request to our squad.
                 r = Request.objects.filter(requester=their_squad, requestee=my_squad)
                 if r.exists():
                     # Join the squad that has a smaller id.
