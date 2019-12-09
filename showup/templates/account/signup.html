@@ -25,15 +25,6 @@
             <div class="form-row">
               <div class="col-12 col-lg">
                 <div class="form-group my-3">
-                    {% for field in form %}
-                      {% if field.errors %}
-                        {% for error in field.errors %}
-                          <li>{{ error|escape }}</li>
-                        {% endfor %}
-                      {% endif %}
-                    {% endfor %}
-                </div>
-                <div class="form-group my-3">
                   <input type="email" name="email" class="form-control" placeholder="email address" required>
                 </div>
 
@@ -46,9 +37,9 @@
                 </div>
 
                 <div class="form-group my-3">
-                  <input type="date" name="date_of_birth" class="form-control" placeholder="date of birth" required>
+                  <input type="date" name="date_of_birth" class="form-control" placeholder="date of birth" id = "dob" required>
                 </div>
-
+                
                 <div class="form-group my-3">
                   <input type="text" name="gender" class="form-control" maxlength="255" placeholder="gender" required>
                 </div>
@@ -65,6 +56,12 @@
               </div>
             </div>
           </form>
+          <script>
+            $( document ).ready(function() {
+                var todaydate = (new Date()).getFullYear() + "-" + ((new Date()).getMonth() + 1).toString().padStart(2,"0") + "-" + (new Date()).getDate().toString().padStart(2,"0");
+                document.getElementById("dob").max = todaydate;
+            });
+        </script>
         </div>
       </div> <!-- / .row -->
     </div> <!-- / .container -->
