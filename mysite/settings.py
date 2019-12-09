@@ -24,9 +24,14 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = "+!t#2po!65g4kr&=3sjqkd@at0!(3t=y#ojn%5$$ui)p735=8@"
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    "127.0.0.1",
+    "showup-nyc-develop.herokuapp.com",
+    "showup-nyc.herokuapp.com",
+]
+ADMINS = [("Mel", "mksavic@nyu.edu"), ("Vik", "vm1564@nyu.edu")]
 
 
 # Application definition
@@ -59,6 +64,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",
 ]
 
 ROOT_URLCONF = "mysite.urls"
