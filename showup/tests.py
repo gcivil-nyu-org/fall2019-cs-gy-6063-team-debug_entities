@@ -310,6 +310,20 @@ class EditSquadViewTests(TestCase):
         users = CustomUser.objects.filter(squad=3)
         self.assertEqual(users.count(), 1)
 
+    def test_editsquad_request_already_exists(self):
+        # Create request.
+        requester = Squad.objects.get(id=2)
+        requestee = Squad.objects.get(id=3)
+        Request.objects.create(requester=requester, requestee=requestee)
+
+        # Try to add jfallon@example.com.
+        data = {"add": "", "email": "jfallon@example.com"}
+        self.client.post(reverse("edit_squad", kwargs={"sid": 3}), data=data)
+
+        # Ensure the POST request was successful.
+        users = CustomUser.objects.filter(squad=3)
+        self.assertEqual(users.count(), 1)
+
     def test_editsquad_add_leave(self):
         # jfallon@example.com requests jkimmel@example.com to join their squad.
         requester = Squad.objects.get(id=2)
