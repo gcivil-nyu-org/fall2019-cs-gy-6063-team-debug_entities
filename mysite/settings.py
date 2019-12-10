@@ -80,6 +80,7 @@ TEMPLATES = [
                 "django.template.context_processors.request",
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
+                "showup.context_processors.get_requests",
             ]
         },
     }
@@ -144,8 +145,7 @@ EMAIL_HOST_PASSWORD = "tempKey123"
 EMAIL_PORT = 587
 
 # Activate Django-Heroku.
-if "HOME" in os.environ and "/app" in os.environ["HOME"]:
-    django_heroku.settings(locals())
+django_heroku.settings(locals(), test_runner=False)
 
 # Below this are settings for django-allauth. Link to tutorial:
 # https://wsvincent.com/django-login-with-email-not-username/

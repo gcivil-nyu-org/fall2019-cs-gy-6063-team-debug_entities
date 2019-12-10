@@ -1,5 +1,10 @@
 {% extends "header.html" %}
+
 {% block content %}
+
+<div class="text-center pt-7">
+  <h2>Manage Account</h2>
+</div>
 
 <section>
     <div class="container">
@@ -8,8 +13,8 @@
                 <div class="position-relative h-100 vw-50 d-none d-md-block">
                     <!-- Picture -->
                     {% load static %}
-                    <div class="h-100 w-100">
-                      <div class="w-100 h-100 bg-cover" style="background-image: url({% static 'old lady dancing.jpg' %});"></div>
+                    <div class="h-100 w-70">
+                      <div class="w-70 h-100 bg-cover" style="background-image: url({% static 'dancing.png' %});"></div>
                     </div>
                 </div>
 
@@ -45,10 +50,10 @@
                           <input type="text" name="gender" class="form-control" maxlength="255" placeholder="gender" value = {{user.gender}}>
                         </div>
 
-                         <u><a class="nav-link" href="{% url 'account_email' %}">Change Email?</a></u>
-                        <u><a class="nav-link" href="{% url 'account_reset_password' %}">Change password?</a></u>
-                        <button type="submit" class="btn btn-sm shadow btn-primary" onclick="make_required()" value="save">Save</button>
-                        <button type="reset" class="btn btn-sm shadow">Cancel</button>
+                        <div><a href="{% url 'account_email' %}">Change email?</a> &nbsp &nbsp
+                        <a href="{% url 'account_reset_password' %}">Change password?</a></div><br>
+                        <button type="submit" class="btn shadow btn-primary" onclick="make_required()" value="save">Save</button> &nbsp
+                        <button type="reset" class="btn shadow">Cancel</button>
                         </div>
                     </div>
                 </form>
