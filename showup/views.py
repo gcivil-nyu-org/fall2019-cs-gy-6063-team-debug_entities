@@ -9,30 +9,31 @@ from .filters import ConcertFilter
 
 def home(request):
     if request.user.is_authenticated:
-        # My squad.
-        squad = request.user.squad
+        if request.method == "POST":
+            # My squad.
+            squad = request.user.squad
 
-        # Move event from "Going" to "Interested".
-        if "mark_interested" in request.POST:
-            eid = request.POST.get("mark_interested")
-            squad.going.remove(eid)
-            squad.interested.add(eid)
+            # Move event from "Going" to "Interested".
+            if "interested" in request.POST:
+                eid = request.POST.get("interested")
+                squad.going.remove(eid)
+                squad.interested.add(eid)
 
-        # Move event from "Interested" to "Going".
-        if "mark_going" in request.POST:
-            eid = request.POST.get("mark_going")
-            squad.interested.remove(eid)
-            squad.going.add(eid)
+            # Move event from "Interested" to "Going".
+            if "going" in request.POST:
+                eid = request.POST.get("going")
+                squad.interested.remove(eid)
+                squad.going.add(eid)
 
-        # Remove event from "Interested".
-        if "unmark_interested" in request.POST:
-            eid = request.POST.get("unmark_interested")
-            squad.interested.remove(eid)
+            # Remove event from "Interested".
+            if "not_interested" in request.POST:
+                eid = request.POST.get("not_interested")
+                squad.interested.remove(eid)
 
-        # Remove event from "Going".
-        if "unmark_going" in request.POST:
-            eid = request.POST.get("unmark_going")
-            squad.going.remove(eid)
+            # Remove event from "Going".
+            if "not_going" in request.POST:
+                eid = request.POST.get("not_going")
+                squad.going.remove(eid)
 
     return render(request, "home.html")
 
