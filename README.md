@@ -40,3 +40,10 @@ After you've matched with some other Squads, click on the "Matches" link in the 
 
 #### Go to concerts with your new friends
 After you've matched with Squads and talked to them, you can meet them at the concert and have a good time together.
+
+#### Authors and acknowledgment
+* Vedanth Dasari
+* Viktor Moros
+* Melisa Savich
+* Kavin Shah
+* Jason Woo
