@@ -7,6 +7,7 @@ from django.shortcuts import redirect, render, reverse
 from .filters import ConcertFilter
 
 
+@login_required
 def home(request):
 
     squad = request.user.squad

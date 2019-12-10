@@ -126,7 +126,7 @@ class RequestModelTests(TestCase):
 class HomeViewTests(TestCase):
     def test_home_basic(self):
         response = self.client.get(reverse("home"))
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 302)
 
 
 class EventsViewTests(TestCase):
