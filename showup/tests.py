@@ -619,6 +619,67 @@ class RequestsViewTests(TestCase):
         self.assertEqual(len(squad_1.going.all()), 2)
 
 
+class EventStackViewTests(TestCase):
+    def setUp(self):
+        # Create and save user one.
+        email, password = "jspringer@example.com", "heyhey123"
+        squad_1 = Squad.objects.create(id=1)
+        user = CustomUser.objects.create_user(
+            username=email, email=email, password=password, squad=squad_1
+        )
+
+        # Create and save user two.
+        email, password = "jfallon@example.com", "heyhey123"
+        squad_2 = Squad.objects.create(id=2)
+        user = CustomUser.objects.create_user(
+            username=email, email=email, password=password, squad=squad_2
+        )
+
+        # Create and save user three.
+        email, password = "jkimmel@example.com", "heyhey123"
+        squad_3 = Squad.objects.create(id=3)
+        user = CustomUser.objects.create_user(
+            username=email, email=email, password=password, squad=squad_3
+        )
+
+        # Login user three.
+        EmailAddress.objects.create(id=3, user=user, verified=True)
+        self.client.login(username=email, password=password)
+
+    def test_eventstack_one_swipe(self):
+        # Create an event.
+        Concert.objects.create(id=1, datetime=datetime.datetime.now(tz=utc))
+
+        # Submit a swipe.
+        data = {"their_sid": 1, "match": True}
+        self.client.post(reverse("event_stack", kwargs={"eid": 1}), data=data)
+
+        # Ensure the swipe exists.
+        swipe = Swipe.objects.get(event=1, swiper_id=3, swipee_id=1)
+        expected_output = "Swiper: 3, Swipee: 1, Event: 1, Direction: True"
+        self.assertEqual(swipe.__str__(), expected_output)
+
+    def test_eventstack_both_swipe_no_match(self):
+        # Create an event.
+        e = Concert.objects.create(id=1, datetime=datetime.datetime.now(tz=utc))
+
+        # Create a swipe.
+        Swipe.objects.create(event=e, swiper_id=1, swipee_id=3, direction=False)
+
+        # Submit a swipe.
+        data = {"their_sid": 1, "match": True}
+        self.client.post(reverse("event_stack", kwargs={"eid": 1}), data=data)
+
+        # Ensure the swipes exist.
+        swipe = Swipe.objects.get(event=1, swiper_id=1, swipee_id=3)
+        expected_output = "Swiper: 1, Swipee: 3, Event: 1, Direction: False"
+        self.assertEqual(swipe.__str__(), expected_output)
+
+        swipe = Swipe.objects.get(event=1, swiper_id=3, swipee_id=1)
+        expected_output = "Swiper: 3, Swipee: 1, Event: 1, Direction: True"
+        self.assertEqual(swipe.__str__(), expected_output)
+
+
 class AuthenticatedViewTests(TestCase):
     def setUp(self):  # this logs in a test user for the subsequent test cases
         username = "testuser"
