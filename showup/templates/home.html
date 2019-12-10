@@ -55,8 +55,8 @@
                           <form action="" method="post" class="pt-1">
                             {% csrf_token %}
                             <input type="hidden" name="eid" value="{{ interested.id }}">
-                            <button class="btn btn-sm shadow btn-primary" style="width:125px;" type="submit" name="not_interested">Interested</button>
-                            <button class="btn btn-sm shadow" style="width:125px;" type="submit" name="going">Going</button>
+                            <button class="btn btn-sm shadow btn-primary" style="width:123px;" type="submit" name="not_interested">Interested</button>
+                            <button class="btn btn-sm shadow" style="width:123px;" type="submit" name="going">Going</button>
                           </form>
                         </li>
                       </div>
@@ -97,8 +97,8 @@
                           <form action="" method="post" class="pt-1">
                             {% csrf_token %}
                             <input type="hidden" name="eid" value="{{ going.id }}">
-                            <button class="btn btn-sm shadow" style="width:125px;" type="submit" name="interested">Interested</button>
-                            <button class="btn btn-sm shadow btn-primary" style="width:125px;" type="submit" name="not_going">Going</button>
+                            <button class="btn btn-sm shadow" style="width:123px;" type="submit" name="interested">Interested</button>
+                            <button class="btn btn-sm shadow btn-primary" style="width:123px;" type="submit" name="not_going">Going</button>
                           </form>
                         </li>
                       </div>
