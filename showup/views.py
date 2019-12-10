@@ -8,7 +8,7 @@ from .filters import ConcertFilter
 
 
 def home(request):
-    
+
     squad = request.user.squad
 
     if "mark_interested" in request.POST:
