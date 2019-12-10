@@ -213,6 +213,7 @@ class UserViewTests(TestCase):
 
 class EditProfileViewTests(TestCase):
     def setUp(self):
+        Genre().save()
         # Create and save user.
         username, password = "jspringer@example.com", "heyhey123"
         user = CustomUser.objects.create_user(username=username, password=password)
@@ -236,6 +237,17 @@ class EditProfileViewTests(TestCase):
         get = "2"
         response = self.client.get("/u/" + get + "/edit")  # FIXME (use reverse())
         self.assertEqual(response.status_code, 403)
+
+    def test_edit_profile_form_save(self):
+        user = CustomUser.objects.get(id=1)
+        self.assertEqual(user.bio, "")
+        self.assertEqual(user.genres.count(), 0)
+        data = {"bio": "Test bio", "genres": "1"}
+        response = self.client.post(reverse("edit_profile", args=(1,)), data)
+        self.assertEqual(response.status_code, 302)
+        user = CustomUser.objects.get(id=1)
+        self.assertEqual(user.bio, "Test bio")
+        self.assertEqual(user.genres.count(), 1)
 
 
 class SquadViewTests(TestCase):
@@ -440,6 +452,20 @@ class MatchesViewTests(TestCase):
             "https://showup-nyc-messaging.herokuapp.com/1-2",
         )  # test that the view correctly puts the smaller squad ID first
         self.assertEqual(self.response.status_code, 200)
+
+    def test_authed_user_can_see_messages_with_squad_ids_in_reverse_order(self):
+        self.client.login(username="jfallon@example.com", password="heyhey123")
+        self.response = self.client.get(reverse("messages", args=(2, 1)))
+        self.assertEqual(
+            self.response.context["iframe_url"],
+            "https://showup-nyc-messaging.herokuapp.com/1-2",
+        )  # test that the view correctly puts the smaller squad ID first
+        self.assertEqual(self.response.status_code, 200)
+
+    def test_authed_user_cannot_see_messages_with_squad_they_havent_matched_with(self):
+        Squad().save()
+        self.response = self.client.get(reverse("messages", args=(1, 3)))
+        self.assertEqual(self.response.status_code, 403)
 
 
 class SettingsViewTests(TestCase):
@@ -737,6 +763,26 @@ class AuthenticatedViewTests(TestCase):
         self.client.post(reverse("event_stack", args=(1,)), data=data)
         num_swipes = Swipe.objects.count()
         self.assertEqual(num_swipes, 1)
+
+    def test_authed_user_can_swipe_on_squad_that_has_not_swiped_on_them(self):
+        Squad().save()
+        data = {"their_sid": 2, "match": "True"}
+        self.client.post(reverse("event_stack", args=(1,)), data=data)
+        num_swipes = Swipe.objects.count()
+        self.assertEqual(num_swipes, 1)
+
+    def test_authed_user_can_swipe_left(self):
+        data = {"their_sid": 1, "match": "False"}
+        self.client.post(reverse("event_stack", args=(1,)), data=data)
+        num_swipes = Swipe.objects.count()
+        self.assertEqual(num_swipes, 1)
+
+    def test_eligible_squads_are_shown_on_stack(self):
+        s = Squad()
+        s.save()
+        s.interested.add(Concert.objects.get(id=1))
+        self.response = self.client.get(reverse("event_stack", args=(1,)))
+        self.assertEqual(self.response.status_code, 200)
 
     def test_authed_user_can_mark_interested_to_events(self):
         self.client.post(reverse("events"), data={"interested": 1})
