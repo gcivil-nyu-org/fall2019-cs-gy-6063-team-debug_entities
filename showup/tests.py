@@ -124,7 +124,13 @@ class RequestModelTests(TestCase):
         self.assertEqual(r.__str__(), expected_output)
 
 
-class HomeViewTests(TestCase):
+class HomeViewNotLoggedInTests(TestCase):
+    def test_home_basic(self):
+        response = self.client.get(reverse("home"))
+        self.assertEqual(response.status_code, 200)
+
+
+class HomeViewLoggedInTests(TestCase):
     def setUp(self):
         # Create and save user.
         email, password = "jkimmel@example.com", "heyhey123"
@@ -139,10 +145,6 @@ class HomeViewTests(TestCase):
 
         # Create and save event.
         Concert.objects.create(id=1, datetime=datetime.datetime.now(tz=utc))
-
-    def test_home_basic(self):
-        response = self.client.get(reverse("home"))
-        self.assertEqual(response.status_code, 200)
 
     def test_home_interested(self):
         # Mark event as "Going".
