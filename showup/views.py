@@ -8,6 +8,27 @@ from .filters import ConcertFilter
 
 
 def home(request):
+
+    squad = request.user.squad
+
+    if "mark_interested" in request.POST:
+        e_id = request.POST.get("mark_interested")
+        squad.going.remove(e_id)
+        squad.interested.add(e_id)
+
+    if "mark_going" in request.POST:
+        e_id = request.POST.get("mark_going")
+        squad.interested.remove(e_id)
+        squad.going.add(e_id)
+
+    if "unmark_interested" in request.POST:
+        e_id = request.POST.get("unmark_interested")
+        squad.interested.remove(e_id)
+
+    if "unmark_going" in request.POST:
+        e_id = request.POST.get("unmark_going")
+        squad.going.remove(e_id)
+
     return render(request, "home.html")
 
 
