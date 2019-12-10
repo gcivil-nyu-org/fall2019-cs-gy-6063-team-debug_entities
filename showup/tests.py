@@ -476,6 +476,11 @@ class MatchesViewTests(TestCase):
         )  # test that the view correctly puts the smaller squad ID first
         self.assertEqual(self.response.status_code, 200)
 
+    def test_authed_user_cannot_see_messages_with_squad_they_havent_matched_with(self):
+        Squad().save()
+        self.response = self.client.get(reverse("messages", args=(1, 3)))
+        self.assertEqual(self.response.status_code, 403)
+
 
 class SettingsViewTests(TestCase):
     def setUp(self):
