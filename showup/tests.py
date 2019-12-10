@@ -467,6 +467,15 @@ class MatchesViewTests(TestCase):
         )  # test that the view correctly puts the smaller squad ID first
         self.assertEqual(self.response.status_code, 200)
 
+    def test_authed_user_can_see_messages_with_squad_ids_in_reverse_order(self):
+        self.client.login(username="jfallon@example.com", password="heyhey123")
+        self.response = self.client.get(reverse("messages", args=(2, 1)))
+        self.assertEqual(
+            self.response.context["iframe_url"],
+            "https://showup-nyc-messaging.herokuapp.com/1-2",
+        )  # test that the view correctly puts the smaller squad ID first
+        self.assertEqual(self.response.status_code, 200)
+
 
 class SettingsViewTests(TestCase):
     def setUp(self):
