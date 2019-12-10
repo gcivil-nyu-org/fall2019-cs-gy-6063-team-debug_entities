@@ -6,6 +6,7 @@ from allauth.account.admin import EmailAddress
 from django.test import Client, TestCase
 from django.urls import reverse
 from django.utils.timezone import make_aware, utc
+from .forms import CustomUserForm
 
 
 class ConcertModelTests(TestCase):
@@ -472,10 +473,14 @@ class SettingsViewTests(TestCase):
     def setUp(self):
         # Create and save user.
         username, password = "tom.hanks@hollywood.com", "TomHanks123"
+        date_of_birth = datetime.datetime(1954, 4, 29).date()
         squad = Squad()
         squad.save()
         user = CustomUser.objects.create_user(
-            username=username, password=password, squad=squad
+            username=username,
+            password=password,
+            date_of_birth=date_of_birth,
+            squad=squad,
         )
         user.save()
         EmailAddress.objects.get_or_create(id=1, user=user, verified=True)
@@ -813,3 +818,15 @@ class UnauthenticatedViewTests(TestCase):
     def test_unauthed_user_cannot_edit_profile(self):
         self.response = self.client.get(reverse("edit_profile", args=(1,)))
         self.assertEqual(self.response.status_code, 302)
+
+
+class CustomUserFormTests(TestCase):
+    def test_valid_data(self):
+        data = {
+            "first_name": "tom",
+            "last_name": "hanks",
+            "date_of_birth": "2019-01-01",
+            "email": "tom.hanks@hollywood.com",
+        }
+        form = CustomUserForm(data=data)
+        self.assertTrue(form.is_valid())
