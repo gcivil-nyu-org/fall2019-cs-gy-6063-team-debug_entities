@@ -7,28 +7,32 @@ from django.shortcuts import redirect, render, reverse
 from .filters import ConcertFilter
 
 
-@login_required
 def home(request):
+    if request.user.is_authenticated:
+        # My squad.
+        squad = request.user.squad
 
-    squad = request.user.squad
+        # Move event from "Going" to "Interested".
+        if "mark_interested" in request.POST:
+            eid = request.POST.get("mark_interested")
+            squad.going.remove(eid)
+            squad.interested.add(eid)
 
-    if "mark_interested" in request.POST:
-        e_id = request.POST.get("mark_interested")
-        squad.going.remove(e_id)
-        squad.interested.add(e_id)
+        # Move event from "Interested" to "Going".
+        if "mark_going" in request.POST:
+            eid = request.POST.get("mark_going")
+            squad.interested.remove(eid)
+            squad.going.add(eid)
 
-    if "mark_going" in request.POST:
-        e_id = request.POST.get("mark_going")
-        squad.interested.remove(e_id)
-        squad.going.add(e_id)
+        # Remove event from "Interested".
+        if "unmark_interested" in request.POST:
+            eid = request.POST.get("unmark_interested")
+            squad.interested.remove(eid)
 
-    if "unmark_interested" in request.POST:
-        e_id = request.POST.get("unmark_interested")
-        squad.interested.remove(e_id)
-
-    if "unmark_going" in request.POST:
-        e_id = request.POST.get("unmark_going")
-        squad.going.remove(e_id)
+        # Remove event from "Going".
+        if "unmark_going" in request.POST:
+            eid = request.POST.get("unmark_going")
+            squad.going.remove(eid)
 
     return render(request, "home.html")
 
