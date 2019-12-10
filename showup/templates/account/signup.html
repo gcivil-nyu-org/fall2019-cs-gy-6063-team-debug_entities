@@ -20,7 +20,6 @@
           <h1 class="display-3">
             Let's get you <span class="text-success">signed up.</span>
           </h1>
-
           <form class="signup" method="POST" action="{% url 'account_signup' %}">
             {% csrf_token %}
             <div class="form-row">
@@ -39,7 +38,7 @@
                 </div>
 
                 <div class="form-group my-3">
-                  <input type="date" name="date_of_birth" class="form-control" placeholder="date of birth" required>
+                  <input type="date" name="date_of_birth" class="form-control" placeholder="date of birth" id = "dob" required>
                 </div>
 
                 <div class="form-group my-3">
@@ -58,6 +57,12 @@
               </div>
             </div>
           </form>
+          <script>
+            $( document ).ready(function() {
+                var todaydate = (new Date()).getFullYear() + "-" + ((new Date()).getMonth() + 1).toString().padStart(2,"0") + "-" + (new Date()).getDate().toString().padStart(2,"0");
+                document.getElementById("dob").max = todaydate;
+            });
+        </script>
         </div>
       </div> <!-- / .row -->
     </div> <!-- / .container -->

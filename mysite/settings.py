@@ -10,8 +10,13 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/1.11/ref/settings/
 """
 
-import os
 import django_heroku
+import os
+
+
+def get_env_variable(name):
+    return os.environ.get(name, "")
+
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -80,6 +85,7 @@ TEMPLATES = [
                 "django.template.context_processors.request",
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
+                "showup.context_processors.get_requests",
             ]
         },
     }
@@ -144,8 +150,7 @@ EMAIL_HOST_PASSWORD = "tempKey123"
 EMAIL_PORT = 587
 
 # Activate Django-Heroku.
-if "HOME" in os.environ and "/app" in os.environ["HOME"]:
-    django_heroku.settings(locals())
+django_heroku.settings(locals(), test_runner=False)
 
 # Below this are settings for django-allauth. Link to tutorial:
 # https://wsvincent.com/django-login-with-email-not-username/
@@ -182,3 +187,17 @@ SESSION_EXPIRE_AFTER_LAST_ACTIVITY = True
 CRISPY_TEMPLATE_PACK = "bootstrap4"
 
 NOSE_ARGS = ["--nocapture", "--nologcapture"]
+
+# AWS Setup
+AWS_ACCESS_KEY_ID = get_env_variable("AWS_ACCESS_KEY_ID")
+AWS_SECRET_ACCESS_KEY = get_env_variable("AWS_SECRET_ACCESS_KEY")
+AWS_STORAGE_BUCKET_NAME = "showupnyc"
+AWS_S3_CUSTOM_DOMAIN = "%s.s3.amazonaws.com" % AWS_STORAGE_BUCKET_NAME
+
+AWS_S3_OBJECT_PARAMETERS = {"CacheControl": "max-age=86400"}
+
+AWS_LOCATION = "static"
+STATICFILES_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
+STATIC_URL = "https://%s/%s/" % (AWS_S3_CUSTOM_DOMAIN, AWS_LOCATION)
+
+DEFAULT_FILE_STORAGE = "mysite.storage_backends.MediaStorage"
