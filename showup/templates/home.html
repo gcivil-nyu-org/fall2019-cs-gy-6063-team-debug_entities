@@ -39,14 +39,25 @@
 
                 {% for interested in user.squad.interested.all %}
                   <div class="list-group-item pt-1">
-                    <a class="btn btn-primary" style = "position:relative; left:700px; top:85px" href="{% url 'event_stack' interested.id %}">Matching Stack</a>
-                    <div class="mr-4">
+                    <div class="row pt-5">
+                      <div class="col">
                       <a target="_blank" href="{{ interested.event_url }}">{{ interested.performer_names }}</a><br>
                       <p class="text-gray-700">
                         Date: {{ interested.datetime }} <br>
                         Venue: {{ interested.venue_name }} <br>
                         Borough: {{ interested.get_borough_display }}
                       </p>
+                      </div>
+                      <div class="col text-right pt-4">
+                        <li style="list-style-type:none;">
+                        <a class="btn btn-sm btn-primary" style="width:250px;" href="{% url 'event_stack' interested.id %}">Matching Stack</a><br>
+                        <form action="" method="post" class="pt-1">
+                          {% csrf_token %}
+                          <button class="btn btn-sm btn-secondary" style="width:125px;" type="submit" name="mark_going" value={{interested.id}}>Going</button>
+                          <button class="btn btn-sm btn-secondary" style="width:125px;" type="submit" name="unmark_interested" value={{interested.id}}>Unmark</button>
+                        </form>
+                        </li>
+                        </div>
                     </div>
                   </div>
                 {% endfor %}
@@ -68,17 +79,28 @@
                 </div>
 
                 {% for going in user.squad.going.all %}
-                  <div class="list-group-item pt-1">
-                    <a class="btn btn-primary" style = "position:relative; left:700px; top:85px" href="{% url 'event_stack' going.id %}">Matching Stack</a>
-                    <div class="mr-4">
-                      <a target="_blank" href="{{ going.event_url }}">{{ going.performer_names }}</a><br>
-                      <p class="text-gray-700">
-                        Date: {{ going.datetime }} <br>
-                        Venue: {{ going.venue_name }} <br>
-                        Borough: {{ going.get_borough_display }}
-                      </p>
+                <div class="list-group-item pt-1">
+                  <div class="row pt-5">
+                    <div class="col">
+                    <a target="_blank" href="{{ going.event_url }}">{{ going.performer_names }}</a><br>
+                    <p class="text-gray-700">
+                      Date: {{ going.datetime }} <br>
+                      Venue: {{ going.venue_name }} <br>
+                      Borough: {{ going.get_borough_display }}
+                    </p>
                     </div>
+                    <div class="col text-right pt-4">
+                      <li style="list-style-type:none;">
+                      <a class="btn btn-sm btn-primary" style="width:250px;" href="{% url 'event_stack' going.id %}">Matching Stack</a><br>
+                      <form action="" method="post" class="pt-1">
+                        {% csrf_token %}
+                        <button class="btn btn-sm btn-secondary" style="width:125px;" type="submit" name="mark_interested" value={{going.id}}>Interested</button>
+                        <button class="btn btn-sm btn-secondary" style="width:125px;" type="submit" name="unmark_going" value={{going.id}}>Unmark</button>
+                      </form>
+                      </li>
+                      </div>
                   </div>
+                </div>
                 {% endfor %}
               </div>
             </div>
