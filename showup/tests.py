@@ -716,6 +716,13 @@ class AuthenticatedViewTests(TestCase):
         num_swipes = Swipe.objects.count()
         self.assertEqual(num_swipes, 1)
 
+    def test_eligible_squads_are_shown_on_stack(self):
+        s = Squad()
+        s.save()
+        s.interested.add(Concert.objects.get(id=1))
+        self.response = self.client.get(reverse("event_stack", args=(1,)))
+        self.assertEqual(self.response.status_code, 200)
+
     def test_authed_user_can_mark_interested_to_events(self):
         self.client.post(reverse("events"), data={"interested": 1})
         num_interested = CustomUser.objects.get(id=1).squad.interested.count()
