@@ -54,8 +54,9 @@
                           <a class="btn btn-sm btn-secondary" style="width:250px;" href="{% url 'event_stack' interested.id %}">Matching Stack</a><br>
                           <form action="" method="post" class="pt-1">
                             {% csrf_token %}
-                            <button class="btn btn-sm shadow btn-primary" style="width:125px;" type="submit" name="not_interested" value={{interested.id}}>Interested</button>
-                            <button class="btn btn-sm shadow" style="width:125px;" type="submit" name="going" value={{interested.id}}>Going</button>
+                            <input type="hidden" name="eid" value="{{ interested.id }}">
+                            <button class="btn btn-sm shadow btn-primary" style="width:125px;" type="submit" name="not_interested">Interested</button>
+                            <button class="btn btn-sm shadow" style="width:125px;" type="submit" name="going">Going</button>
                           </form>
                         </li>
                       </div>
@@ -95,8 +96,9 @@
                           <a class="btn btn-sm btn-secondary" style="width:250px;" href="{% url 'event_stack' going.id %}">Matching Stack</a><br>
                           <form action="" method="post" class="pt-1">
                             {% csrf_token %}
-                            <button class="btn btn-sm shadow" style="width:125px;" type="submit" name="interested" value={{going.id}}>Interested</button>
-                            <button class="btn btn-sm shadow btn-primary" style="width:125px;" type="submit" name="not_going" value={{going.id}}>Going</button>
+                            <input type="hidden" name="eid" value="{{ going.id }}">
+                            <button class="btn btn-sm shadow" style="width:125px;" type="submit" name="interested">Interested</button>
+                            <button class="btn btn-sm shadow btn-primary" style="width:125px;" type="submit" name="not_going">Going</button>
                           </form>
                         </li>
                       </div>
