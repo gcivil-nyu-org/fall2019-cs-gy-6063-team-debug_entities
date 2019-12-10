@@ -124,10 +124,75 @@ class RequestModelTests(TestCase):
         self.assertEqual(r.__str__(), expected_output)
 
 
-class HomeViewTests(TestCase):
+class HomeViewNotLoggedInTests(TestCase):
     def test_home_basic(self):
         response = self.client.get(reverse("home"))
         self.assertEqual(response.status_code, 200)
+
+
+class HomeViewLoggedInTests(TestCase):
+    def setUp(self):
+        # Create and save user.
+        email, password = "jkimmel@example.com", "heyhey123"
+        squad_1 = Squad.objects.create(id=1)
+        user = CustomUser.objects.create_user(
+            username=email, email=email, password=password, squad=squad_1
+        )
+
+        # Login user.
+        EmailAddress.objects.create(id=1, user=user, verified=True)
+        self.client.login(username=email, password=password)
+
+        # Create and save event.
+        Concert.objects.create(id=1, datetime=datetime.datetime.now(tz=utc))
+
+    def test_home_interested(self):
+        # Mark event as "Going".
+        data = {"going": 1}
+        self.client.post(reverse("events"), data=data)
+
+        # Mark event as "Interested".
+        data = {"eid": 1, "interested": ""}
+        self.client.post(reverse("home"), data)
+
+        num_interested = CustomUser.objects.get(id=1).squad.interested.count()
+        self.assertEqual(num_interested, 1)
+
+    def test_home_going(self):
+        # Mark event as "Interested".
+        data = {"interested": 1}
+        self.client.post(reverse("events"), data=data)
+
+        # Mark event as "Going".
+        data = {"eid": 1, "going": ""}
+        self.client.post(reverse("home"), data)
+
+        num_going = CustomUser.objects.get(id=1).squad.going.count()
+        self.assertEqual(num_going, 1)
+
+    def test_home_not_interested(self):
+        # Mark event as "Interested".
+        data = {"interested": 1}
+        self.client.post(reverse("events"), data=data)
+
+        # Unmark event.
+        data = {"eid": 1, "not_interested": ""}
+        self.client.post(reverse("home"), data)
+
+        num_interested = CustomUser.objects.get(id=1).squad.interested.count()
+        self.assertEqual(num_interested, 0)
+
+    def test_home_not_going(self):
+        # Mark event as "Going".
+        data = {"going": 1}
+        self.client.post(reverse("events"), data=data)
+
+        # Unmark event.
+        data = {"eid": 1, "not_going": ""}
+        self.client.post(reverse("home"), data)
+
+        num_going = CustomUser.objects.get(id=1).squad.interested.count()
+        self.assertEqual(num_going, 0)
 
 
 class EventsViewTests(TestCase):
