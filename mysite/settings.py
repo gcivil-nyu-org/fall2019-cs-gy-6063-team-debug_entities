@@ -12,14 +12,10 @@ https://docs.djangoproject.com/en/1.11/ref/settings/
 
 import django_heroku
 import os
-from django.core.exceptions import ImproperlyConfigured
 
 
 def get_env_variable(name):
-    try:
-        return os.environ[name]
-    except KeyError:
-        raise ImproperlyConfigured("Environment variable {} not found.".format(name))
+    return os.environ.get(name, "")
 
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
