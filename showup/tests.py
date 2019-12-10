@@ -213,6 +213,7 @@ class UserViewTests(TestCase):
 
 class EditProfileViewTests(TestCase):
     def setUp(self):
+        Genre().save()
         # Create and save user.
         username, password = "jspringer@example.com", "heyhey123"
         user = CustomUser.objects.create_user(username=username, password=password)
@@ -236,6 +237,17 @@ class EditProfileViewTests(TestCase):
         get = "2"
         response = self.client.get("/u/" + get + "/edit")  # FIXME (use reverse())
         self.assertEqual(response.status_code, 403)
+
+    def test_edit_profile_form_save(self):
+        user = CustomUser.objects.get(id=1)
+        self.assertEqual(user.bio, "")
+        self.assertEqual(user.genres.count(), 0)
+        data = {"bio": "Test bio", "genres": "1"}
+        response = self.client.post(reverse("edit_profile", args=(1,)), data)
+        self.assertEqual(response.status_code, 302)
+        user = CustomUser.objects.get(id=1)
+        self.assertEqual(user.bio, "Test bio")
+        self.assertEqual(user.genres.count(), 1)
 
 
 class SquadViewTests(TestCase):
