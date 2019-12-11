@@ -1,16 +1,21 @@
-language: python
-
+os:
+- linux
+language:
+- python
+python:
+- 3.6
 install:
-    - pip install -r requirements.txt
-
+- pip install -r requirements.txt
 before_script:
-    - python manage.py migrate
-    - python manage.py collectstatic --noinput
-
+- python manage.py migrate
+- python manage.py collectstatic --noinput
 script:
-    - black --check --diff --exclude showup/migrations/* .
-    - flake8 .
-    - coverage run --source=mysite,showup manage.py test
-
+- black --check --diff --exclude showup/migrations/* .
+- flake8 .
+- coverage run --source=mysite,showup manage.py test
 after_script:
-    - coveralls
+- coveralls
+env:
+  global:
+  - secure: kLm3KvsZz3Ogy78mDVOs/tBSrDFsrNy+HfzhMogX72UMENccs2wEFGro68ZvPdPrRF/cozDJG9WCLJbxdmjV66f0tiVxo/FQ27x3uXSzkKdEspmPMPZ0phxUy1aXRZ0+5MfOMdWk9kIAWt0Sx0mOXJB8uu1p9tbUUEAF+pwHj+tsvENWYXsNDVRO23thxSHzCqX7wNZTE5TUIVN1SmCGJTMwo+5t0eqbtzpSwYrXHd17qsWtWq7Xm9vq7Co5h3UhR/CpkH+fWAwz5D+tTOLV9g7Lj2rybqT9BmZVxGME2HlqZyL0ify8MYYP7MOX8KN0Y94YVLvH23YHfL3/SJEpgM03F0O4k5d+4ubGAI5MpyYX8yY1dSmj+MI6cO04wo1gvIgJL6safNbXZm5mJ2M2RCVCnKiVe13RLZfFO0MA4tkivbG5ndjPQUQHQY7GN/tvqj2iolgGFcalrtP5GAUaZva4/D0Wc8xL9y897VqNS1bUgTBhvUXQlBJBJThRHodIy8DBzxUbccAMYimUx4M6hQuIrSc6Nuj8gsqlVs/0FqVnC/kdAzn7ObeGBTwPWmgtYCXzhlN1ka343Jz4QWyD9hqiMVJRx287emA4vAuNoMnwO6fhT8aHmPX53T3UtPFJBuWVEwmmibdPpT+SrL8m94jyPLD1SThvMmYN3m1aMiA=
+  - secure: ln6K0G49a2Dn5RgnBmR9yqdiS9AaulanH9vov2/MHgELvmKYFEDyy76XBni53+6FAUJK24SXAKYkfK4kCx/qqC6kXcc4sPObvM5AvLnASxbXJfE0srgjN9V+G8MhMzuo4mLY32rdtlK40uwRGTop07tPUUgQ51ExJaFR8TDJqwZaGyzHmQRlyDoGyCLS0xgRUNIOWSJCR7DUKBbAuTSf6OkiQAgZAzr1QPzoW+N+7w+Lfv2cVLbmMAp0kRhu2CrV/Bf2yqg4j2v/CKTkgch0rCxypqcJcG/6VruXgf8X5cuB0hKUmRxkecB1A7gM+bo5m8kxrdd4La8fcwRslqG2xBb+YFyCCDq7JT42j084Y1PY+3w85fY+dE3C5/FRucboQJWP1UtXZwRPI1evAX/3waveUofHujIRr0Xm16JRwKW/AfIRyevyYPDkVVXJHONva94PmvIGZdl2lhPsAkm6Jtk9/dNIsKbnwOfQNrDt8TeTS48y9IXJVJWjVxo4YTiOjLCmn46C4Qzcyzsys23dsFEtpBIpP3VgbdcnFVxGAotBTJoaJJWyPN1B4qKUm3hcJLusUypfi/KQ1kksG+fr/kmnIvSfnh8MaqCwdloxcBCnWD9MnQOZS0vLOMiZ374EMcvvZ5bzyw8uZzoTgTVPy7adH+LQ/FMA0m/KJWT+5mw=

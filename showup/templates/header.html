@@ -1,37 +1,46 @@
 {% load static %}
+
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <!-- Favicon -->
-    <link rel="shortcut icon" type="image/png" href="{% static 'favicon.ico' %}"/>
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-    <!-- JavaScript for Bootstrap -->
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
-    <!-- Theme CSS and JS -->
-    {% load static %}
-    <link rel="stylesheet" type="text/css" href="{% static 'theme/theme.css' %}">
-    <!-- FontAwesome and Katibeh font -->
-    <script src="https://kit.fontawesome.com/b7cd3d18d2.js" crossorigin="anonymous"></script>
-    <link href="https://fonts.googleapis.com/css?family=Katibeh&display=swap" rel="stylesheet">
-  </head>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-  <body>
-    <!-- NAVBAR -->
-    <nav class="navbar navbar-expand-lg navbar-light bg-white">
-      <div class="container-fluid">
+  <!-- Favicon -->
+  <link rel="shortcut icon" type="image/png" href="{% static 'favicon.ico' %}"/>
 
-        <!-- Brand -->
-        <a class="navbar-brand" href="{% url 'home' %}" font-family: 'Katibeh'>
-          ShowUp
-          <!-- <img src="{% static 'theme/drawing.svg' %}" class="navbar-brand-img"> -->
-        </a>
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 
-        {% if user.is_authenticated %}
+  <!-- JavaScript for Bootstrap -->
+  <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+
+  <!-- Theme CSS and JS -->
+  {% load static %}
+  <link rel="stylesheet" type="text/css" href="{% static 'theme/theme.css' %}">
+
+  <!-- FontAwesome and Katibeh font -->
+  <script src="https://kit.fontawesome.com/b7cd3d18d2.js" crossorigin="anonymous"></script>
+  <link href="https://fonts.googleapis.com/css?family=Katibeh&display=swap" rel="stylesheet">
+
+  <!-- Log Out Function -->
+  <script language="javascript">
+    function DoPost(){
+      $.post("{% url 'account_logout' %}", {csrfmiddlewaretoken: "{{ csrf_token }}"}, function() { window.location.href = "{% url 'home' %}" });
+    }
+  </script>
+</head>
+
+<body>
+  <!-- NAVBAR -->
+  <nav class="navbar navbar-expand-lg navbar-light bg-white">
+    <div class="container-fluid">
+      <!-- Brand -->
+      <a class="navbar-brand" href="{% url 'home' %}" font-family: 'Katibeh'>ShowUp</a>
+
+      {% if user.is_authenticated %}
         <!-- Toggler -->
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
@@ -39,13 +48,12 @@
 
         <!-- Collapse -->
         <div class="collapse navbar-collapse" id="navbarCollapse">
-
           <!-- Toggler -->
           <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
             <span class="fas fa-arrow-up"></span>
           </button>
 
-          <!-- Navigation -->
+          <!-- Navigation Bar -->
           <ul class="navbar-nav ml-auto">
             <li class="nav-item">
               <a class="nav-link" href="{% url 'home' %}">Home<span class="sr-only">(current)</span></a>
@@ -63,18 +71,30 @@
               <a class="nav-link" href="{% url 'matches' %}">Matches</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="{% url 'requests' %}">Requests</a>
+              {% if requests %}
+                <a class="nav-link" href="{% url 'requests' %}">
+                  Requests
+                  <span class="badge badge-pill badge-danger" style="font-size: 7px; position:relative; left: -10px; top:-5px; vertical-align: top">{{ requests }}</span>
+                </a>
+              {% else %}
+                <a class="nav-link" href="{% url 'requests' %}">Requests</a>
+              {% endif %}
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'settings' %}">Settings</a>
             </li>
           </ul>
 
-          <!-- Log in button -->
-          <a class="navbar-btn btn btn-sm lift ml-auto" href="{% url 'account_logout' %}">Log out ({{user.first_name}})</a>
+          <!-- Log Out -->
+          <a class="navbar-btn btn btn-sm lift ml-auto" href="javascript:DoPost()">Log Out ({{user.first_name}})</a>
         </div>
-        {% endif %}
-      </div>
-    </nav>
+      {% endif %}
+    </div>
+  </nav>
 
-    {% block content %}
-    {% endblock %}
-  </body>
+  {% block content %}
+  {% endblock %}
+
+</body>
+
 </html>

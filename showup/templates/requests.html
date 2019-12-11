@@ -26,7 +26,7 @@
                     {% endif %}
                   {% endfor %}
                       </div>
-                      <form class="col-4 align-self-center" action="" method="post" onsubmit="setTimeout(function(){window.location.reload();},5)">
+                      <form class="col-4 align-self-center" action="" method="post" onsubmit="setTimeout(function(){window.location.reload();},50)">
                         {% csrf_token %}
                         <input type="hidden" name="their_sid" value="{{ squad.id }}">
                         <button class="btn btn-primary" type="submit" name="accept">Accept</button>

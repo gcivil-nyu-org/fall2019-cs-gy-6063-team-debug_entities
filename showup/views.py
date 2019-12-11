@@ -1,4 +1,4 @@
-from .forms import CustomUserChangeForm, SquadForm
+from .forms import CustomUserChangeForm, SquadForm, CustomUserForm
 from .models import Concert, CustomUser, Genre, Request, Squad, Swipe
 from allauth.account.admin import EmailAddress
 from django.contrib.auth.decorators import login_required
@@ -8,6 +8,32 @@ from .filters import ConcertFilter
 
 
 def home(request):
+    if request.user.is_authenticated:
+        if request.method == "POST":
+            # My squad.
+            squad = request.user.squad
+
+            # Get the eid.
+            eid = request.POST.get("eid")
+
+            # Move event from "Going" to "Interested".
+            if "interested" in request.POST:
+                squad.going.remove(eid)
+                squad.interested.add(eid)
+
+            # Move event from "Interested" to "Going".
+            if "going" in request.POST:
+                squad.interested.remove(eid)
+                squad.going.add(eid)
+
+            # Remove event from "Interested".
+            if "not_interested" in request.POST:
+                squad.interested.remove(eid)
+
+            # Remove event from "Going".
+            if "not_going" in request.POST:
+                squad.going.remove(eid)
+
     return render(request, "home.html")
 
 
@@ -55,15 +81,17 @@ def insert_to_list_exclusively(event_id, add_list, remove_list):
 
 @login_required
 def user(request, id):
-    try:  # check if given id exists
-        requested_user = CustomUser.objects.get(id=id)
+    # See if this user exists.
+    try:
+        user = CustomUser.objects.get(id=id)
     except CustomUser.DoesNotExist:
         raise PermissionDenied
 
-    if not EmailAddress.objects.get(id=id).verified:
+    # Ensure this user verified their email address.
+    if not EmailAddress.objects.get(email=user.email).verified:
         raise PermissionDenied
 
-    return render(request, "user.html", context={"requested_user": requested_user})
+    return render(request, "user.html", context={"requested_user": user})
 
 
 @login_required
@@ -91,11 +119,9 @@ def squad(request, id):
 
 
 @login_required
-def edit_squad(request, id):
+def edit_squad(request, sid):
     # You can only edit your own squad.
-    email_does_not_exist = 0
-
-    if id == request.user.squad.id:
+    if sid == request.user.squad.id:
         # Get my squad.
         my_squad = request.user.squad
         squad_size = CustomUser.objects.filter(squad=my_squad).count()
@@ -104,84 +130,69 @@ def edit_squad(request, id):
         if request.method == "POST" and form.is_valid():
             if "add" in request.POST:
                 try:
-                    # Get their squad and their members.
+                    # Get their squad.
                     their_squad = CustomUser.objects.get(
                         email=request.POST["email"]
                     ).squad
                 except CustomUser.DoesNotExist:
-                    email_does_not_exist = 1
+                    msg = "{} is not registered with ShowUp.".format(
+                        request.POST["email"]
+                    )
                     return render(
                         request,
                         "edit_squad.html",
-                        {
-                            "form": form,
-                            "squad_size": squad_size,
-                            "email_does_not_exist": email_does_not_exist,
-                            "email_entered": request.POST,
-                        },
+                        {"form": form, "msg": msg, "squad_size": squad_size},
                     )
 
                 # We are already in the same squad.
                 if my_squad.id == their_squad.id:
-                    email_does_not_exist = 2
+                    msg = "{} is already in your squad!".format(request.POST["email"])
                     return render(
                         request,
                         "edit_squad.html",
-                        {
-                            "form": form,
-                            "squad_size": squad_size,
-                            "email_does_not_exist": email_does_not_exist,
-                            "email_entered": request.POST,
-                        },
+                        {"form": form, "msg": msg, "squad_size": squad_size},
                     )
 
-                # Check to see if a request already exists.
-                request = Request.objects.filter(
-                    requester=their_squad, requestee=my_squad
-                )
-                if request.exists():
-                    # Join the squad that has a smaller id.
-                    if their_squad.id < my_squad.id:
-                        my_squad, their_squad = their_squad, my_squad
+                # Check to see if our squad sent a request to their squad.
+                r = Request.objects.filter(requester=my_squad, requestee=their_squad)
+                if r.exists():
+                    msg = (
+                        "A squad request has already been sent to {}. Please "
+                        "wait for them to accept it.".format(request.POST["email"])
+                    )
+                    return render(
+                        request,
+                        "edit_squad.html",
+                        {"form": form, "msg": msg, "squad_size": squad_size},
+                    )
 
-                    # Get their members.
-                    their_members = CustomUser.objects.filter(squad=their_squad)
-
-                    # Merge squads.
-                    for member in their_members:
-                        member.squad = my_squad
-                        member.save()
-
-                    # Add their interested events.
-                    for event in their_squad.interested.all():
-                        # If event is in interested then leave it in interested.
-                        # If event is in going then leave it in going.
-                        if (
-                            event not in my_squad.interested.all()
-                            and event not in my_squad.going.all()
-                        ):
-                            my_squad.interested.add(event)
-
-                    # Add their going events.
-                    for event in their_squad.going.all():
-                        # If event is in interested then put it in going.
-                        if event in my_squad.interested.all():
-                            my_squad.interested.remove(event)
-                            my_squad.going.add(event)
-                        # If event is not in going then put it in going.
-                        if event not in my_squad.going.all():
-                            my_squad.going.add(event)
-
-                    # Delete their old squad.
-                    Squad.objects.get(id=their_squad.id).delete()
-
-                    # Delete the request.
-                    request.delete()
+                # Check to see if their squad sent a request to our squad.
+                r = Request.objects.filter(requester=their_squad, requestee=my_squad)
+                if r.exists():
+                    msg = (
+                        "You already have a pending squad request from {}. "
+                        "Head over to Requests to approve it.".format(
+                            request.POST["email"]
+                        )
+                    )
+                    return render(
+                        request,
+                        "edit_squad.html",
+                        {"form": form, "msg": msg, "squad_size": squad_size},
+                    )
                 else:
                     # Create a request.
                     Request.objects.create(requester=my_squad, requestee=their_squad)
 
-                return redirect(reverse("squad", kwargs={"id": my_squad.id}))
+                    msg = (
+                        "A request has been sent to {}. If they accept, your "
+                        "squads will merge.".format(request.POST["email"])
+                    )
+                    return render(
+                        request,
+                        "edit_squad.html",
+                        {"form": form, "msg": msg, "squad_size": squad_size},
+                    )
 
             elif "leave" in request.POST:
                 # You can only leave a squad if you're not the only one in it.
@@ -199,12 +210,7 @@ def edit_squad(request, id):
         return render(
             request,
             "edit_squad.html",
-            {
-                "form": form,
-                "squad_size": squad_size,
-                "email_does_not_exist": email_does_not_exist,
-                "email_entered": request.POST,
-            },
+            {"form": form, "msg": "", "squad_size": squad_size},
         )
 
     else:
@@ -396,6 +402,17 @@ def matches(request):
         "matches.html",
         {"matches": matches, "events": uniq_events, "users": users},
     )
+
+
+@login_required
+def settings(request):
+    msg = ""
+    if request.POST:
+        form = CustomUserForm(request.POST or None, instance=request.user)
+        if form.is_valid():
+            form.save(request)
+            msg = "Settings changed successfully!"
+    return render(request, "settings.html", {"user": request.user, "message": msg})
 
 
 @login_required
